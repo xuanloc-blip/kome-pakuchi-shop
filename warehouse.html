@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>パクチー 管理画面（倉庫）</title>
+<style>
+:root{
+  --green:#2e7d32; --green-dark:#1b5e20; --green-light:#eaf6ea;
+  --red:#c62828; --red-light:#fdeceb; --orange:#e65100; --orange-light:#fff3e0;
+  --blue:#1565c0; --blue-light:#e3f2fd; --gray:#757575; --gray-light:#f0f0f0;
+  --gray1:#1a1a1a; --gray2:#555; --gray3:#888; --gray4:#ddd; --white:#fff;
+  --radius:10px; --shadow:0 2px 10px rgba(0,0,0,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;background:#f4f8f4;color:var(--gray1);font-size:14px;}
+
+#topbar{background:var(--green-dark);color:#fff;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:var(--shadow);}
+#topbar h1{font-size:17px;font-weight:800;white-space:nowrap;}
+#topbar .spacer{flex:1;}
+#staff-input{padding:6px 10px;border-radius:8px;border:none;font-size:12px;width:120px;}
+.tb-btn{padding:8px 14px;border:none;border-radius:8px;background:rgba(255,255,255,.18);color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.tb-btn:hover{background:rgba(255,255,255,.32);}
+.tb-btn.primary{background:var(--white);color:var(--green-dark);}
+#conn-status{font-size:11px;opacity:.9;white-space:nowrap;}
+.lang-btn{padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.6);background:transparent;color:#fff;font-size:11px;font-weight:700;cursor:pointer;}
+.lang-btn.active{background:#fff;color:var(--green-dark);}
+
+#maintabs{display:flex;gap:4px;padding:0 18px;background:var(--white);border-bottom:2px solid var(--gray4);}
+.main-tab-btn{padding:12px 18px;border:none;background:none;font-size:13px;font-weight:700;color:var(--gray3);cursor:pointer;border-bottom:3px solid transparent;}
+.main-tab-btn.active{color:var(--green-dark);border-bottom-color:var(--green);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+#toolbar{display:flex;gap:10px;padding:12px 18px;background:var(--white);border-bottom:1px solid var(--gray4);flex-wrap:wrap;align-items:center;}
+#search-input{flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--gray4);border-radius:8px;font-size:13px;}
+.status-filter{display:flex;gap:6px;flex-wrap:wrap;}
+.sf-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--gray4);background:#fff;font-size:12px;cursor:pointer;color:var(--gray2);}
+.sf-btn.active{background:var(--green);border-color:var(--green);color:#fff;font-weight:700;}
+#count-chip{font-size:12px;color:var(--gray3);white-space:nowrap;}
+
+#content, #products-content, #announcements-content{padding:16px 18px 60px;max-width:1400px;margin:0 auto;}
+#empty-msg{text-align:center;color:var(--gray3);padding:60px 0;font-size:14px;}
+#empty-msg.hidden{display:none;}
+
+.order-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;}
+.order-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;border-left:5px solid var(--gray4);}
+.order-card.st-未処理{border-left-color:var(--red);}
+.order-card.st-処理中{border-left-color:var(--blue);}
+.order-card.st-完了{border-left-color:var(--green);}
+.order-card.st-キャンセル{border-left-color:var(--gray);opacity:.6;}
+.oc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px;}
+.oc-name{font-size:15px;font-weight:800;}
+.oc-time{font-size:11px;color:var(--gray3);margin-top:2px;}
+.oc-source{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:var(--gray-light);color:var(--gray2);margin-left:6px;}
+.status-badge{font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;white-space:nowrap;border:none;cursor:pointer;}
+.status-badge.st-未処理{background:var(--red-light);color:var(--red);}
+.status-badge.st-処理中{background:var(--blue-light);color:var(--blue);}
+.status-badge.st-完了{background:var(--green-light);color:var(--green-dark);}
+.status-badge.st-キャンセル{background:var(--gray-light);color:var(--gray);}
+.oc-row{font-size:12.5px;color:var(--gray2);margin-bottom:5px;display:flex;gap:6px;}
+.oc-row b{color:var(--gray1);font-weight:700;flex-shrink:0;}
+.oc-items{white-space:pre-wrap;background:var(--green-light);border-radius:8px;padding:8px 10px;font-size:12.5px;margin-top:8px;}
+.oc-note{white-space:pre-wrap;background:#fffde7;border-radius:8px;padding:8px 10px;font-size:12px;margin-top:6px;color:#7a6a00;}
+.oc-actions{display:flex;gap:8px;margin-top:10px;}
+.oc-actions button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--gray4);background:#fff;font-size:12px;font-weight:700;cursor:pointer;color:var(--gray2);}
+.oc-actions button:hover{background:var(--gray-light);}
+
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:500;padding:20px;}
+#modal-overlay.show{display:flex;}
+#modal-box{background:#fff;border-radius:14px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;}
+#modal-box h2{font-size:16px;color:var(--green-dark);margin-bottom:16px;}
+.m-field{margin-bottom:12px;}
+.m-field label{display:block;font-size:12px;font-weight:700;color:var(--gray2);margin-bottom:4px;}
+.m-field input,.m-field textarea,.m-field select{width:100%;padding:8px 10px;border:1px solid var(--gray4);border-radius:8px;font-size:13px;font-family:inherit;}
+.m-field textarea{min-height:60px;resize:vertical;}
+.m-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.m-actions{display:flex;gap:10px;margin-top:16px;}
+.m-actions button{flex:1;padding:11px;border-radius:8px;border:none;font-weight:800;font-size:13px;cursor:pointer;}
+.m-actions .save{background:var(--green);color:#fff;}
+.m-actions .cancel{background:var(--gray-light);color:var(--gray2);}
+
+.top-action-row{display:flex;justify-content:flex-end;margin-bottom:14px;}
+.btn-add{padding:10px 18px;border:none;border-radius:8px;background:var(--green);color:#fff;font-weight:800;font-size:13px;cursor:pointer;}
+
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.prod-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:8px;}
+.prod-img-box{width:100%;aspect-ratio:1/1;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;position:relative;}
+.prod-img-box img{width:100%;height:100%;object-fit:cover;}
+.prod-img-box .ph{font-size:34px;}
+.prod-img-box .upload-hint{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:10px;text-align:center;padding:4px;}
+.prod-card input,.prod-card textarea,.prod-card select{width:100%;padding:7px 9px;border:1px solid var(--gray4);border-radius:6px;font-size:12.5px;font-family:inherit;}
+.prod-card textarea{min-height:44px;resize:vertical;}
+.prod-field-label{font-size:10.5px;font-weight:700;color:var(--gray3);}
+.prod-row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.prod-actions{display:flex;gap:8px;margin-top:4px;}
+.prod-actions button{flex:1;padding:8px;border-radius:6px;border:none;font-weight:700;font-size:12px;cursor:pointer;}
+.prod-actions .save{background:var(--green);color:#fff;}
+.prod-actions .delete{background:var(--red-light);color:var(--red);}
+
+.ann-list{display:flex;flex-direction:column;gap:12px;}
+.ann-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;}
+.ann-card input,.ann-card textarea{width:100%;padding:8px 10px;border:1px solid var(--gray4);border-radius:6px;font-size:13px;font-family:inherit;margin-top:4px;}
+.ann-card textarea{min-height:60px;resize:vertical;}
+.ann-field-label{font-size:11px;font-weight:700;color:var(--gray3);margin-top:8px;display:block;}
+.ann-row-top{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.ann-visible-toggle{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--gray2);}
+.ann-actions{display:flex;gap:8px;margin-top:10px;}
+.ann-actions button{padding:8px 14px;border-radius:6px;border:none;font-weight:700;font-size:12px;cursor:pointer;}
+.ann-actions .save{background:var(--green);color:#fff;}
+.ann-actions .delete{background:var(--red-light);color:var(--red);}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1 data-i18n="pageTitle">🌿 パクチー 管理画面（倉庫）</h1>
+  <div class="spacer"></div>
+  <button class="lang-btn" id="lang-btn-vi" onclick="setLang('vi')">VI</button>
+  <button class="lang-btn" id="lang-btn-ja" onclick="setLang('ja')">JA</button>
+  <span id="conn-status"></span>
+  <input id="staff-input" data-i18n-placeholder="staffPh" placeholder="担当者名">
+</div>
+
+<div id="maintabs">
+  <button class="main-tab-btn active" data-tab="orders" onclick="switchTab('orders')" data-i18n="tabOrders">📦 注文管理</button>
+  <button class="main-tab-btn" data-tab="products" onclick="switchTab('products')" data-i18n="tabProducts">🌿 商品管理</button>
+  <button class="main-tab-btn" data-tab="announcements" onclick="switchTab('announcements')" data-i18n="tabAnnouncements">📢 お知らせ管理</button>
+</div>
+
+<!-- ===== TAB: ĐƠN HÀNG ===== -->
+<div class="tab-panel active" id="tab-orders">
+  <div id="toolbar">
+    <input id="search-input" data-i18n-placeholder="searchPh" placeholder="🔍 会社名・電話番号・住所で検索" oninput="renderOrders()">
+    <div class="status-filter" id="status-filter">
+      <button class="sf-btn active" data-st="all" onclick="setFilter('all')" data-i18n="filterAll">すべて</button>
+      <button class="sf-btn" data-st="未処理" onclick="setFilter('未処理')" data-i18n="filterUnprocessed">未処理</button>
+      <button class="sf-btn" data-st="処理中" onclick="setFilter('処理中')" data-i18n="filterProcessing">処理中</button>
+      <button class="sf-btn" data-st="完了" onclick="setFilter('完了')" data-i18n="filterDone">完了</button>
+      <button class="sf-btn" data-st="キャンセル" onclick="setFilter('キャンセル')" data-i18n="filterCancelled">キャンセル</button>
+    </div>
+    <span id="count-chip"></span>
+    <button class="tb-btn primary" style="background:var(--green);color:#fff;" onclick="checkMailNow()" data-i18n="btnCheckMail">📬 メールを今すぐ確認</button>
+    <button class="tb-btn primary" style="background:var(--green);color:#fff;" onclick="loadOrders()" data-i18n="btnRefresh">🔄 更新</button>
+  </div>
+  <div id="content">
+    <div id="empty-msg" data-i18n="emptyLoading">読み込み中...</div>
+    <div class="order-grid" id="order-grid"></div>
+  </div>
+</div>
+
+<!-- ===== TAB: SẢN PHẨM ===== -->
+<div class="tab-panel" id="tab-products">
+  <div id="products-content">
+    <div class="top-action-row"><button class="btn-add" onclick="addProductCard()" data-i18n="btnAddProduct">+ 商品を追加</button></div>
+    <div class="prod-grid" id="prod-grid"></div>
+    <input type="file" id="prod-file-input" accept="image/*" style="display:none;" onchange="onProductImageChosen(event)">
+  </div>
+</div>
+
+<!-- ===== TAB: THÔNG BÁO ===== -->
+<div class="tab-panel" id="tab-announcements">
+  <div id="announcements-content">
+    <div class="top-action-row"><button class="btn-add" onclick="addAnnouncementCard()" data-i18n="btnAddAnnouncement">+ お知らせを追加</button></div>
+    <div class="ann-list" id="ann-list"></div>
+  </div>
+</div>
+
+<div id="modal-overlay" onclick="if(event.target===this) closeModal()">
+  <div id="modal-box">
+    <h2 data-i18n="modalTitle">注文内容を編集</h2>
+    <div class="m-field">
+      <label data-i18n="labelName">会社名・お名前</label>
+      <input id="m-customerName">
+    </div>
+    <div class="m-row2">
+      <div class="m-field"><label data-i18n="labelPostal">郵便番号</label><input id="m-postalCode"></div>
+      <div class="m-field"><label data-i18n="labelPhone">電話番号</label><input id="m-phone"></div>
+    </div>
+    <div class="m-field"><label data-i18n="labelAddress">ご住所</label><input id="m-address"></div>
+    <div class="m-field"><label data-i18n="labelAddress2">番地・建物名</label><input id="m-addressDetail"></div>
+    <div class="m-field"><label data-i18n="labelEmail">メールアドレス</label><input id="m-customerEmail"></div>
+    <div class="m-field"><label data-i18n="labelDate">ご希望お届け日時</label><input id="m-desiredDate"></div>
+    <div class="m-field"><label data-i18n="labelItems">ご注文内容・数量</label><textarea id="m-items"></textarea></div>
+    <div class="m-field"><label data-i18n="labelNote">備考</label><textarea id="m-note"></textarea></div>
+    <div class="m-field">
+      <label data-i18n="labelStatus">ステータス</label>
+      <select id="m-status">
+        <option value="未処理" data-i18n="filterUnprocessed">未処理</option>
+        <option value="処理中" data-i18n="filterProcessing">処理中</option>
+        <option value="完了" data-i18n="filterDone">完了</option>
+        <option value="キャンセル" data-i18n="filterCancelled">キャンセル</option>
+      </select>
+    </div>
+    <div class="m-actions">
+      <button class="cancel" onclick="closeModal()" data-i18n="btnCancel">キャンセル</button>
+      <button class="save" onclick="saveModal()" data-i18n="btnSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Cung 1 Apps Script deployment voi index.html/shop.html - dung cac action
+// getMailOrders/updateMailOrder/checkMailOrdersNow + getAdminProducts/addProduct/
+// updateProduct/deleteProduct/uploadProductImage + getAdminAnnouncements/add.../update.../delete...
+const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
+const SHEET_URL_KEY = 'kome_warehouse_sheetUrl';
+const STAFF_KEY = 'kome_warehouse_staff';
+
+var sheetUrl = localStorage.getItem(SHEET_URL_KEY) || DEFAULT_SHEET_URL;
+var orders = [];
+var currentFilter = 'all';
+var editingId = null;
+var products = [];
+var announcements = [];
+var uploadTargetProductId = null;
+
+document.getElementById('staff-input').value = localStorage.getItem(STAFF_KEY) || '';
+document.getElementById('staff-input').addEventListener('change', function(){
+  localStorage.setItem(STAFF_KEY, this.value.trim());
+});
+
+// === ĐA NGÔN NGỮ (VI/JA) ===
+// Gia tri status luu trong Sheet (未処理/処理中/完了/キャンセル, 在庫あり/在庫切れ/販売休止,
+// 公開/非公開) LUON giu tieng Nhat - dung lam key loc va gia tri gui len server. Chi PHAN
+// HIEN THI duoc dich, khong doi gia tri thuc te.
+const LANG_KEY = 'kome_lang';
+let currentLang = localStorage.getItem(LANG_KEY) || 'vi';
+const I18N = {
+  pageTitle:        {vi:'🌿 Quản lý Rau mùi (Kho)', ja:'🌿 パクチー 管理画面（倉庫）'},
+  staffPh:          {vi:'Tên phụ trách', ja:'担当者名'},
+  tabOrders:        {vi:'📦 Đơn hàng', ja:'📦 注文管理'},
+  tabProducts:      {vi:'🌿 Sản phẩm', ja:'🌿 商品管理'},
+  tabAnnouncements: {vi:'📢 Thông báo', ja:'📢 お知らせ管理'},
+  btnCheckMail:     {vi:'📬 Kiểm tra mail ngay', ja:'📬 メールを今すぐ確認'},
+  btnRefresh:       {vi:'🔄 Tải lại', ja:'🔄 更新'},
+  searchPh:         {vi:'🔍 Tìm theo tên, SĐT, địa chỉ', ja:'🔍 会社名・電話番号・住所で検索'},
+  filterAll:        {vi:'Tất cả', ja:'すべて'},
+  filterUnprocessed:{vi:'Chưa xử lý', ja:'未処理'},
+  filterProcessing: {vi:'Đang xử lý', ja:'処理中'},
+  filterDone:       {vi:'Hoàn tất', ja:'完了'},
+  filterCancelled:  {vi:'Đã hủy', ja:'キャンセル'},
+  emptyLoading:     {vi:'Đang tải...', ja:'読み込み中...'},
+  emptyNoMatch:     {vi:'Không có đơn phù hợp', ja:'該当する注文がありません'},
+  emptyNone:        {vi:'Chưa có đơn hàng nào', ja:'注文はまだありません'},
+  receivedPrefix:   {vi:'Nhận lúc:', ja:'受信:'},
+  sourceMail:       {vi:'Mail', ja:'メール'},
+  sourceWeb:        {vi:'Web', ja:'ネット注文'},
+  noNameFallback:   {vi:'(chưa có tên)', ja:'(名前なし)'},
+  btnEdit:          {vi:'✏️ Sửa', ja:'✏️ 編集'},
+  modalTitle:       {vi:'Chỉnh sửa đơn hàng', ja:'注文内容を編集'},
+  labelName:        {vi:'Tên công ty / Họ tên', ja:'会社名・お名前'},
+  labelPostal:      {vi:'Mã bưu điện', ja:'郵便番号'},
+  labelPhone:       {vi:'Số điện thoại', ja:'電話番号'},
+  labelAddress:     {vi:'Địa chỉ', ja:'ご住所'},
+  labelAddress2:    {vi:'Số nhà / Tòa nhà', ja:'番地・建物名'},
+  labelEmail:       {vi:'Email', ja:'メールアドレス'},
+  labelDate:        {vi:'Ngày giờ mong muốn', ja:'ご希望お届け日時'},
+  labelItems:       {vi:'Nội dung / Số lượng', ja:'ご注文内容・数量'},
+  labelNote:        {vi:'Ghi chú', ja:'備考'},
+  labelStatus:      {vi:'Trạng thái', ja:'ステータス'},
+  btnCancel:        {vi:'Hủy', ja:'キャンセル'},
+  btnSave:          {vi:'Lưu', ja:'保存'},
+  statusLoading:    {vi:'Đang tải...', ja:'読み込み中...'},
+  statusOkTpl:      {vi:'Kết nối OK ({t})', ja:'接続OK（{t}）'},
+  statusErr:        {vi:'Lỗi', ja:'エラー'},
+  statusConnFail:   {vi:'Kết nối thất bại', ja:'接続失敗'},
+  statusChecking:   {vi:'Đang kiểm tra mail...', ja:'メール確認中...'},
+  alertFetchErrTpl: {vi:'Lỗi tải dữ liệu: {msg}', ja:'データ取得エラー: {msg}'},
+  alertConnFailTpl: {vi:'Không kết nối được: {msg}', ja:'接続できませんでした: {msg}'},
+  alertMailCheckedTpl: {vi:'Đã lấy {n} đơn hàng mới từ mail.', ja:'{n} 件の新規注文メールを取り込みました。'},
+  alertErrTpl:      {vi:'Lỗi: {msg}', ja:'エラー: {msg}'},
+  alertSaveErrTpl:  {vi:'Lỗi khi lưu: {msg}', ja:'保存エラー: {msg}'},
+  btnAddProduct:    {vi:'+ Thêm sản phẩm', ja:'+ 商品を追加'},
+  prodNewName:      {vi:'Sản phẩm mới', ja:'新しい商品'},
+  prodNameLabel:    {vi:'Tên sản phẩm', ja:'商品名'},
+  prodSpecLabel:    {vi:'Quy cách đóng gói', ja:'規格'},
+  prodDescLabel:    {vi:'Mô tả', ja:'説明'},
+  prodPriceLabel:   {vi:'Giá (¥)', ja:'価格（¥）'},
+  prodStatusLabel:  {vi:'Trạng thái', ja:'ステータス'},
+  prodSortLabel:    {vi:'Thứ tự hiển thị', ja:'表示順'},
+  prodStatusInStock:{vi:'Còn hàng', ja:'在庫あり'},
+  prodStatusOut:    {vi:'Hết hàng', ja:'在庫切れ'},
+  prodStatusOff:    {vi:'Tạm ngưng bán', ja:'販売休止'},
+  uploadHint:       {vi:'Bấm để đổi ảnh', ja:'クリックして画像変更'},
+  uploading:        {vi:'Đang tải ảnh lên...', ja:'アップロード中...'},
+  btnSaveProduct:   {vi:'Lưu', ja:'保存'},
+  btnDeleteProduct: {vi:'Xóa', ja:'削除'},
+  confirmDeleteProduct: {vi:'Xóa sản phẩm này?', ja:'この商品を削除しますか？'},
+  btnAddAnnouncement: {vi:'+ Thêm thông báo', ja:'+ お知らせを追加'},
+  annNewTitle:      {vi:'Thông báo mới', ja:'新しいお知らせ'},
+  annTitleLabel:    {vi:'Tiêu đề', ja:'タイトル'},
+  annContentLabel:  {vi:'Nội dung', ja:'内容'},
+  annDateLabel:     {vi:'Ngày đăng', ja:'掲載日'},
+  annVisibleLabel:  {vi:'Công khai trên shop', ja:'ショップに公開'},
+  btnSaveAnnouncement: {vi:'Lưu', ja:'保存'},
+  btnDeleteAnnouncement: {vi:'Xóa', ja:'削除'},
+  confirmDeleteAnnouncement: {vi:'Xóa thông báo này?', ja:'このお知らせを削除しますか？'},
+  emptyProducts:    {vi:'Chưa có sản phẩm nào.', ja:'商品がまだありません。'},
+  emptyAnnouncements: {vi:'Chưa có thông báo nào.', ja:'お知らせがまだありません。'}
+};
+const STATUS_I18N = {
+  '未処理':  {vi:'Chưa xử lý', ja:'未処理'},
+  '処理中':  {vi:'Đang xử lý', ja:'処理中'},
+  '完了':    {vi:'Hoàn tất', ja:'完了'},
+  'キャンセル': {vi:'Đã hủy', ja:'キャンセル'}
+};
+function trStatus(st){
+  const e = STATUS_I18N[st];
+  return e ? (e[currentLang] || e.vi) : (st || '');
+}
+function trSource(src){
+  return src === 'ネット注文' ? tr('sourceWeb') : tr('sourceMail');
+}
+function tr(key){
+  const e = I18N[key];
+  if (!e) return key;
+  return e[currentLang] || e.vi || key;
+}
+function tf(key, vars){
+  let s = tr(key);
+  Object.keys(vars || {}).forEach(k => { s = s.split('{' + k + '}').join(vars[k]); });
+  return s;
+}
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = tr(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = tr(el.getAttribute('data-i18n-placeholder')); });
+  document.getElementById('lang-btn-vi').classList.toggle('active', currentLang === 'vi');
+  document.getElementById('lang-btn-ja').classList.toggle('active', currentLang === 'ja');
+  document.documentElement.lang = currentLang;
+}
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem(LANG_KEY, lang);
+  applyI18n();
+  renderOrders();
+  renderProducts();
+  renderAnnouncements();
+}
+
+function switchTab(name){
+  document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'products' && !products.length) loadProducts();
+  if (name === 'announcements' && !announcements.length) loadAnnouncements();
+}
+
+var jsonpSeq = 0;
+function fetchJSONP(url){
+  return new Promise((res, rej) => {
+    const cb = 'wh_cb_' + (++jsonpSeq) + '_' + Date.now();
+    const s = document.createElement('script');
+    const t = setTimeout(() => { cl(); rej(new Error('Timeout (20s)')); }, 20000);
+    window[cb] = d => { cl(); res(d); };
+    function cl(){ clearTimeout(t); delete window[cb]; s.parentNode && s.parentNode.removeChild(s); }
+    s.onerror = () => { cl(); rej(new Error('connection error')); };
+    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+    document.head.appendChild(s);
+  });
+}
+function apiGet(actionQuery){
+  const sep = sheetUrl.includes('?') ? '&' : '?';
+  return fetchJSONP(sheetUrl + sep + actionQuery);
+}
+function apiPost(body){
+  return fetch(sheetUrl, { method: 'POST', body: JSON.stringify(body) }).then(r => r.json());
+}
+function setStatus(text, ok){
+  const el = document.getElementById('conn-status');
+  el.textContent = text;
+  el.style.color = ok === false ? '#ffcdd2' : (ok === true ? '#b9f6ca' : '#fff');
+}
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ===== TAB ĐƠN HÀNG =====
+async function loadOrders(){
+  setStatus(tr('statusLoading'));
+  document.getElementById('empty-msg').textContent = tr('emptyLoading');
+  document.getElementById('empty-msg').classList.remove('hidden');
+  try {
+    const j = await apiGet('action=getMailOrders');
+    if (j.status === 'success') {
+      orders = j.data || [];
+      setStatus(tf('statusOkTpl', { t: new Date().toLocaleTimeString(currentLang === 'ja' ? 'ja-JP' : 'vi-VN') }), true);
+      renderOrders();
+    } else {
+      setStatus(tr('statusErr'), false);
+      alert(tf('alertFetchErrTpl', { msg: j.message || '?' }));
+    }
+  } catch (e) {
+    setStatus(tr('statusConnFail'), false);
+    alert(tf('alertConnFailTpl', { msg: e.message }));
+  }
+}
+
+async function checkMailNow(){
+  setStatus(tr('statusChecking'));
+  try {
+    const j = await apiPost({ action: 'checkMailOrdersNow' });
+    if (j.status === 'success') {
+      alert(tf('alertMailCheckedTpl', { n: j.processed || 0 }));
+      loadOrders();
+    } else {
+      alert(tf('alertErrTpl', { msg: j.message || '?' }));
+    }
+  } catch (e) {
+    alert(tf('alertConnFailTpl', { msg: e.message }));
+  }
+}
+
+function setFilter(st){
+  currentFilter = st;
+  document.querySelectorAll('.sf-btn').forEach(b => b.classList.toggle('active', b.dataset.st === st));
+  renderOrders();
+}
+
+function renderOrders(){
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  let list = orders.filter(o => currentFilter === 'all' || o.status === currentFilter);
+  if (q) {
+    list = list.filter(o =>
+      (o.customerName || '').toLowerCase().includes(q) ||
+      (o.phone || '').toLowerCase().includes(q) ||
+      (o.address || '').toLowerCase().includes(q) ||
+      (o.addressDetail || '').toLowerCase().includes(q)
+    );
+  }
+  document.getElementById('count-chip').textContent = list.length + ' / ' + orders.length;
+
+  const grid = document.getElementById('order-grid');
+  const emptyMsg = document.getElementById('empty-msg');
+  if (!list.length) {
+    emptyMsg.textContent = orders.length ? tr('emptyNoMatch') : tr('emptyNone');
+    emptyMsg.classList.remove('hidden');
+    grid.innerHTML = '';
+    return;
+  }
+  emptyMsg.classList.add('hidden');
+
+  grid.innerHTML = list.map(o => {
+    const fullAddr = [o.postalCode ? '〒' + o.postalCode : '', o.address, o.addressDetail].filter(Boolean).join(' ');
+    return '<div class="order-card st-' + esc(o.status) + '">' +
+      '<div class="oc-top">' +
+        '<div><div class="oc-name">' + esc(o.customerName || tr('noNameFallback')) + '</div>' +
+        '<div class="oc-time">' + esc(tr('receivedPrefix')) + ' ' + esc(o.receivedAt) + '<span class="oc-source">' + esc(trSource(o.source)) + '</span></div></div>' +
+        '<button class="status-badge st-' + esc(o.status) + '" onclick="openModal(\'' + o.id + '\')">' + esc(trStatus(o.status)) + '</button>' +
+      '</div>' +
+      '<div class="oc-row"><b>📍</b><span>' + esc(fullAddr || '-') + '</span></div>' +
+      '<div class="oc-row"><b>📞</b><span>' + esc(o.phone || '-') + '</span></div>' +
+      '<div class="oc-row"><b>🗓</b><span>' + esc(o.desiredDate || '-') + '</span></div>' +
+      (o.items ? '<div class="oc-items">' + esc(o.items) + '</div>' : '') +
+      (o.note ? '<div class="oc-note">📝 ' + esc(o.note) + '</div>' : '') +
+      '<div class="oc-actions">' +
+        '<button onclick="openModal(\'' + o.id + '\')">' + esc(tr('btnEdit')) + '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function openModal(id){
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  editingId = id;
+  ['customerName','postalCode','address','addressDetail','customerEmail','desiredDate','items','note'].forEach(k => {
+    document.getElementById('m-' + k).value = o[k] || '';
+  });
+  document.getElementById('m-phone').value = o.phone || '';
+  document.getElementById('m-status').value = o.status || '未処理';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function closeModal(){
+  editingId = null;
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+async function saveModal(){
+  if (!editingId) return;
+  const fields = {};
+  ['customerName','postalCode','address','addressDetail','phone','customerEmail','desiredDate','items','note','status'].forEach(k => {
+    fields[k] = document.getElementById('m-' + k).value.trim();
+  });
+  const staff = document.getElementById('staff-input').value.trim();
+  try {
+    const j = await apiPost({ action: 'updateMailOrder', data: { id: editingId, fields: fields, staff: staff } });
+    if (j.status === 'ok') {
+      closeModal();
+      loadOrders();
+    } else {
+      alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+    }
+  } catch (e) {
+    alert(tf('alertConnFailTpl', { msg: e.message }));
+  }
+}
+
+// ===== TAB SẢN PHẨM =====
+async function loadProducts(){
+  try {
+    const j = await apiGet('action=getAdminProducts');
+    if (j.status === 'success') { products = j.data || []; renderProducts(); }
+    else alert(tf('alertFetchErrTpl', { msg: j.message || '?' }));
+  } catch (e) {
+    alert(tf('alertConnFailTpl', { msg: e.message }));
+  }
+}
+function renderProducts(){
+  const grid = document.getElementById('prod-grid');
+  if (!products.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--gray3);padding:40px 0;">' + esc(tr('emptyProducts')) + '</div>'; return; }
+  grid.innerHTML = products.map(p => productCardHtml(p)).join('');
+}
+function productCardHtml(p){
+  return '<div class="prod-card" data-id="' + esc(p.id) + '">' +
+    '<div class="prod-img-box" onclick="triggerImageUpload(\'' + p.id + '\')">' +
+      (p.imageUrl ? '<img src="' + esc(p.imageUrl) + '">' : '<span class="ph">🌿</span>') +
+      '<div class="upload-hint">' + esc(tr('uploadHint')) + '</div>' +
+    '</div>' +
+    '<div><span class="prod-field-label">' + esc(tr('prodNameLabel')) + '</span><input class="f-name" value="' + esc(p.name) + '"></div>' +
+    '<div><span class="prod-field-label">' + esc(tr('prodSpecLabel')) + '</span><input class="f-spec" value="' + esc(p.spec) + '"></div>' +
+    '<div><span class="prod-field-label">' + esc(tr('prodDescLabel')) + '</span><textarea class="f-desc">' + esc(p.description) + '</textarea></div>' +
+    '<div class="prod-row2">' +
+      '<div><span class="prod-field-label">' + esc(tr('prodPriceLabel')) + '</span><input class="f-price" type="number" value="' + esc(p.price) + '"></div>' +
+      '<div><span class="prod-field-label">' + esc(tr('prodSortLabel')) + '</span><input class="f-sort" type="number" value="' + esc(p.sortOrder) + '"></div>' +
+    '</div>' +
+    '<div><span class="prod-field-label">' + esc(tr('prodStatusLabel')) + '</span>' +
+    '<select class="f-status">' +
+      '<option value="在庫あり"' + (p.status === '在庫あり' ? ' selected' : '') + '>' + esc(tr('prodStatusInStock')) + '</option>' +
+      '<option value="在庫切れ"' + (p.status === '在庫切れ' ? ' selected' : '') + '>' + esc(tr('prodStatusOut')) + '</option>' +
+      '<option value="販売休止"' + (p.status === '販売休止' ? ' selected' : '') + '>' + esc(tr('prodStatusOff')) + '</option>' +
+    '</select></div>' +
+    '<div class="prod-actions">' +
+      '<button class="save" onclick="saveProduct(\'' + p.id + '\')">' + esc(tr('btnSaveProduct')) + '</button>' +
+      '<button class="delete" onclick="deleteProduct(\'' + p.id + '\')">' + esc(tr('btnDeleteProduct')) + '</button>' +
+    '</div>' +
+  '</div>';
+}
+async function addProductCard(){
+  try {
+    const j = await apiPost({ action: 'addProduct', data: { fields: {
+      name: tr('prodNewName'), description: '', spec: '', price: 0, imageUrl: '', status: '在庫あり', sortOrder: products.length + 1
+    } } });
+    if (j.status === 'ok') loadProducts();
+    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+}
+async function saveProduct(id){
+  const card = document.querySelector('.prod-card[data-id="' + id + '"]');
+  if (!card) return;
+  const fields = {
+    name: card.querySelector('.f-name').value.trim(),
+    spec: card.querySelector('.f-spec').value.trim(),
+    description: card.querySelector('.f-desc').value.trim(),
+    price: card.querySelector('.f-price').value,
+    sortOrder: card.querySelector('.f-sort').value,
+    status: card.querySelector('.f-status').value
+  };
+  try {
+    const j = await apiPost({ action: 'updateProduct', data: { id: id, fields: fields } });
+    if (j.status === 'ok') loadProducts();
+    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+}
+async function deleteProduct(id){
+  if (!confirm(tr('confirmDeleteProduct'))) return;
+  try {
+    const j = await apiPost({ action: 'deleteProduct', data: { id: id } });
+    if (j.status === 'ok') loadProducts();
+    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+}
+function triggerImageUpload(id){
+  uploadTargetProductId = id;
+  document.getElementById('prod-file-input').click();
+}
+function onProductImageChosen(ev){
+  const file = ev.target.files && ev.target.files[0];
+  ev.target.value = '';
+  if (!file || !uploadTargetProductId) return;
+  const id = uploadTargetProductId;
+  const card = document.querySelector('.prod-card[data-id="' + id + '"] .prod-img-box');
+  if (card) card.innerHTML = '<span class="ph">⏳</span><div class="upload-hint">' + esc(tr('uploading')) + '</div>';
+  const reader = new FileReader();
+  reader.onload = async function(){
+    const base64 = reader.result.split(',')[1];
+    try {
+      const up = await apiPost({ action: 'uploadProductImage', data: { filename: file.name, mimeType: file.type, base64Data: base64 } });
+      if (up.status === 'ok') {
+        await apiPost({ action: 'updateProduct', data: { id: id, fields: { imageUrl: up.url } } });
+        loadProducts();
+      } else {
+        alert(tf('alertSaveErrTpl', { msg: up.message || '?' }));
+        loadProducts();
+      }
+    } catch (e) {
+      alert(tf('alertConnFailTpl', { msg: e.message }));
+      loadProducts();
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ===== TAB THÔNG BÁO =====
+async function loadAnnouncements(){
+  try {
+    const j = await apiGet('action=getAdminAnnouncements');
+    if (j.status === 'success') { announcements = j.data || []; renderAnnouncements(); }
+    else alert(tf('alertFetchErrTpl', { msg: j.message || '?' }));
+  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+}
+function renderAnnouncements(){
+  const list = document.getElementById('ann-list');
+  if (!announcements.length) { list.innerHTML = '<div style="text-align:center;color:var(--gray3);padding:40px 0;">' + esc(tr('emptyAnnouncements')) + '</div>'; return; }
+  list.innerHTML = announcements.map(a => announcementCardHtml(a)).join('');
+}
+function announcementCardHtml(a){
+  const checked = a.visible === '公開' ? ' checked' : '';
+  return '<div class="ann-card" data-id="' + esc(a.id) + '">' +
+    '<span class="ann-field-label">' + esc(tr('annTitleLabel')) + '</span>' +
+    '<input class="f-title" value="' + esc(a.title) + '">' +
+    '<span class="ann-field-label">' + esc(tr('annContentLabel')) + '</span>' +
+    '<textarea class="f-content">' + esc(a.content) + '</textarea>' +
+    '<span class="ann-field-label">' + esc(tr('annDateLabel')) + '</span>' +
+    '<input class="f-date" value="' + esc(a.postDate) + '" placeholder="2026/09/10">' +
+    '<div class="ann-actions">' +
+      '<label class="ann-visible-toggle"><input type="checkbox" class="f-visible"' + checked + '> ' + esc(tr('annVisibleLabel')) + '</label>' +
+      '<button class="save" onclick="saveAnnouncement(\'' + a.id + '\')">' + esc(tr('btnSaveAnnouncement')) + '</button>' +
+      '<button class="delete" onclick="deleteAnnouncement(\'' + a.id + '\')">' + esc(tr('btnDeleteAnnouncement')) + '</button>' +
+    '</div>' +
+  '</div>';
+}
+async function addAnnouncementCard(){
+  try {
+    const j = await apiPost({ action: 'addAnnouncement', data: { fields: { title: tr('annNewTitle'), content: '', postDate: '', visible: '公開' } } });
+    if (j.status === 'ok') loadAnnouncements();
+    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+}
+async function saveAnnouncement(id){
+  const card = document.querySelector('.ann-card[data-id="' + id + '"]');
+  if (!card) return;
+  const fields = {
+    title: card.querySelector('.f-title').value.trim(),
+    content: card.querySelector('.f-content').value.trim(),
+    postDate: card.querySelector('.f-date').value.trim(),
+    visible: card.querySelector('.f-visible').checked ? '公開' : '非公開'
+  };
+  try {
+    const j = await apiPost({ action: 'updateAnnouncement', data: { id: id, fields: fields } });
+    if (j.status === 'ok') loadAnnouncements();
+    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+}
+async function deleteAnnouncement(id){
+  if (!confirm(tr('confirmDeleteAnnouncement'))) return;
+  try {
+    const j = await apiPost({ action: 'deleteAnnouncement', data: { id: id } });
+    if (j.status === 'ok') loadAnnouncements();
+    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+}
+
+applyI18n();
+loadOrders();
+</script>
+</body>
+</html>

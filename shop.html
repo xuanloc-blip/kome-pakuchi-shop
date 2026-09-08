@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>パクチー ショップ</title>
+<style>
+:root{
+  --green:#2e7d32; --green-dark:#1b5e20; --green-light:#eaf6ea;
+  --red:#c62828; --gray1:#1a1a1a; --gray2:#555; --gray3:#888; --gray4:#ddd; --white:#fff;
+  --radius:12px; --shadow:0 4px 16px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;background:#f4f8f4;color:var(--gray1);padding-bottom:90px;}
+
+#topbar{background:var(--green-dark);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+#topbar h1{font-size:18px;font-weight:800;flex:1;}
+.lang-btn{padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.6);background:transparent;color:#fff;font-size:11px;font-weight:700;cursor:pointer;}
+.lang-btn.active{background:#fff;color:var(--green-dark);}
+
+#announce-wrap{max-width:1000px;margin:16px auto 0;padding:0 16px;}
+.announce-card{background:#fffde7;border:1px solid #ffe082;border-radius:var(--radius);padding:12px 16px;margin-bottom:10px;}
+.announce-card .a-title{font-weight:800;color:#8a6d00;font-size:13px;margin-bottom:4px;}
+.announce-card .a-date{font-size:11px;color:#a68a00;margin-bottom:6px;}
+.announce-card .a-content{font-size:12.5px;color:#5c4a00;white-space:pre-wrap;}
+
+#products-wrap{max-width:1000px;margin:16px auto;padding:0 16px;}
+.section-title{font-size:16px;font-weight:800;color:var(--green-dark);margin-bottom:12px;}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;}
+.product-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;}
+.p-img{width:100%;aspect-ratio:1/1;background:var(--green-light);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.p-img img{width:100%;height:100%;object-fit:cover;}
+.p-img .ph{font-size:40px;}
+.p-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1;}
+.p-name{font-size:14.5px;font-weight:800;}
+.p-spec{font-size:11.5px;color:var(--gray3);}
+.p-desc{font-size:12px;color:var(--gray2);line-height:1.4;margin-top:2px;}
+.p-price{font-size:16px;font-weight:900;color:var(--green-dark);margin-top:auto;padding-top:6px;}
+.p-badge{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:12px;margin-top:4px;width:fit-content;}
+.p-badge.instock{background:var(--green-light);color:var(--green-dark);}
+.p-badge.outstock{background:#fdeceb;color:var(--red);}
+.p-qty-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.qty-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--gray4);background:#fff;font-size:16px;font-weight:800;cursor:pointer;color:var(--green-dark);}
+.qty-val{min-width:24px;text-align:center;font-weight:700;font-size:13px;}
+.add-cart-btn{width:100%;margin-top:8px;padding:9px;border:none;border-radius:8px;background:var(--green);color:#fff;font-weight:800;font-size:12.5px;cursor:pointer;}
+.add-cart-btn:disabled{background:var(--gray4);color:var(--gray3);cursor:not-allowed;}
+
+#cart-bar{position:fixed;left:0;right:0;bottom:0;background:var(--green-dark);color:#fff;padding:12px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 -4px 16px rgba(0,0,0,.15);z-index:200;transform:translateY(100%);transition:transform .25s ease;}
+#cart-bar.show{transform:translateY(0);}
+#cart-bar .cart-info{flex:1;font-size:13px;font-weight:700;}
+#cart-bar .cart-total{font-size:15px;font-weight:900;color:#ffe27a;}
+#cart-bar button{padding:10px 20px;border:none;border-radius:8px;background:#fff;color:var(--green-dark);font-weight:800;font-size:13px;cursor:pointer;}
+
+#checkout-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;z-index:500;padding:24px 14px;overflow-y:auto;}
+#checkout-overlay.show{display:flex;}
+#checkout-box{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:22px 20px;margin-bottom:40px;}
+#checkout-box h2{color:var(--green-dark);font-size:17px;margin-bottom:14px;}
+.cart-line{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--gray4);}
+.cart-line .cl-name{flex:1;}
+.cart-line .cl-remove{color:var(--red);cursor:pointer;font-size:11px;margin-left:8px;}
+.cart-total-row{display:flex;justify-content:space-between;font-weight:900;font-size:15px;padding:10px 0;color:var(--green-dark);}
+.co-field{margin:12px 0;}
+.co-field label{display:block;font-size:12.5px;font-weight:700;color:var(--green-dark);margin-bottom:5px;}
+.co-field label .req{color:var(--red);}
+.co-field input,.co-field textarea{width:100%;padding:9px 11px;border:1px solid var(--gray4);border-radius:8px;font-size:13.5px;font-family:inherit;}
+.co-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.co-actions{display:flex;gap:10px;margin-top:16px;}
+.co-actions button{flex:1;padding:12px;border-radius:8px;border:none;font-weight:800;font-size:13.5px;cursor:pointer;}
+.co-actions .cancel{background:#f0f0f0;color:var(--gray2);}
+.co-actions .submit{background:var(--green);color:#fff;}
+.co-err{color:var(--red);font-size:12px;margin-top:6px;display:none;}
+.co-err.show{display:block;}
+
+#success-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:600;padding:20px;}
+#success-overlay.show{display:flex;}
+#success-box{background:#fff;border-radius:16px;max-width:440px;width:100%;padding:28px 24px;text-align:center;}
+#success-box .s-icon{font-size:48px;margin-bottom:10px;}
+#success-box h2{color:var(--green-dark);font-size:18px;margin-bottom:10px;}
+#success-box p{font-size:13px;color:var(--gray2);line-height:1.6;margin-bottom:6px;}
+#success-box .s-orderid{font-size:12px;color:var(--gray3);margin-top:10px;}
+#success-box button{margin-top:16px;padding:11px 24px;border:none;border-radius:8px;background:var(--green);color:#fff;font-weight:800;cursor:pointer;}
+
+#empty-products{text-align:center;color:var(--gray3);padding:40px 0;}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1 data-i18n="shopTitle">🌿 パクチー ショップ</h1>
+  <button class="lang-btn" id="lang-btn-vi" onclick="setLang('vi')">VI</button>
+  <button class="lang-btn" id="lang-btn-ja" onclick="setLang('ja')">JA</button>
+</div>
+
+<div id="announce-wrap"></div>
+
+<div id="products-wrap">
+  <div class="section-title" data-i18n="productsTitle">商品一覧</div>
+  <div id="empty-products" data-i18n="loadingProducts">読み込み中...</div>
+  <div class="product-grid" id="product-grid"></div>
+</div>
+
+<div id="cart-bar">
+  <div class="cart-info"><span id="cart-count">0</span> <span data-i18n="cartItemsLabel">点</span></div>
+  <div class="cart-total" id="cart-bar-total">¥0</div>
+  <button onclick="openCheckout()" data-i18n="btnCheckout">注文へ進む</button>
+</div>
+
+<div id="checkout-overlay" onclick="if(event.target===this) closeCheckout()">
+  <div id="checkout-box">
+    <h2 data-i18n="checkoutTitle">ご注文内容の確認</h2>
+    <div id="cart-lines"></div>
+    <div class="cart-total-row"><span data-i18n="totalLabel">合計</span><span id="checkout-total">¥0</span></div>
+
+    <div class="co-field">
+      <label><span data-i18n="labelName">お名前</span><span class="req">*</span></label>
+      <input id="co-name" data-i18n-placeholder="phName" placeholder="例）山田太郎">
+    </div>
+    <div class="co-row2">
+      <div class="co-field">
+        <label><span data-i18n="labelPhone">電話番号</span><span class="req">*</span></label>
+        <input id="co-phone" type="tel" placeholder="03-1234-5678">
+      </div>
+      <div class="co-field">
+        <label data-i18n="labelPostal">郵便番号</label>
+        <input id="co-postal" placeholder="123-4567">
+      </div>
+    </div>
+    <div class="co-field">
+      <label><span data-i18n="labelAddress">お届け先住所</span><span class="req">*</span></label>
+      <input id="co-address" data-i18n-placeholder="phAddress" placeholder="東京都渋谷区〇〇">
+    </div>
+    <div class="co-field">
+      <label data-i18n="labelAddress2">番地・建物名</label>
+      <input id="co-address2" data-i18n-placeholder="phAddress2" placeholder="1-2-3 〇〇ビル101">
+    </div>
+    <div class="co-field">
+      <label data-i18n="labelEmail">メールアドレス</label>
+      <input id="co-email" type="email" data-i18n-placeholder="phEmail" placeholder="ご注文確認メールをお送りします">
+    </div>
+    <div class="co-field">
+      <label data-i18n="labelDate">ご希望お届け日時</label>
+      <input id="co-date" data-i18n-placeholder="phDate" placeholder="例）2026/09/10 午前中">
+    </div>
+    <div class="co-field">
+      <label data-i18n="labelNote">備考</label>
+      <textarea id="co-note" data-i18n-placeholder="phNote" placeholder="ご要望などあればご記入ください" style="min-height:60px;"></textarea>
+    </div>
+    <div class="co-err" id="co-err" data-i18n="errRequired">必須項目（*）を入力してください。</div>
+    <div class="co-actions">
+      <button class="cancel" onclick="closeCheckout()" data-i18n="btnCancel">戻る</button>
+      <button class="submit" id="btn-submit-order" onclick="submitOrder()" data-i18n="btnSubmitOrder">注文を確定する</button>
+    </div>
+  </div>
+</div>
+
+<div id="success-overlay">
+  <div id="success-box">
+    <div class="s-icon">✅</div>
+    <h2 data-i18n="successTitle">ご注文ありがとうございます！</h2>
+    <p data-i18n="successMsg1">担当者が内容を確認のうえ、24時間以内にお電話またはメールにてご連絡いたします。</p>
+    <p data-i18n="successMsg2">ご注文確認メールをお送りしましたのでご確認ください。</p>
+    <div class="s-orderid" id="success-orderid"></div>
+    <button onclick="closeSuccess()" data-i18n="btnBackToShop">ショップに戻る</button>
+  </div>
+</div>
+
+<script>
+// Cung 1 Apps Script deployment voi index.html/warehouse.html - dung cac action
+// getShopProducts / getAnnouncements / submitShopOrder da them vao doGet/doPost.
+const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
+const SHEET_URL_KEY = 'kome_warehouse_sheetUrl';
+var sheetUrl = localStorage.getItem(SHEET_URL_KEY) || DEFAULT_SHEET_URL;
+
+var products = [];
+var cart = {}; // { productId: qty }
+
+// === ĐA NGÔN NGỮ (VI/JA) ===
+const LANG_KEY = 'kome_lang';
+let currentLang = localStorage.getItem(LANG_KEY) || 'vi';
+const I18N = {
+  shopTitle:        {vi:'🌿 Shop Rau Mùi (Pakuchi)', ja:'🌿 パクチー ショップ'},
+  productsTitle:    {vi:'Danh sách sản phẩm', ja:'商品一覧'},
+  loadingProducts:  {vi:'Đang tải...', ja:'読み込み中...'},
+  noProducts:       {vi:'Hiện chưa có sản phẩm nào.', ja:'現在、商品はありません。'},
+  inStock:          {vi:'Còn hàng', ja:'在庫あり'},
+  outOfStock:       {vi:'Hết hàng', ja:'在庫切れ'},
+  addToCart:        {vi:'Thêm vào giỏ', ja:'カートに追加'},
+  cartItemsLabel:   {vi:'sản phẩm', ja:'点'},
+  btnCheckout:      {vi:'Tiến hành đặt hàng', ja:'注文へ進む'},
+  checkoutTitle:    {vi:'Xác nhận đơn hàng', ja:'ご注文内容の確認'},
+  totalLabel:       {vi:'Tổng cộng', ja:'合計'},
+  labelName:        {vi:'Họ tên', ja:'お名前'},
+  labelPhone:       {vi:'Số điện thoại', ja:'電話番号'},
+  labelPostal:      {vi:'Mã bưu điện', ja:'郵便番号'},
+  labelAddress:     {vi:'Địa chỉ nhận hàng', ja:'お届け先住所'},
+  labelAddress2:    {vi:'Số nhà / Tòa nhà', ja:'番地・建物名'},
+  labelEmail:       {vi:'Email', ja:'メールアドレス'},
+  labelDate:        {vi:'Ngày giờ mong muốn nhận', ja:'ご希望お届け日時'},
+  labelNote:        {vi:'Ghi chú', ja:'備考'},
+  phName:           {vi:'VD: Nguyễn Văn A', ja:'例）山田太郎'},
+  phAddress:        {vi:'VD: Tokyo, quận Shibuya...', ja:'東京都渋谷区〇〇'},
+  phAddress2:       {vi:'VD: 1-2-3, tòa nhà 〇〇, phòng 101', ja:'1-2-3 〇〇ビル101'},
+  phEmail:          {vi:'Để nhận email xác nhận đơn hàng', ja:'ご注文確認メールをお送りします'},
+  phDate:           {vi:'VD: 2026/09/10 buổi sáng', ja:'例）2026/09/10 午前中'},
+  phNote:           {vi:'Ghi chú thêm nếu có', ja:'ご要望などあればご記入ください'},
+  errRequired:      {vi:'Vui lòng điền đầy đủ các mục có dấu (*).', ja:'必須項目（*）を入力してください。'},
+  errCartEmpty:     {vi:'Giỏ hàng đang trống.', ja:'カートが空です。'},
+  errConn:          {vi:'Không kết nối được máy chủ: {msg}', ja:'サーバーに接続できませんでした: {msg}'},
+  errSubmit:        {vi:'Đặt hàng thất bại: {msg}', ja:'注文に失敗しました: {msg}'},
+  btnCancel:        {vi:'Quay lại', ja:'戻る'},
+  btnSubmitOrder:   {vi:'Xác nhận đặt hàng', ja:'注文を確定する'},
+  submittingOrder:  {vi:'Đang gửi...', ja:'送信中...'},
+  successTitle:     {vi:'Cảm ơn quý khách đã đặt hàng!', ja:'ご注文ありがとうございます！'},
+  successMsg1:      {vi:'Chúng tôi sẽ xác nhận đơn hàng và liên hệ lại qua điện thoại hoặc email trong vòng 24 giờ.', ja:'担当者が内容を確認のうえ、24時間以内にお電話またはメールにてご連絡いたします。'},
+  successMsg2:      {vi:'Email xác nhận đơn hàng đã được gửi (nếu quý khách có điền email).', ja:'ご注文確認メールをお送りしましたのでご確認ください。'},
+  btnBackToShop:    {vi:'Quay lại Shop', ja:'ショップに戻る'}
+};
+function tr(key){ const e = I18N[key]; if (!e) return key; return e[currentLang] || e.vi || key; }
+function tf(key, vars){ let s = tr(key); Object.keys(vars || {}).forEach(k => { s = s.split('{' + k + '}').join(vars[k]); }); return s; }
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = tr(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = tr(el.getAttribute('data-i18n-placeholder')); });
+  document.getElementById('lang-btn-vi').classList.toggle('active', currentLang === 'vi');
+  document.getElementById('lang-btn-ja').classList.toggle('active', currentLang === 'ja');
+  document.documentElement.lang = currentLang;
+}
+function setLang(lang){ currentLang = lang; localStorage.setItem(LANG_KEY, lang); applyI18n(); renderProducts(); renderCart(); }
+
+var jsonpSeq = 0;
+function fetchJSONP(url){
+  return new Promise((res, rej) => {
+    const cb = 'shop_cb_' + (++jsonpSeq) + '_' + Date.now();
+    const s = document.createElement('script');
+    const t = setTimeout(() => { cl(); rej(new Error('Timeout')); }, 20000);
+    window[cb] = d => { cl(); res(d); };
+    function cl(){ clearTimeout(t); delete window[cb]; s.parentNode && s.parentNode.removeChild(s); }
+    s.onerror = () => { cl(); rej(new Error('connection error')); };
+    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+    document.head.appendChild(s);
+  });
+}
+function apiGet(actionQuery){ const sep = sheetUrl.includes('?') ? '&' : '?'; return fetchJSONP(sheetUrl + sep + actionQuery); }
+function apiPost(body){ return fetch(sheetUrl, { method: 'POST', body: JSON.stringify(body) }).then(r => r.json()); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtYen(n){ return '¥' + Math.round(n || 0).toLocaleString('ja-JP'); }
+
+async function loadProducts(){
+  try {
+    const j = await apiGet('action=getShopProducts');
+    if (j.status === 'success') { products = j.data || []; renderProducts(); }
+    else { document.getElementById('empty-products').textContent = j.message || 'Error'; }
+  } catch (e) {
+    document.getElementById('empty-products').textContent = tf('errConn', { msg: e.message });
+  }
+}
+async function loadAnnouncements(){
+  try {
+    const j = await apiGet('action=getAnnouncements');
+    if (j.status === 'success') renderAnnouncements(j.data || []);
+  } catch (e) { /* thong bao khong quan trong bang san pham - loi thi bo qua lang le */ }
+}
+
+function renderAnnouncements(list){
+  const wrap = document.getElementById('announce-wrap');
+  if (!list.length) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = list.map(a =>
+    '<div class="announce-card">' +
+      '<div class="a-title">📢 ' + esc(a.title) + '</div>' +
+      (a.postDate ? '<div class="a-date">' + esc(a.postDate) + '</div>' : '') +
+      '<div class="a-content">' + esc(a.content) + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function renderProducts(){
+  const grid = document.getElementById('product-grid');
+  const emptyEl = document.getElementById('empty-products');
+  if (!products.length) {
+    emptyEl.textContent = tr('noProducts');
+    emptyEl.style.display = 'block';
+    grid.innerHTML = '';
+    return;
+  }
+  emptyEl.style.display = 'none';
+  grid.innerHTML = products.map(p => {
+    const inStock = p.status === '在庫あり';
+    const qty = cart[p.id] || 0;
+    return '<div class="product-card">' +
+      '<div class="p-img">' + (p.imageUrl ? '<img src="' + esc(p.imageUrl) + '" alt="">' : '<span class="ph">🌿</span>') + '</div>' +
+      '<div class="p-body">' +
+        '<div class="p-name">' + esc(p.name) + '</div>' +
+        (p.spec ? '<div class="p-spec">' + esc(p.spec) + '</div>' : '') +
+        (p.description ? '<div class="p-desc">' + esc(p.description) + '</div>' : '') +
+        '<span class="p-badge ' + (inStock ? 'instock' : 'outstock') + '">' + esc(inStock ? tr('inStock') : tr('outOfStock')) + '</span>' +
+        '<div class="p-price">' + fmtYen(p.price) + '</div>' +
+        (inStock ?
+          '<div class="p-qty-row">' +
+            '<button class="qty-btn" onclick="changeQty(\'' + p.id + '\',-1)">−</button>' +
+            '<span class="qty-val" id="qty-' + p.id + '">' + qty + '</span>' +
+            '<button class="qty-btn" onclick="changeQty(\'' + p.id + '\',1)">+</button>' +
+          '</div>' +
+          '<button class="add-cart-btn" onclick="addToCart(\'' + p.id + '\')">' + esc(tr('addToCart')) + '</button>'
+        : '<button class="add-cart-btn" disabled>' + esc(tr('outOfStock')) + '</button>') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function changeQty(id, delta){
+  const el = document.getElementById('qty-' + id);
+  let v = (parseInt(el.textContent, 10) || 0) + delta;
+  if (v < 0) v = 0;
+  el.textContent = v;
+}
+function addToCart(id){
+  const el = document.getElementById('qty-' + id);
+  const qty = parseInt(el.textContent, 10) || 0;
+  if (qty <= 0) return;
+  cart[id] = qty;
+  renderCartBar();
+}
+function cartEntries(){
+  return Object.keys(cart).filter(id => cart[id] > 0).map(id => {
+    const p = products.find(x => x.id === id);
+    return { id: id, name: p ? p.name : id, price: p ? p.price : 0, qty: cart[id] };
+  });
+}
+function cartTotal(){ return cartEntries().reduce((sum, e) => sum + e.price * e.qty, 0); }
+function renderCartBar(){
+  const entries = cartEntries();
+  const count = entries.reduce((s, e) => s + e.qty, 0);
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-bar-total').textContent = fmtYen(cartTotal());
+  document.getElementById('cart-bar').classList.toggle('show', count > 0);
+}
+function renderCart(){
+  renderCartBar();
+  const entries = cartEntries();
+  document.getElementById('cart-lines').innerHTML = entries.map(e =>
+    '<div class="cart-line"><span class="cl-name">' + esc(e.name) + ' x' + e.qty + '</span>' +
+    '<span>' + fmtYen(e.price * e.qty) + '</span>' +
+    '<span class="cl-remove" onclick="removeFromCart(\'' + e.id + '\')">✕</span></div>'
+  ).join('');
+  document.getElementById('checkout-total').textContent = fmtYen(cartTotal());
+}
+function removeFromCart(id){
+  delete cart[id];
+  const qtyEl = document.getElementById('qty-' + id);
+  if (qtyEl) qtyEl.textContent = '0';
+  renderCart();
+}
+
+function openCheckout(){
+  if (!cartEntries().length) { alert(tr('errCartEmpty')); return; }
+  renderCart();
+  document.getElementById('checkout-overlay').classList.add('show');
+}
+function closeCheckout(){ document.getElementById('checkout-overlay').classList.remove('show'); }
+
+async function submitOrder(){
+  const entries = cartEntries();
+  if (!entries.length) { alert(tr('errCartEmpty')); return; }
+  const v = id => document.getElementById(id).value.trim();
+  const name = v('co-name'), phone = v('co-phone'), address = v('co-address');
+  const errEl = document.getElementById('co-err');
+  if (!name || !phone || !address) { errEl.classList.add('show'); return; }
+  errEl.classList.remove('show');
+
+  const btn = document.getElementById('btn-submit-order');
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = tr('submittingOrder');
+
+  const payload = {
+    action: 'submitShopOrder',
+    data: {
+      customerName: name, phone: phone, address: address,
+      postalCode: v('co-postal'), addressDetail: v('co-address2'),
+      email: v('co-email'), desiredDate: v('co-date'), note: v('co-note'),
+      items: entries
+    }
+  };
+  try {
+    const j = await apiPost(payload);
+    if (j.status === 'ok') {
+      closeCheckout();
+      cart = {};
+      renderProducts(); renderCartBar();
+      document.getElementById('success-orderid').textContent = 'ID: ' + j.orderId;
+      document.getElementById('success-overlay').classList.add('show');
+    } else {
+      alert(tf('errSubmit', { msg: j.message || '?' }));
+    }
+  } catch (e) {
+    alert(tf('errConn', { msg: e.message }));
+  }
+  btn.disabled = false;
+  btn.textContent = originalText;
+}
+function closeSuccess(){ document.getElementById('success-overlay').classList.remove('show'); }
+
+applyI18n();
+loadProducts();
+loadAnnouncements();
+</script>
+</body>
+</html>
