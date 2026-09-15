@@ -500,6 +500,14 @@ function esc(s){
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// Kiem tra file co phai anh khong. KHONG chi dua vao file.type: mot so may Windows
+// tra ve file.type rong/sai cho file .jpg (loi lien ket dinh dang cua he dieu hanh,
+// khong phai loi web) - nen fallback kiem tra theo duoi file khi type khong ro.
+function looksLikeImageFile(file){
+  if (file.type && file.type.startsWith('image/')) return true;
+  return /\.(jpe?g|png|gif|webp|bmp|heic|heif)$/i.test(file.name || '');
+}
+
 // Thu nho + nen anh NGAY TREN TRINH DUYET truoc khi gui len server (qua canvas) - anh
 // dien thoai goc thuong 3-10MB, sau buoc nay con ~150-400KB nen upload nhanh hon RAT
 // NHIEU va khong ton quota Drive. 1600px la du net cho card san pham/hero (Drive con
@@ -776,7 +784,7 @@ async function onProductImageChosen(ev){
   const file = ev.target.files && ev.target.files[0];
   ev.target.value = '';
   if (!file || !uploadTargetProductId) return;
-  if (!file.type.startsWith('image/')) { alert(tr('errNotImage')); return; }
+  if (!looksLikeImageFile(file)) { alert(tr('errNotImage')); return; }
   const id = uploadTargetProductId;
   const slot = uploadTargetSlot;
   const fieldName = slot === 2 ? 'imageUrl2' : 'imageUrl';
@@ -903,7 +911,7 @@ async function onHeroImageChosen(ev){
   const file = ev.target.files && ev.target.files[0];
   ev.target.value = '';
   if (!file) return;
-  if (!file.type.startsWith('image/')) { alert(tr('errNotImage')); return; }
+  if (!looksLikeImageFile(file)) { alert(tr('errNotImage')); return; }
   const addTile = document.querySelector('.hero-slide-add');
   if (addTile) addTile.textContent = '⏳';
   try {
