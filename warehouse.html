@@ -113,10 +113,13 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
 .prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
 .prod-card{background:var(--white);border:1px solid var(--hairline);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:9px;transition:box-shadow .15s ease;}
 .prod-card:hover{box-shadow:0 8px 22px rgba(46,51,39,.1);}
+.prod-img-row{display:flex;gap:8px;}
 .prod-img-box{width:100%;aspect-ratio:1/1;border-radius:14px;background:var(--gray-light);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;position:relative;}
+.prod-img-row .prod-img-box{width:auto;flex:1;min-width:0;}
 .prod-img-box img{width:100%;height:100%;object-fit:cover;}
 .prod-img-box .ph{font-size:34px;}
 .prod-img-box .upload-hint{position:absolute;bottom:0;left:0;right:0;background:rgba(20,30,20,.6);color:#fff;font-size:10px;text-align:center;padding:5px;}
+.prod-img-box .slot-tag{position:absolute;top:5px;left:6px;background:rgba(20,30,20,.55);color:#fff;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:999px;}
 .prod-card input,.prod-card textarea,.prod-card select{width:100%;padding:8px 12px;border:1px solid var(--gray4);border-radius:12px;font-size:12.5px;font-family:inherit;background:var(--paper);}
 .prod-card input:focus,.prod-card textarea:focus,.prod-card select:focus{outline:none;border-color:var(--green);background:var(--white);}
 .prod-card textarea{min-height:44px;resize:vertical;}
@@ -294,6 +297,7 @@ var editingId = null;
 var products = [];
 var announcements = [];
 var uploadTargetProductId = null;
+var uploadTargetSlot = 1;
 var heroSlides = [];
 var heroSettingsData = {};
 var heroTabLoaded = false;
@@ -684,9 +688,17 @@ function renderProducts(){
 }
 function productCardHtml(p){
   return '<div class="prod-card" data-id="' + esc(p.id) + '">' +
-    '<div class="prod-img-box" onclick="triggerImageUpload(\'' + p.id + '\')">' +
-      (p.imageUrl ? '<img src="' + esc(p.imageUrl) + '">' : '<span class="ph">🌿</span>') +
-      '<div class="upload-hint">' + esc(tr('uploadHint')) + '</div>' +
+    '<div class="prod-img-row">' +
+      '<div class="prod-img-box" onclick="triggerImageUpload(\'' + p.id + '\', 1)">' +
+        '<span class="slot-tag">1</span>' +
+        (p.imageUrl ? '<img src="' + esc(p.imageUrl) + '">' : '<span class="ph">🌿</span>') +
+        '<div class="upload-hint">' + esc(tr('uploadHint')) + '</div>' +
+      '</div>' +
+      '<div class="prod-img-box" onclick="triggerImageUpload(\'' + p.id + '\', 2)">' +
+        '<span class="slot-tag">2</span>' +
+        (p.imageUrl2 ? '<img src="' + esc(p.imageUrl2) + '">' : '<span class="ph">🌿</span>') +
+        '<div class="upload-hint">' + esc(tr('uploadHint')) + '</div>' +
+      '</div>' +
     '</div>' +
     '<div><span class="prod-field-label">' + esc(tr('prodNameLabel')) + '</span><input class="f-name" value="' + esc(p.name) + '"></div>' +
     '<div><span class="prod-field-label">' + esc(tr('prodSpecLabel')) + '</span><input class="f-spec" value="' + esc(p.spec) + '"></div>' +
@@ -710,7 +722,7 @@ function productCardHtml(p){
 async function addProductCard(btn){
   setBtnLoading(btn, true);
   try {
-    const fields = { name: tr('prodNewName'), description: '', spec: '', price: 0, imageUrl: '', status: '在庫あり', sortOrder: products.length + 1 };
+    const fields = { name: tr('prodNewName'), description: '', spec: '', price: 0, imageUrl: '', imageUrl2: '', status: '在庫あり', sortOrder: products.length + 1 };
     const j = await apiPost({ action: 'addProduct', data: { fields: fields } });
     if (j.status === 'ok') {
       products.push(Object.assign({ id: j.id, updatedAt: '' }, fields));
@@ -752,8 +764,9 @@ async function deleteProduct(id, btn){
     } else { setBtnLoading(btn, false); alert(tf('alertSaveErrTpl', { msg: j.message || '?' })); }
   } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
 }
-function triggerImageUpload(id){
+function triggerImageUpload(id, slot){
   uploadTargetProductId = id;
+  uploadTargetSlot = slot || 1;
   document.getElementById('prod-file-input').click();
 }
 async function onProductImageChosen(ev){
@@ -762,15 +775,19 @@ async function onProductImageChosen(ev){
   if (!file || !uploadTargetProductId) return;
   if (!file.type.startsWith('image/')) { alert(tr('errNotImage')); return; }
   const id = uploadTargetProductId;
-  const box = document.querySelector('.prod-card[data-id="' + id + '"] .prod-img-box');
-  if (box) box.innerHTML = '<span class="ph">⏳</span><div class="upload-hint">' + esc(tr('uploading')) + '</div>';
+  const slot = uploadTargetSlot;
+  const fieldName = slot === 2 ? 'imageUrl2' : 'imageUrl';
+  const boxes = document.querySelectorAll('.prod-card[data-id="' + id + '"] .prod-img-box');
+  const box = boxes[slot - 1];
+  if (box) box.innerHTML = '<span class="slot-tag">' + slot + '</span><span class="ph">⏳</span><div class="upload-hint">' + esc(tr('uploading')) + '</div>';
   try {
     const resized = await resizeImageFile(file, 1600, 0.82);
     const up = await apiPost({ action: 'uploadProductImage', data: { filename: 'product.jpg', mimeType: resized.mimeType, base64Data: resized.base64 } });
     if (up.status === 'ok') {
-      await apiPost({ action: 'updateProduct', data: { id: id, fields: { imageUrl: up.url } } });
+      const fields = {}; fields[fieldName] = up.url;
+      await apiPost({ action: 'updateProduct', data: { id: id, fields: fields } });
       const p = products.find(x => x.id === id);
-      if (p) p.imageUrl = up.url;
+      if (p) p[fieldName] = up.url;
     } else {
       alert(tf('alertSaveErrTpl', { msg: up.message || '?' }));
     }
