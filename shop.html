@@ -340,9 +340,24 @@ function fetchJSONP(url){
   return new Promise((res, rej) => {
     const cb = 'shop_cb_' + (++jsonpSeq) + '_' + Date.now();
     const s = document.createElement('script');
-    const t = setTimeout(() => { cl(); rej(new Error('Timeout')); }, 20000);
+    // 10s (khong phai 20s) - server tra loi cham hon muc nay la bat thuong, bao loi
+    // som cho nguoi dung con hon de trang "treo" im lim khong ro dang tai hay da hong.
+    const t = setTimeout(() => { cl(); rej(new Error('Timeout')); }, 10000);
+    // Neu Apps Script tra ve trang loi (vd CHUA cap quyen Drive/Gmail sau khi them
+    // tinh nang moi) thay vi goi dung callback(...), trinh duyet nem ReferenceError
+    // "cb is not defined" o SCOPE TOAN CUC - khong lot qua duoc try/catch cua Promise
+    // nay, nen phai bat bang window.onerror thi moi bao loi NGAY duoc thay vi treo
+    // den het 10s timeout moi biet.
+    function onGlobalError(ev){
+      const msg = (ev && ev.message) || '';
+      const src = (ev && ev.filename) || '';
+      if (msg.indexOf(cb) !== -1 || src.indexOf(sheetUrl.split('?')[0]) !== -1) {
+        cl(); rej(new Error('Server response error'));
+      }
+    }
+    window.addEventListener('error', onGlobalError);
     window[cb] = d => { cl(); res(d); };
-    function cl(){ clearTimeout(t); delete window[cb]; s.parentNode && s.parentNode.removeChild(s); }
+    function cl(){ clearTimeout(t); delete window[cb]; window.removeEventListener('error', onGlobalError); s.parentNode && s.parentNode.removeChild(s); }
     s.onerror = () => { cl(); rej(new Error('connection error')); };
     s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
     document.head.appendChild(s);
