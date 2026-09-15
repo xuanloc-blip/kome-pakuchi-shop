@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ご注文・お問合わせ｜株式会社KOME</title>
+<meta name="description" content="パクチーのお見積り・ご注文はこちらから。1営業日以内にご連絡します。">
+<link rel="icon" type="image/png" href="logokome.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBF7EE; --paper-card:#FFFDF8; --paper-deep:#F3EDE0; --paper-hover:#F0EADC;
+  --ink:#2E3327; --ink-soft:#5F6557; --ink-faint:#868C7D; --placeholder:#ADA99C;
+  --green:#2F7A3E; --green-dark:#24592F; --green-deepest:#17331C;
+  --leaf:#8FBF52; --leaf-hover:#A0CF63; --leaf-pale:#C7E5A2; --on-dark-soft:#E6EFDC;
+  --accent-brown:#95591A; --hairline:rgba(46,51,39,.14);
+  --heading:'Zen Maru Gothic',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:var(--green);text-decoration:none;}
+a:hover{color:var(--green-dark);}
+button,input,textarea,select{font-family:inherit;}
+input::placeholder,textarea::placeholder{color:var(--placeholder);}
+img{max-width:100%;display:block;}
+
+header{position:sticky;top:0;z-index:60;background:rgba(251,247,238,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);}
+.header-inner{max-width:1080px;margin:0 auto;padding:0 24px;min-height:78px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:11px;flex-shrink:0;padding:8px 0;cursor:pointer;}
+.brand img{width:40px;height:40px;border-radius:10px;flex-shrink:0;}
+.brand-name{font-family:var(--heading);font-size:18px;font-weight:700;letter-spacing:.03em;}
+nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;}
+.nav-btn{border:none;background:none;cursor:pointer;font-size:15px;font-weight:700;padding:14px 16px;border-radius:999px;color:var(--ink);}
+.nav-btn:hover{background:var(--paper-hover);}
+.nav-btn.active{color:var(--paper);background:var(--green);}
+.nav-btn.active:hover{background:var(--green);}
+.phone-pill{flex-shrink:0;background:var(--green);color:var(--paper);font-size:15px;font-weight:700;padding:14px 22px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;}
+.phone-pill:hover{background:var(--green-dark);color:var(--paper);}
+
+.section-top{max-width:1080px;margin:0 auto;padding:64px 24px 0;}
+.section-top h1{font-family:var(--heading);font-size:clamp(28px,3.6vw,40px);font-weight:700;margin-bottom:14px;}
+.section-top p{font-size:16px;line-height:1.95;color:var(--ink-soft);max-width:640px;}
+
+.order-wrap{max-width:1080px;margin:0 auto;padding:40px 24px 72px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:36px;align-items:start;}
+
+.form-card{background:var(--paper-card);border:1px solid rgba(46,51,39,.09);border-radius:26px;padding:34px 30px;box-shadow:0 3px 12px rgba(46,51,39,.05);}
+.f-field{display:block;margin-bottom:20px;}
+.f-field:last-of-type{margin-bottom:0;}
+.f-field .f-label{display:block;font-size:15px;font-weight:700;margin-bottom:8px;}
+.f-field .req{color:var(--accent-brown);margin-left:6px;font-size:13px;}
+.f-field input,.f-field textarea{width:100%;padding:16px;border:1.5px solid rgba(46,51,39,.2);border-radius:14px;background:#fff;font-size:16px;}
+.f-field input:focus,.f-field textarea:focus{outline:none;border-color:var(--green);}
+.f-field textarea{min-height:120px;line-height:1.9;resize:vertical;}
+.form-grid-gap{display:grid;gap:20px;}
+.btn-pill{cursor:pointer;font-size:17px;font-weight:700;padding:21px;border-radius:999px;border:none;width:100%;}
+.btn-submit{background:var(--green);color:var(--paper);margin-top:4px;}
+.btn-submit:hover{background:var(--green-dark);}
+.btn-submit:disabled{background:var(--ink-faint);cursor:not-allowed;}
+.form-note{font-size:13.5px;line-height:1.9;color:var(--ink-faint);text-align:center;margin-top:14px;}
+.form-err{color:#B3261E;font-size:13.5px;margin-top:10px;display:none;text-align:center;}
+.form-err.show{display:block;}
+
+.success-box{text-align:center;padding:28px 0;}
+.success-box .s-title{font-family:var(--heading);font-size:24px;font-weight:700;color:var(--green);margin-bottom:14px;line-height:1.5;}
+.success-box p{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:26px;}
+.btn-outline-plain{border:1.5px solid rgba(46,51,39,.3);background:none;cursor:pointer;font-size:15px;font-weight:700;padding:16px 28px;border-radius:999px;}
+
+.contact-col{display:grid;gap:24px;}
+.contact-card{background:var(--green-dark);color:var(--paper);border-radius:26px;padding:32px 28px;}
+.contact-card .eyebrow{font-size:15px;font-weight:700;color:var(--leaf-pale);margin-bottom:14px;}
+.contact-card .phone-link{font-family:var(--heading);font-size:29px;font-weight:700;color:var(--paper);display:block;margin-bottom:10px;}
+.contact-card .phone-link:hover{color:var(--leaf-pale);}
+.contact-card .hours{font-size:15px;line-height:1.9;color:var(--on-dark-soft);}
+.contact-card .more-info{font-size:15px;line-height:1.9;color:var(--on-dark-soft);margin-top:14px;padding-top:14px;border-top:1px solid rgba(251,247,238,.2);}
+.contact-card .more-info a{color:var(--on-dark-soft);}
+
+.faq-card{background:var(--paper-deep);border-radius:26px;padding:32px 28px;}
+.faq-card h2{font-family:var(--heading);font-size:20px;font-weight:700;margin-bottom:18px;}
+.faq-item{border-top:1px solid rgba(46,51,39,.14);}
+.faq-q{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:none;border:none;cursor:pointer;padding:18px 0;}
+.faq-q .q-text{flex:1;font-size:15px;font-weight:700;line-height:1.7;color:var(--ink);}
+.faq-q .q-sign{font-size:18px;color:var(--green);font-weight:700;}
+.faq-a{display:none;padding:0 0 18px;}
+.faq-a.open{display:block;}
+.faq-a p{font-size:14.5px;line-height:1.95;color:var(--ink-soft);}
+
+footer{background:var(--green-dark);color:var(--paper);}
+.footer-inner{max-width:1080px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px;}
+.footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
+.footer-brand img{width:40px;height:40px;border-radius:10px;}
+.footer-brand-name{font-family:var(--heading);font-size:19px;font-weight:700;}
+.footer-info{font-size:15px;line-height:1.95;color:var(--on-dark-soft);}
+.footer-links{display:grid;gap:14px;justify-items:start;}
+.footer-bottom-wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+.footer-bottom{border-top:1px solid rgba(251,247,238,.2);padding:20px 0 30px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.footer-bottom a{font-size:13px;color:var(--on-dark-soft);}
+.footer-bottom a:hover{color:var(--leaf-pale);}
+.footer-copyright{font-size:13px;color:rgba(251,247,238,.6);}
+.footer-legal-links{display:flex;gap:20px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="brand" href="index.html"><img src="logokome.png" alt="KOME"><span class="brand-name">株式会社KOME</span></a>
+    <nav class="main-nav">
+      <a class="nav-btn" href="index.html">トップ</a>
+      <a class="nav-btn" href="items.html">商品</a>
+      <a class="nav-btn active" href="order.html">ご注文・お問合わせ</a>
+    </nav>
+    <a class="phone-pill" href="tel:0280813630">お電話 0280-81-3630</a>
+  </div>
+</header>
+
+<main>
+  <section class="section-top">
+    <h1>ご注文・お問合わせ</h1>
+    <p>下の項目をご記入ください。1営業日以内にこちらからご連絡します。お見積りは無料、相談だけでも大丈夫です。</p>
+  </section>
+
+  <div class="order-wrap">
+    <div class="form-card">
+      <div id="success-view" class="success-box" style="display:none;">
+        <div class="s-title">ありがとうございます。<br>受け付けました。</div>
+        <p>1営業日以内にご連絡します。お急ぎのときはお電話でもどうぞ。</p>
+        <button class="btn-outline-plain" onclick="resetForm()">フォームに戻る</button>
+      </div>
+
+      <form id="quote-form" class="form-grid-gap" onsubmit="return false;">
+        <label class="f-field">
+          <span class="f-label">会社名・店舗名<span class="req">必須</span></span>
+          <input id="q-company" placeholder="例）株式会社○○　○○店">
+        </label>
+        <label class="f-field">
+          <span class="f-label">お名前<span class="req">必須</span></span>
+          <input id="q-name" placeholder="例）山田 太郎">
+        </label>
+        <label class="f-field">
+          <span class="f-label">電話番号<span class="req">必須</span></span>
+          <input id="q-phone" type="tel" placeholder="03-1234-5678">
+        </label>
+        <label class="f-field">
+          <span class="f-label">メールアドレス</span>
+          <input id="q-email" type="email" placeholder="order@example.com">
+        </label>
+        <label class="f-field">
+          <span class="f-label">ご希望の数量とお届け日</span>
+          <input id="q-qtydate" placeholder="例）2ケース　9月20日の午前中">
+        </label>
+        <label class="f-field">
+          <span class="f-label">ご要望・ご質問</span>
+          <textarea id="q-message" placeholder="お届け先やご質問など、わかる範囲でどうぞ。"></textarea>
+        </label>
+        <div class="form-err" id="q-err">必須項目（会社名・店舗名／お名前／電話番号）をご入力ください。</div>
+        <button type="button" class="btn-pill btn-submit" id="q-submit-btn" onclick="submitQuote()">送信する</button>
+        <p class="form-note">いただいた内容は、ご連絡だけに使います。</p>
+      </form>
+    </div>
+
+    <div class="contact-col">
+      <div class="contact-card">
+        <div class="eyebrow">お電話でもどうぞ</div>
+        <a class="phone-link" href="tel:0280813630">0280-81-3630</a>
+        <p class="hours">朝9時〜夕方6時（日曜・祝日はお休み）</p>
+        <p class="more-info">FAX　0280-81-3631<br>〒306-0404　茨城県猿島郡境町長井戸1691-1<br>Email <a href="mailto:pakuchi@komejapan.com">pakuchi@komejapan.com</a></p>
+      </div>
+      <div class="faq-card">
+        <h2>よくあるご質問</h2>
+        <div id="faq-list"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
+      <p class="footer-info">〒306-0404　茨城県猿島郡境町長井戸1691-1<br>TEL 0280-81-3630（朝9時〜夕方6時）<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</p>
+    </div>
+    <div class="footer-links">
+      <a href="index.html" style="color:var(--paper);font-size:15px;font-weight:700;">トップ</a>
+      <a href="items.html" style="color:var(--paper);font-size:15px;font-weight:700;">商品</a>
+      <a href="order.html" style="color:var(--paper);font-size:15px;font-weight:700;">ご注文・お問合わせ</a>
+    </div>
+    <div>
+      <p class="footer-info">パクチーの生産・業務用卸売<br>1ケース20袋入り／1袋5本入り<br>冷蔵便で全国発送</p>
+    </div>
+  </div>
+  <div class="footer-bottom-wrap">
+    <div class="footer-bottom">
+      <div class="footer-legal-links">
+        <a href="#privacy">個人情報保護方針</a>
+        <a href="#terms">特定商取引法に関する表記</a>
+      </div>
+      <div class="footer-copyright">© 2026 株式会社KOME</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
+function apiPost(body){ return fetch(DEFAULT_SHEET_URL, { method: 'POST', body: JSON.stringify(body) }).then(r => r.json()); }
+
+// ===== FAQ (single-open accordion, cau 0 mo san) =====
+const faqData = [
+  {q:'いくつから注文できますか。', a:'1ケース（20袋）から承ります。定期的にお使いの場合は、曜日と数量を決めてお届けもできます。'},
+  {q:'送料はいくらですか。', a:'お届け先の地域と数量で変わります。お見積りのときに送料も含めてお知らせします。'},
+  {q:'保存はどうしますか。', a:'袋のまま冷蔵庫（5℃前後）で立てて保存してください。3〜4日を目安にお使いいただくと香りが残ります。'},
+  {q:'いつ届きますか。', a:'前日15時までのご注文で、翌日の朝に採ったものを当日発送します。地域により翌朝〜翌日午後のお届けです。'}
+];
+let openFaq = 0;
+function renderFaq(){
+  document.getElementById('faq-list').innerHTML = faqData.map((f, i) =>
+    '<div class="faq-item">' +
+      '<button class="faq-q" onclick="toggleFaq(' + i + ')"><span class="q-text">' + f.q + '</span><span class="q-sign">' + (openFaq === i ? '−' : '＋') + '</span></button>' +
+      '<div class="faq-a' + (openFaq === i ? ' open' : '') + '"><p>' + f.a + '</p></div>' +
+    '</div>'
+  ).join('');
+}
+function toggleFaq(i){ openFaq = (openFaq === i) ? -1 : i; renderFaq(); }
+renderFaq();
+
+// ===== FORM XIN BAO GIA =====
+async function submitQuote(){
+  const v = id => document.getElementById(id).value.trim();
+  const company = v('q-company'), name = v('q-name'), phone = v('q-phone');
+  const errEl = document.getElementById('q-err');
+  if (!company || !name || !phone) { errEl.classList.add('show'); return; }
+  errEl.classList.remove('show');
+
+  const btn = document.getElementById('q-submit-btn');
+  btn.disabled = true;
+  const orig = btn.textContent;
+  btn.textContent = '送信中...';
+
+  try {
+    const j = await apiPost({
+      action: 'submitQuoteRequest',
+      data: {
+        companyName: company, contactName: name, phone: phone,
+        email: v('q-email'), desiredQtyDate: v('q-qtydate'), message: v('q-message')
+      }
+    });
+    if (j.status === 'ok') {
+      document.getElementById('quote-form').style.display = 'none';
+      document.getElementById('success-view').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      alert('送信に失敗しました: ' + (j.message || '不明なエラー'));
+    }
+  } catch (e) {
+    alert('サーバーに接続できませんでした: ' + e.message);
+  }
+  btn.disabled = false;
+  btn.textContent = orig;
+}
+function resetForm(){
+  document.getElementById('quote-form').reset();
+  document.getElementById('quote-form').style.display = 'grid';
+  document.getElementById('success-view').style.display = 'none';
+}
+</script>
+</body>
+</html>

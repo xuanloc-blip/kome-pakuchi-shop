@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品｜株式会社KOME</title>
+<meta name="description" content="業務用パクチー（コリアンダー）の規格・お届け・保存方法のご案内。">
+<link rel="icon" type="image/png" href="logokome.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBF7EE; --paper-card:#FFFDF8; --paper-deep:#F3EDE0; --paper-hover:#F0EADC;
+  --ink:#2E3327; --ink-soft:#5F6557; --ink-faint:#868C7D; --placeholder:#ADA99C;
+  --green:#2F7A3E; --green-dark:#24592F; --green-deepest:#17331C;
+  --leaf:#8FBF52; --leaf-hover:#A0CF63; --leaf-pale:#C7E5A2; --on-dark-soft:#E6EFDC;
+  --accent-brown:#95591A; --hairline:rgba(46,51,39,.14);
+  --heading:'Zen Maru Gothic',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:var(--green);text-decoration:none;}
+a:hover{color:var(--green-dark);}
+button,input,textarea,select{font-family:inherit;}
+img{max-width:100%;display:block;}
+
+header{position:sticky;top:0;z-index:60;background:rgba(251,247,238,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);}
+.header-inner{max-width:1080px;margin:0 auto;padding:0 24px;min-height:78px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:11px;flex-shrink:0;padding:8px 0;cursor:pointer;}
+.brand img{width:40px;height:40px;border-radius:10px;flex-shrink:0;}
+.brand-name{font-family:var(--heading);font-size:18px;font-weight:700;letter-spacing:.03em;}
+nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;}
+.nav-btn{border:none;background:none;cursor:pointer;font-size:15px;font-weight:700;padding:14px 16px;border-radius:999px;color:var(--ink);}
+.nav-btn:hover{background:var(--paper-hover);}
+.nav-btn.active{color:var(--paper);background:var(--green);}
+.nav-btn.active:hover{background:var(--green);}
+.phone-pill{flex-shrink:0;background:var(--green);color:var(--paper);font-size:15px;font-weight:700;padding:14px 22px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;}
+.phone-pill:hover{background:var(--green-dark);color:var(--paper);}
+
+.btn-pill{cursor:pointer;font-size:17px;font-weight:700;padding:19px 36px;border-radius:999px;border:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+.btn-pill-solid{background:var(--green);color:var(--paper);width:100%;}
+.btn-pill-solid:hover{background:var(--green-dark);}
+
+.section{max-width:1080px;margin:0 auto;padding:64px 24px 0;}
+.section h1{font-family:var(--heading);font-size:clamp(28px,3.6vw,40px);font-weight:700;margin-bottom:14px;}
+.section-lead{font-size:16px;line-height:1.95;color:var(--ink-soft);max-width:620px;}
+
+.item-block{max-width:1080px;margin:0 auto;padding:44px 24px 72px;}
+.item-block + .item-block{border-top:1px solid var(--hairline);}
+.item-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:40px;align-items:start;}
+.item-img{aspect-ratio:1/1;border-radius:24px;overflow:hidden;background:var(--paper-deep);}
+.item-img img{width:100%;height:100%;object-fit:cover;}
+.item-info h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:18px;}
+.item-info>p{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:30px;}
+.spec-card{background:var(--paper-card);border:1px solid rgba(46,51,39,.09);border-radius:22px;padding:8px 26px;box-shadow:0 3px 12px rgba(46,51,39,.05);}
+.spec-card-row{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:14px;padding:16px 0;border-bottom:1px solid rgba(46,51,39,.1);}
+.spec-card-row:last-child{border-bottom:none;}
+.spec-card-row .k{font-size:14px;font-weight:700;color:var(--ink-soft);}
+.spec-card-row .v{font-size:16px;}
+.spec-card-row .v.price{font-weight:700;color:var(--green);}
+#empty-items{text-align:center;color:var(--ink-faint);padding:60px 24px;}
+
+footer{background:var(--green-dark);color:var(--paper);}
+.footer-inner{max-width:1080px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px;}
+.footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
+.footer-brand img{width:40px;height:40px;border-radius:10px;}
+.footer-brand-name{font-family:var(--heading);font-size:19px;font-weight:700;}
+.footer-info{font-size:15px;line-height:1.95;color:var(--on-dark-soft);}
+.footer-links{display:grid;gap:14px;justify-items:start;}
+.footer-bottom-wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+.footer-bottom{border-top:1px solid rgba(251,247,238,.2);padding:20px 0 30px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.footer-bottom a{font-size:13px;color:var(--on-dark-soft);}
+.footer-bottom a:hover{color:var(--leaf-pale);}
+.footer-copyright{font-size:13px;color:rgba(251,247,238,.6);}
+.footer-legal-links{display:flex;gap:20px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="brand" href="index.html"><img src="logokome.png" alt="KOME"><span class="brand-name">株式会社KOME</span></a>
+    <nav class="main-nav">
+      <a class="nav-btn" href="index.html">トップ</a>
+      <a class="nav-btn active" href="items.html">商品</a>
+      <a class="nav-btn" href="order.html">ご注文・お問合わせ</a>
+    </nav>
+    <a class="phone-pill" href="tel:0280813630">お電話 0280-81-3630</a>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <h1>商品</h1>
+    <p class="section-lead">いまはパクチー（コリアンダー）をお届けしています。他の野菜のご相談も歓迎です。</p>
+  </section>
+
+  <div id="empty-items" style="display:none;">読み込み中...</div>
+  <div id="item-list"></div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
+      <p class="footer-info">〒306-0404　茨城県猿島郡境町長井戸1691-1<br>TEL 0280-81-3630（朝9時〜夕方6時）<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</p>
+    </div>
+    <div class="footer-links">
+      <a href="index.html" style="color:var(--paper);font-size:15px;font-weight:700;">トップ</a>
+      <a href="items.html" style="color:var(--paper);font-size:15px;font-weight:700;">商品</a>
+      <a href="order.html" style="color:var(--paper);font-size:15px;font-weight:700;">ご注文・お問合わせ</a>
+    </div>
+    <div>
+      <p class="footer-info">パクチーの生産・業務用卸売<br>1ケース20袋入り／1袋5本入り<br>冷蔵便で全国発送</p>
+    </div>
+  </div>
+  <div class="footer-bottom-wrap">
+    <div class="footer-bottom">
+      <div class="footer-legal-links">
+        <a href="#privacy">個人情報保護方針</a>
+        <a href="#terms">特定商取引法に関する表記</a>
+      </div>
+      <div class="footer-copyright">© 2026 株式会社KOME</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
+var jsonpSeq = 0;
+function fetchJSONP(url){
+  return new Promise((res, rej) => {
+    const cb = 'kome_cb_' + (++jsonpSeq) + '_' + Date.now();
+    const s = document.createElement('script');
+    const t = setTimeout(() => { cl(); rej(new Error('Timeout')); }, 10000);
+    function onGlobalError(ev){
+      const msg = (ev && ev.message) || '';
+      if (msg.indexOf(cb) !== -1) { cl(); rej(new Error('Server response error')); }
+    }
+    window.addEventListener('error', onGlobalError);
+    window[cb] = d => { cl(); res(d); };
+    function cl(){ clearTimeout(t); delete window[cb]; window.removeEventListener('error', onGlobalError); s.parentNode && s.parentNode.removeChild(s); }
+    s.onerror = () => { cl(); rej(new Error('connection error')); };
+    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+    document.head.appendChild(s);
+  });
+}
+function apiGet(actionQuery){ return fetchJSONP(DEFAULT_SHEET_URL + '?' + actionQuery); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// Neu chua tai duoc san pham that (hoac API loi), hien 1 khoi mac dinh dung y het noi
+// dung thiet ke goc - trang khong bao gio "trong trong" ngay ca khi mat mang.
+const FALLBACK_ITEM = {
+  name: 'パクチー（コリアンダー）',
+  description: '根元まで張りのある状態でお届けします。葉の香りはもちろん、茎や根も刻んで薬味やスープのだしにお使いいただけます。',
+  spec: '1ケース 20袋入り（1ケースから注文できます）',
+  imageUrl: ''
+};
+
+function itemBlockHtml(p){
+  return '<div class="item-block"><div class="item-grid">' +
+    '<div class="item-img">' + (p.imageUrl ? '<img src="' + esc(p.imageUrl) + '" alt="' + esc(p.name) + '">' : '') + '</div>' +
+    '<div class="item-info">' +
+      '<h2>' + esc(p.name) + '</h2>' +
+      '<p>' + esc(p.description) + '</p>' +
+      '<div class="spec-card">' +
+        '<div class="spec-card-row"><div class="k">入数</div><div class="v">' + esc(p.spec || '規格はお問合わせください') + '</div></div>' +
+        '<div class="spec-card-row"><div class="k">価格</div><div class="v price">お見積り（無料）</div></div>' +
+        '<div class="spec-card-row"><div class="k">お届け</div><div class="v">冷蔵便で全国へ。前日15時までのご注文で翌日出荷。</div></div>' +
+        '<div class="spec-card-row"><div class="k">保存</div><div class="v">袋のまま冷蔵庫（5℃前後）で立てて保存。3〜4日を目安にお使いください。</div></div>' +
+      '</div>' +
+      '<a class="btn-pill btn-pill-solid" href="order.html" style="margin-top:24px;">この商品のお見積りを頼む</a>' +
+    '</div>' +
+  '</div></div>';
+}
+
+async function loadItems(){
+  const listEl = document.getElementById('item-list');
+  try {
+    const j = await apiGet('action=getShopProducts');
+    if (j.status === 'success' && j.data && j.data.length) {
+      listEl.innerHTML = j.data.map(itemBlockHtml).join('');
+      return;
+    }
+  } catch (e) { /* loi thi hien fallback ben duoi, khong de trang trong */ }
+  listEl.innerHTML = itemBlockHtml(FALLBACK_ITEM);
+}
+loadItems();
+</script>
+</body>
+</html>

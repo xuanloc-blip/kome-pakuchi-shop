@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>株式会社KOME｜パクチー業務用卸売</title>
+<meta name="description" content="朝採れのパクチーをその日のうちに発送。飲食店様・卸業者様向けの業務用パクチー生産・卸売。">
+<link rel="icon" type="image/png" href="logokome.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBF7EE; --paper-card:#FFFDF8; --paper-deep:#F3EDE0; --paper-hover:#F0EADC;
+  --ink:#2E3327; --ink-soft:#5F6557; --ink-faint:#868C7D; --placeholder:#ADA99C;
+  --green:#2F7A3E; --green-dark:#24592F; --green-deepest:#17331C;
+  --leaf:#8FBF52; --leaf-hover:#A0CF63; --leaf-pale:#C7E5A2; --on-dark-soft:#E6EFDC;
+  --accent-brown:#95591A; --hairline:rgba(46,51,39,.14);
+  --heading:'Zen Maru Gothic',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:var(--green);text-decoration:none;}
+a:hover{color:var(--green-dark);}
+button,input,textarea,select{font-family:inherit;}
+img{max-width:100%;display:block;}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+header{position:sticky;top:0;z-index:60;background:rgba(251,247,238,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);}
+.header-inner{max-width:1080px;margin:0 auto;padding:0 24px;min-height:78px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:11px;flex-shrink:0;padding:8px 0;cursor:pointer;}
+.brand img{width:40px;height:40px;border-radius:10px;flex-shrink:0;}
+.brand-name{font-family:var(--heading);font-size:18px;font-weight:700;letter-spacing:.03em;}
+nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;}
+.nav-btn{border:none;background:none;cursor:pointer;font-size:15px;font-weight:700;padding:14px 16px;border-radius:999px;color:var(--ink);}
+.nav-btn:hover{background:var(--paper-hover);}
+.nav-btn.active{color:var(--paper);background:var(--green);}
+.nav-btn.active:hover{background:var(--green);}
+.phone-pill{flex-shrink:0;background:var(--green);color:var(--paper);font-size:15px;font-weight:700;padding:14px 22px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;}
+.phone-pill:hover{background:var(--green-dark);color:var(--paper);}
+
+.btn-pill{cursor:pointer;font-size:17px;font-weight:700;padding:19px 36px;border-radius:999px;border:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+.btn-pill-leaf{background:var(--leaf);color:var(--green-deepest);}
+.btn-pill-leaf:hover{background:var(--leaf-hover);}
+.btn-pill-outline-light{background:rgba(251,247,238,.12);color:var(--paper);border:1.5px solid rgba(251,247,238,.6);}
+.btn-pill-outline-light:hover{background:rgba(251,247,238,.22);}
+.btn-pill-solid{background:var(--green);color:var(--paper);}
+.btn-pill-solid:hover{background:var(--green-dark);}
+.btn-pill-outline{border:1.5px solid var(--green);background:none;color:var(--green);}
+.btn-pill-outline:hover{background:var(--green);color:var(--paper);}
+
+.card{background:var(--paper-card);border:1px solid rgba(46,51,39,.09);border-radius:22px;padding:30px 28px;box-shadow:0 3px 12px rgba(46,51,39,.05);}
+
+/* ===== HERO ===== */
+.hero{position:relative;min-height:540px;display:flex;align-items:center;overflow:hidden;background:var(--green-dark);}
+.hero img.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.hero-scrim{position:absolute;inset:0;background:linear-gradient(100deg,rgba(20,48,26,.9) 0%,rgba(20,48,26,.74) 48%,rgba(20,48,26,.36) 100%);}
+.hero-inner{position:relative;width:100%;max-width:1080px;margin:0 auto;padding:80px 24px;}
+.hero-text{max-width:640px;animation:riseIn .7s ease both;}
+.hero-text h1{font-family:var(--heading);font-size:clamp(30px,4.6vw,54px);font-weight:700;line-height:1.36;color:var(--paper);}
+.hero-text p{margin-top:24px;font-size:17px;line-height:1.95;color:var(--paper);max-width:520px;}
+.hero-actions{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap;}
+
+/* ===== FEATURE CARDS ===== */
+.section{max-width:1080px;margin:0 auto;padding:72px 24px;}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+.feature-grid .card h3{font-family:var(--heading);font-size:21px;font-weight:700;line-height:1.5;margin-bottom:12px;}
+.feature-grid .card p{font-size:15px;line-height:1.95;color:var(--ink-soft);}
+
+/* ===== PRODUCT TEASER ===== */
+.teaser-panel{background:var(--paper-deep);border-radius:28px;padding:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:36px;align-items:center;}
+.teaser-img{aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:var(--paper-hover);}
+.teaser-img img{width:100%;height:100%;object-fit:cover;}
+.teaser-content h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:16px;}
+.teaser-content p{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:26px;}
+.spec-row{display:flex;gap:12px;align-items:baseline;}
+.spec-row .label{font-size:14px;font-weight:700;color:var(--ink-soft);min-width:64px;}
+.spec-row .value{font-size:16px;font-weight:700;}
+.spec-list{display:grid;gap:10px;margin-bottom:28px;}
+
+/* ===== DAY BAND ===== */
+.day-band{background:var(--green-dark);color:var(--paper);}
+.day-band h2{font-family:var(--heading);font-size:28px;font-weight:700;margin-bottom:36px;}
+.day-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:24px;}
+.day-step{background:rgba(251,247,238,.1);border-radius:20px;padding:26px 24px;}
+.day-step .time{font-family:var(--heading);font-size:24px;font-weight:700;color:var(--leaf-pale);margin-bottom:10px;}
+.day-step .label{font-size:16px;font-weight:700;margin-bottom:8px;}
+.day-step p{font-size:14px;line-height:1.9;color:var(--on-dark-soft);}
+
+/* ===== FARM GALLERY ===== */
+.section h2.section-h2{font-family:var(--heading);font-size:28px;font-weight:700;margin-bottom:12px;}
+.section-lead{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:32px;max-width:620px;}
+.farm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;}
+.farm-grid figure{margin:0;}
+.farm-photo{aspect-ratio:4/3;overflow:hidden;border-radius:20px;background:var(--paper-deep);}
+.farm-photo img{width:100%;height:100%;object-fit:cover;}
+.farm-grid figcaption{margin-top:12px;font-size:14px;color:var(--ink-soft);line-height:1.8;}
+
+/* ===== CLOSING CTA ===== */
+.closing-cta{background:var(--paper-deep);border-top:1px solid rgba(46,51,39,.1);}
+.closing-cta-inner{max-width:1080px;margin:0 auto;padding:72px 24px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;}
+.closing-cta h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:12px;}
+.closing-cta p{font-size:16px;line-height:1.9;color:var(--ink-soft);}
+
+footer{background:var(--green-dark);color:var(--paper);}
+.footer-inner{max-width:1080px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px;}
+.footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
+.footer-brand img{width:40px;height:40px;border-radius:10px;}
+.footer-brand-name{font-family:var(--heading);font-size:19px;font-weight:700;}
+.footer-info{font-size:15px;line-height:1.95;color:var(--on-dark-soft);}
+.footer-links{display:grid;gap:14px;justify-items:start;}
+.footer-links button{background:none;border:none;cursor:pointer;color:var(--paper);font-size:15px;font-weight:700;padding:0;}
+.footer-links button:hover{color:var(--leaf-pale);}
+.footer-bottom-wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+.footer-bottom{border-top:1px solid rgba(251,247,238,.2);padding:20px 0 30px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.footer-bottom a{font-size:13px;color:var(--on-dark-soft);}
+.footer-bottom a:hover{color:var(--leaf-pale);}
+.footer-copyright{font-size:13px;color:rgba(251,247,238,.6);}
+.footer-legal-links{display:flex;gap:20px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="brand" href="index.html"><img src="logokome.png" alt="KOME"><span class="brand-name">株式会社KOME</span></a>
+    <nav class="main-nav">
+      <a class="nav-btn active" href="index.html">トップ</a>
+      <a class="nav-btn" href="items.html">商品</a>
+      <a class="nav-btn" href="order.html">ご注文・お問合わせ</a>
+    </nav>
+    <a class="phone-pill" href="tel:0280813630">お電話 0280-81-3630</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <img class="hero-bg" src="images/field-tunnels.jpg" alt="パクチーのトンネル栽培の畑">
+    <div class="hero-scrim"></div>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>朝採れのパクチー、<br>その日のうちにお届け。</h1>
+        <p>1ケース20袋入り（1袋5本）。<br>ご希望の数量と日にちに合わせて、全国にお送りします。</p>
+        <div class="hero-actions">
+          <a class="btn-pill btn-pill-leaf" href="order.html">お見積りを頼む</a>
+          <a class="btn-pill btn-pill-outline-light" href="items.html">商品を見る</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-bottom:8px;">
+    <div class="feature-grid">
+      <div class="card">
+        <h3>朝採って、その日に発送</h3>
+        <p>朝のうちに刈り取って、その日のうちに発送。翌朝にはお店に届きます。</p>
+      </div>
+      <div class="card">
+        <h3>一年じゅう、切れません</h3>
+        <p>時期をずらして育てているので、季節を問わずいつもの量をお届けできます。</p>
+      </div>
+      <div class="card">
+        <h3>1ケースから注文OK</h3>
+        <p>まずは1ケースだけでも大丈夫。定期のお届けもご相談ください。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="teaser-panel">
+      <div class="teaser-img"><img id="teaser-img" src="" alt="パクチーの商品写真" style="display:none;"></div>
+      <div class="teaser-content">
+        <h2 id="teaser-name">パクチー（コリアンダー）</h2>
+        <p id="teaser-desc">香りと、茎のシャキッとした食感が自慢です。盛り付けにも、たれや薬味の仕込みにも。</p>
+        <div class="spec-list">
+          <div class="spec-row"><span class="label">規格</span><span class="value" id="teaser-spec">1ケース 20袋入り（1袋5本）</span></div>
+          <div class="spec-row"><span class="label">価格</span><span class="value">お見積り（無料）</span></div>
+        </div>
+        <a class="btn-pill btn-pill-outline" href="items.html">くわしく見る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="day-band">
+    <div class="section">
+      <h2>畑からお店まで、こんな一日です</h2>
+      <div class="day-grid">
+        <div class="day-step"><div class="time">朝5時</div><div class="label">収穫</div><p>暑くなる前に刈り取ります。</p></div>
+        <div class="day-step"><div class="time">朝8時</div><div class="label">袋詰め</div><p>1袋5本、手で詰めます。</p></div>
+        <div class="day-step"><div class="time">昼12時</div><div class="label">発送</div><p>冷蔵便で送り出します。</p></div>
+        <div class="day-step"><div class="time">翌朝</div><div class="label">お届け</div><p>仕込みの時間に間に合います。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-h2">畑のこと</h2>
+    <p class="section-lead">種まきから出荷まで、家族と少人数のスタッフで毎日見ています。畑はいつでも見に来てください。</p>
+    <div class="farm-grid">
+      <figure><div class="farm-photo"><img src="images/seeding.jpg" alt="一粒ずつ種をまく様子"></div><figcaption>一粒ずつ、手でまいています</figcaption></figure>
+      <figure><div class="farm-photo"><img src="images/sprout.jpg" alt="発芽したパクチーの芽"></div><figcaption>数日でかわいい芽が出ます</figcaption></figure>
+      <figure><div class="farm-photo"><img src="images/farmer.jpg" alt="畑を見回る生産者"></div><figcaption>毎日ひと回りして育ち具合を確認</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="closing-cta">
+    <div class="closing-cta-inner">
+      <div>
+        <h2>まずは気軽に聞いてください。</h2>
+        <p>数量と希望日をお知らせいただければ、1営業日以内にお返事します。</p>
+      </div>
+      <a class="btn-pill btn-pill-solid" href="order.html">お見積りを頼む</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
+      <p class="footer-info">〒306-0404　茨城県猿島郡境町長井戸1691-1<br>TEL 0280-81-3630（朝9時〜夕方6時）<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</p>
+    </div>
+    <div class="footer-links">
+      <a href="index.html" style="color:var(--paper);font-size:15px;font-weight:700;">トップ</a>
+      <a href="items.html" style="color:var(--paper);font-size:15px;font-weight:700;">商品</a>
+      <a href="order.html" style="color:var(--paper);font-size:15px;font-weight:700;">ご注文・お問合わせ</a>
+    </div>
+    <div>
+      <p class="footer-info">パクチーの生産・業務用卸売<br>1ケース20袋入り／1袋5本入り<br>冷蔵便で全国発送</p>
+    </div>
+  </div>
+  <div class="footer-bottom-wrap">
+    <div class="footer-bottom">
+      <div class="footer-legal-links">
+        <a href="#privacy">個人情報保護方針</a>
+        <a href="#terms">特定商取引法に関する表記</a>
+      </div>
+      <div class="footer-copyright">© 2026 株式会社KOME</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Cung 1 Apps Script deployment voi warehouse.html - dung action getShopProducts
+// (cong khai, khong hien gia that) de lay san pham dau tien lam "product teaser".
+const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
+var jsonpSeq = 0;
+function fetchJSONP(url){
+  return new Promise((res, rej) => {
+    const cb = 'kome_cb_' + (++jsonpSeq) + '_' + Date.now();
+    const s = document.createElement('script');
+    const t = setTimeout(() => { cl(); rej(new Error('Timeout')); }, 10000);
+    function onGlobalError(ev){
+      const msg = (ev && ev.message) || '';
+      if (msg.indexOf(cb) !== -1) { cl(); rej(new Error('Server response error')); }
+    }
+    window.addEventListener('error', onGlobalError);
+    window[cb] = d => { cl(); res(d); };
+    function cl(){ clearTimeout(t); delete window[cb]; window.removeEventListener('error', onGlobalError); s.parentNode && s.parentNode.removeChild(s); }
+    s.onerror = () => { cl(); rej(new Error('connection error')); };
+    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+    document.head.appendChild(s);
+  });
+}
+function apiGet(actionQuery){ return fetchJSONP(DEFAULT_SHEET_URL + '?' + actionQuery); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function loadTeaser(){
+  try {
+    const j = await apiGet('action=getShopProducts');
+    if (j.status === 'success' && j.data && j.data.length) {
+      const p = j.data[0];
+      if (p.name) document.getElementById('teaser-name').textContent = p.name;
+      if (p.description) document.getElementById('teaser-desc').textContent = p.description;
+      if (p.spec) document.getElementById('teaser-spec').textContent = p.spec;
+      if (p.imageUrl) {
+        const img = document.getElementById('teaser-img');
+        img.src = p.imageUrl; img.style.display = '';
+      }
+    }
+  } catch (e) { /* API loi thi giu noi dung mac dinh, khong chan trang */ }
+}
+loadTeaser();
+</script>
+</body>
+</html>
