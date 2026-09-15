@@ -151,8 +151,8 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic
       <button class="sf-btn" data-st="キャンセル" onclick="setFilter('キャンセル')" data-i18n="filterCancelled">キャンセル</button>
     </div>
     <span id="count-chip"></span>
-    <button class="tb-btn primary" style="background:var(--green);color:#fff;" onclick="checkMailNow()" data-i18n="btnCheckMail">📬 メールを今すぐ確認</button>
-    <button class="tb-btn primary" style="background:var(--green);color:#fff;" onclick="loadOrders()" data-i18n="btnRefresh">🔄 更新</button>
+    <button class="tb-btn primary" style="background:var(--green);color:#fff;" onclick="checkMailNow(this)" data-i18n="btnCheckMail">📬 メールを今すぐ確認</button>
+    <button class="tb-btn primary" style="background:var(--green);color:#fff;" onclick="loadOrders(this)" data-i18n="btnRefresh">🔄 更新</button>
   </div>
   <div id="content">
     <div id="empty-msg" data-i18n="emptyLoading">読み込み中...</div>
@@ -163,7 +163,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic
 <!-- ===== TAB: SẢN PHẨM ===== -->
 <div class="tab-panel" id="tab-products">
   <div id="products-content">
-    <div class="top-action-row"><button class="btn-add" onclick="addProductCard()" data-i18n="btnAddProduct">+ 商品を追加</button></div>
+    <div class="top-action-row"><button class="btn-add" onclick="addProductCard(this)" data-i18n="btnAddProduct">+ 商品を追加</button></div>
     <div class="prod-grid" id="prod-grid"></div>
     <input type="file" id="prod-file-input" accept="image/*" style="display:none;" onchange="onProductImageChosen(event)">
   </div>
@@ -172,7 +172,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic
 <!-- ===== TAB: THÔNG BÁO ===== -->
 <div class="tab-panel" id="tab-announcements">
   <div id="announcements-content">
-    <div class="top-action-row"><button class="btn-add" onclick="addAnnouncementCard()" data-i18n="btnAddAnnouncement">+ お知らせを追加</button></div>
+    <div class="top-action-row"><button class="btn-add" onclick="addAnnouncementCard(this)" data-i18n="btnAddAnnouncement">+ お知らせを追加</button></div>
     <div class="ann-list" id="ann-list"></div>
   </div>
 </div>
@@ -202,7 +202,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic
       <div class="m-field"><label data-i18n="heroLabelCtaVi">CTA文言（VI）</label><input id="hs-ctaTextVi"></div>
       <div class="m-field"><label data-i18n="heroLabelCtaJa">CTA文言（JA）</label><input id="hs-ctaTextJa"></div>
     </div>
-    <div class="top-action-row"><button class="btn-add" onclick="saveHeroSettings()" data-i18n="btnSaveHero">💾 保存</button></div>
+    <div class="top-action-row"><button class="btn-add" onclick="saveHeroSettings(this)" data-i18n="btnSaveHero">💾 保存</button></div>
   </div>
 </div>
 
@@ -234,7 +234,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic
     </div>
     <div class="m-actions">
       <button class="cancel" onclick="closeModal()" data-i18n="btnCancel">キャンセル</button>
-      <button class="save" onclick="saveModal()" data-i18n="btnSave">保存</button>
+      <button class="save" onclick="saveModal(this)" data-i18n="btnSave">保存</button>
     </div>
   </div>
 </div>
@@ -289,6 +289,8 @@ const I18N = {
   heroLabelCtaJa:   {vi:'Chữ trên thanh giá (JA)', ja:'CTA文言（JA）'},
   btnSaveHero:      {vi:'💾 Lưu', ja:'💾 保存'},
   confirmDeleteHeroSlide: {vi:'Xóa ảnh này?', ja:'この画像を削除しますか？'},
+  errNotImage:      {vi:'Vui lòng chọn file ảnh (jpg, png...)', ja:'画像ファイルを選択してください'},
+  savedFlash:       {vi:'✓ Đã lưu', ja:'✓ 保存済み'},
   btnCheckMail:     {vi:'📬 Kiểm tra mail ngay', ja:'📬 メールを今すぐ確認'},
   btnRefresh:       {vi:'🔄 Tải lại', ja:'🔄 更新'},
   searchPh:         {vi:'🔍 Tìm theo tên, SĐT, địa chỉ', ja:'🔍 会社名・電話番号・住所で検索'},
@@ -409,9 +411,24 @@ function fetchJSONP(url){
   return new Promise((res, rej) => {
     const cb = 'wh_cb_' + (++jsonpSeq) + '_' + Date.now();
     const s = document.createElement('script');
-    const t = setTimeout(() => { cl(); rej(new Error('Timeout (20s)')); }, 20000);
+    // 10s (khong phai 20s) - server tra loi cham hon muc nay la bat thuong, bao loi
+    // som cho nguoi dung con hon de trang "treo" im lim khong ro dang tai hay da hong.
+    const t = setTimeout(() => { cl(); rej(new Error('Timeout (10s)')); }, 10000);
+    // Neu Apps Script tra ve trang loi (vd CHUA cap quyen Drive/Gmail sau khi them
+    // tinh nang moi) thay vi goi dung callback(...), trinh duyet nem ReferenceError
+    // "cb is not defined" o SCOPE TOAN CUC - khong lot qua duoc try/catch cua Promise
+    // nay, nen phai bat bang window.onerror thi moi bao loi NGAY duoc thay vi treo
+    // den het 10s timeout moi biet.
+    function onGlobalError(ev){
+      const msg = (ev && ev.message) || '';
+      const src = (ev && ev.filename) || '';
+      if (msg.indexOf(cb) !== -1 || src.indexOf(sheetUrl.split('?')[0]) !== -1) {
+        cl(); rej(new Error('Server response error'));
+      }
+    }
+    window.addEventListener('error', onGlobalError);
     window[cb] = d => { cl(); res(d); };
-    function cl(){ clearTimeout(t); delete window[cb]; s.parentNode && s.parentNode.removeChild(s); }
+    function cl(){ clearTimeout(t); delete window[cb]; window.removeEventListener('error', onGlobalError); s.parentNode && s.parentNode.removeChild(s); }
     s.onerror = () => { cl(); rej(new Error('connection error')); };
     s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
     document.head.appendChild(s);
@@ -433,8 +450,52 @@ function esc(s){
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// Thu nho + nen anh NGAY TREN TRINH DUYET truoc khi gui len server (qua canvas) - anh
+// dien thoai goc thuong 3-10MB, sau buoc nay con ~150-400KB nen upload nhanh hon RAT
+// NHIEU va khong ton quota Drive. 1600px la du net cho card san pham/hero (Drive con
+// tu resize xuong 1000px khi hien thi qua URL thumbnail).
+function resizeImageFile(file, maxDim, quality){
+  return new Promise(function(resolve, reject){
+    const reader = new FileReader();
+    reader.onload = function(){
+      const img = new Image();
+      img.onload = function(){
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w >= h) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality || 0.82);
+        resolve({ base64: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
+      };
+      img.onerror = function(){ reject(new Error('Image decode error')); };
+      img.src = reader.result;
+    };
+    reader.onerror = function(){ reject(new Error('File read error')); };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Disable + doi chu nut khi dang cho server, tranh bam trung / khong ro co dang chay
+// khong. flashButton() hien tam 1 chu xac nhan (vd "✓ Da luu") roi tu tra ve chu cu.
+function setBtnLoading(btn, loading){
+  if (!btn) return;
+  if (loading) { btn.disabled = true; btn.dataset.prevText = btn.textContent; btn.textContent = '…'; }
+  else { btn.disabled = false; if (btn.dataset.prevText != null) { btn.textContent = btn.dataset.prevText; delete btn.dataset.prevText; } }
+}
+function flashButton(btn, text, ms){
+  if (!btn) return;
+  const orig = btn.textContent;
+  btn.textContent = text;
+  setTimeout(() => { if (btn.textContent === text) btn.textContent = orig; }, ms || 1100);
+}
+
 // ===== TAB ĐƠN HÀNG =====
-async function loadOrders(){
+async function loadOrders(btn){
+  setBtnLoading(btn, true);
   setStatus(tr('statusLoading'));
   document.getElementById('empty-msg').textContent = tr('emptyLoading');
   document.getElementById('empty-msg').classList.remove('hidden');
@@ -452,12 +513,15 @@ async function loadOrders(){
     setStatus(tr('statusConnFail'), false);
     alert(tf('alertConnFailTpl', { msg: e.message }));
   }
+  setBtnLoading(btn, false);
 }
 
-async function checkMailNow(){
+async function checkMailNow(btn){
+  setBtnLoading(btn, true);
   setStatus(tr('statusChecking'));
   try {
     const j = await apiPost({ action: 'checkMailOrdersNow' });
+    setBtnLoading(btn, false);
     if (j.status === 'success') {
       alert(tf('alertMailCheckedTpl', { n: j.processed || 0 }));
       loadOrders();
@@ -465,6 +529,7 @@ async function checkMailNow(){
       alert(tf('alertErrTpl', { msg: j.message || '?' }));
     }
   } catch (e) {
+    setBtnLoading(btn, false);
     alert(tf('alertConnFailTpl', { msg: e.message }));
   }
 }
@@ -533,22 +598,28 @@ function closeModal(){
   editingId = null;
   document.getElementById('modal-overlay').classList.remove('show');
 }
-async function saveModal(){
+async function saveModal(btn){
   if (!editingId) return;
   const fields = {};
   ['customerName','postalCode','address','addressDetail','phone','customerEmail','desiredDate','items','note','status'].forEach(k => {
     fields[k] = document.getElementById('m-' + k).value.trim();
   });
   const staff = document.getElementById('staff-input').value.trim();
+  setBtnLoading(btn, true);
   try {
     const j = await apiPost({ action: 'updateMailOrder', data: { id: editingId, fields: fields, staff: staff } });
     if (j.status === 'ok') {
+      const o = orders.find(x => x.id === editingId);
+      if (o) Object.assign(o, fields);
+      renderOrders();
+      setBtnLoading(btn, false);
       closeModal();
-      loadOrders();
     } else {
+      setBtnLoading(btn, false);
       alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
     }
   } catch (e) {
+    setBtnLoading(btn, false);
     alert(tf('alertConnFailTpl', { msg: e.message }));
   }
 }
@@ -588,21 +659,24 @@ function productCardHtml(p){
       '<option value="販売休止"' + (p.status === '販売休止' ? ' selected' : '') + '>' + esc(tr('prodStatusOff')) + '</option>' +
     '</select></div>' +
     '<div class="prod-actions">' +
-      '<button class="save" onclick="saveProduct(\'' + p.id + '\')">' + esc(tr('btnSaveProduct')) + '</button>' +
-      '<button class="delete" onclick="deleteProduct(\'' + p.id + '\')">' + esc(tr('btnDeleteProduct')) + '</button>' +
+      '<button class="save" onclick="saveProduct(\'' + p.id + '\', this)">' + esc(tr('btnSaveProduct')) + '</button>' +
+      '<button class="delete" onclick="deleteProduct(\'' + p.id + '\', this)">' + esc(tr('btnDeleteProduct')) + '</button>' +
     '</div>' +
   '</div>';
 }
-async function addProductCard(){
+async function addProductCard(btn){
+  setBtnLoading(btn, true);
   try {
-    const j = await apiPost({ action: 'addProduct', data: { fields: {
-      name: tr('prodNewName'), description: '', spec: '', price: 0, imageUrl: '', status: '在庫あり', sortOrder: products.length + 1
-    } } });
-    if (j.status === 'ok') loadProducts();
-    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+    const fields = { name: tr('prodNewName'), description: '', spec: '', price: 0, imageUrl: '', status: '在庫あり', sortOrder: products.length + 1 };
+    const j = await apiPost({ action: 'addProduct', data: { fields: fields } });
+    if (j.status === 'ok') {
+      products.push(Object.assign({ id: j.id, updatedAt: '' }, fields));
+      renderProducts();
+    } else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
   } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+  setBtnLoading(btn, false);
 }
-async function saveProduct(id){
+async function saveProduct(id, btn){
   const card = document.querySelector('.prod-card[data-id="' + id + '"]');
   if (!card) return;
   const fields = {
@@ -613,49 +687,54 @@ async function saveProduct(id){
     sortOrder: card.querySelector('.f-sort').value,
     status: card.querySelector('.f-status').value
   };
+  setBtnLoading(btn, true);
   try {
     const j = await apiPost({ action: 'updateProduct', data: { id: id, fields: fields } });
-    if (j.status === 'ok') loadProducts();
-    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
-  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+    setBtnLoading(btn, false);
+    if (j.status === 'ok') {
+      const p = products.find(x => x.id === id);
+      if (p) Object.assign(p, fields, { price: parseFloat(fields.price) || 0, sortOrder: parseFloat(fields.sortOrder) || 0 });
+      flashButton(btn, tr('savedFlash'));
+    } else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
 }
-async function deleteProduct(id){
+async function deleteProduct(id, btn){
   if (!confirm(tr('confirmDeleteProduct'))) return;
+  setBtnLoading(btn, true);
   try {
     const j = await apiPost({ action: 'deleteProduct', data: { id: id } });
-    if (j.status === 'ok') loadProducts();
-    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
-  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+    if (j.status === 'ok') {
+      products = products.filter(p => p.id !== id);
+      renderProducts();
+    } else { setBtnLoading(btn, false); alert(tf('alertSaveErrTpl', { msg: j.message || '?' })); }
+  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
 }
 function triggerImageUpload(id){
   uploadTargetProductId = id;
   document.getElementById('prod-file-input').click();
 }
-function onProductImageChosen(ev){
+async function onProductImageChosen(ev){
   const file = ev.target.files && ev.target.files[0];
   ev.target.value = '';
   if (!file || !uploadTargetProductId) return;
+  if (!file.type.startsWith('image/')) { alert(tr('errNotImage')); return; }
   const id = uploadTargetProductId;
-  const card = document.querySelector('.prod-card[data-id="' + id + '"] .prod-img-box');
-  if (card) card.innerHTML = '<span class="ph">⏳</span><div class="upload-hint">' + esc(tr('uploading')) + '</div>';
-  const reader = new FileReader();
-  reader.onload = async function(){
-    const base64 = reader.result.split(',')[1];
-    try {
-      const up = await apiPost({ action: 'uploadProductImage', data: { filename: file.name, mimeType: file.type, base64Data: base64 } });
-      if (up.status === 'ok') {
-        await apiPost({ action: 'updateProduct', data: { id: id, fields: { imageUrl: up.url } } });
-        loadProducts();
-      } else {
-        alert(tf('alertSaveErrTpl', { msg: up.message || '?' }));
-        loadProducts();
-      }
-    } catch (e) {
-      alert(tf('alertConnFailTpl', { msg: e.message }));
-      loadProducts();
+  const box = document.querySelector('.prod-card[data-id="' + id + '"] .prod-img-box');
+  if (box) box.innerHTML = '<span class="ph">⏳</span><div class="upload-hint">' + esc(tr('uploading')) + '</div>';
+  try {
+    const resized = await resizeImageFile(file, 1600, 0.82);
+    const up = await apiPost({ action: 'uploadProductImage', data: { filename: 'product.jpg', mimeType: resized.mimeType, base64Data: resized.base64 } });
+    if (up.status === 'ok') {
+      await apiPost({ action: 'updateProduct', data: { id: id, fields: { imageUrl: up.url } } });
+      const p = products.find(x => x.id === id);
+      if (p) p.imageUrl = up.url;
+    } else {
+      alert(tf('alertSaveErrTpl', { msg: up.message || '?' }));
     }
-  };
-  reader.readAsDataURL(file);
+  } catch (e) {
+    alert(tf('alertConnFailTpl', { msg: e.message }));
+  }
+  renderProducts();
 }
 
 // ===== TAB THÔNG BÁO =====
@@ -682,19 +761,24 @@ function announcementCardHtml(a){
     '<input class="f-date" value="' + esc(a.postDate) + '" placeholder="2026/09/10">' +
     '<div class="ann-actions">' +
       '<label class="ann-visible-toggle"><input type="checkbox" class="f-visible"' + checked + '> ' + esc(tr('annVisibleLabel')) + '</label>' +
-      '<button class="save" onclick="saveAnnouncement(\'' + a.id + '\')">' + esc(tr('btnSaveAnnouncement')) + '</button>' +
-      '<button class="delete" onclick="deleteAnnouncement(\'' + a.id + '\')">' + esc(tr('btnDeleteAnnouncement')) + '</button>' +
+      '<button class="save" onclick="saveAnnouncement(\'' + a.id + '\', this)">' + esc(tr('btnSaveAnnouncement')) + '</button>' +
+      '<button class="delete" onclick="deleteAnnouncement(\'' + a.id + '\', this)">' + esc(tr('btnDeleteAnnouncement')) + '</button>' +
     '</div>' +
   '</div>';
 }
-async function addAnnouncementCard(){
+async function addAnnouncementCard(btn){
+  setBtnLoading(btn, true);
   try {
-    const j = await apiPost({ action: 'addAnnouncement', data: { fields: { title: tr('annNewTitle'), content: '', postDate: '', visible: '公開' } } });
-    if (j.status === 'ok') loadAnnouncements();
-    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+    const fields = { title: tr('annNewTitle'), content: '', postDate: '', visible: '公開' };
+    const j = await apiPost({ action: 'addAnnouncement', data: { fields: fields } });
+    if (j.status === 'ok') {
+      announcements.push(Object.assign({ id: j.id, createdAt: '' }, fields));
+      renderAnnouncements();
+    } else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
   } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+  setBtnLoading(btn, false);
 }
-async function saveAnnouncement(id){
+async function saveAnnouncement(id, btn){
   const card = document.querySelector('.ann-card[data-id="' + id + '"]');
   if (!card) return;
   const fields = {
@@ -703,19 +787,27 @@ async function saveAnnouncement(id){
     postDate: card.querySelector('.f-date').value.trim(),
     visible: card.querySelector('.f-visible').checked ? '公開' : '非公開'
   };
+  setBtnLoading(btn, true);
   try {
     const j = await apiPost({ action: 'updateAnnouncement', data: { id: id, fields: fields } });
-    if (j.status === 'ok') loadAnnouncements();
-    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
-  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+    setBtnLoading(btn, false);
+    if (j.status === 'ok') {
+      const a = announcements.find(x => x.id === id);
+      if (a) Object.assign(a, fields);
+      flashButton(btn, tr('savedFlash'));
+    } else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
 }
-async function deleteAnnouncement(id){
+async function deleteAnnouncement(id, btn){
   if (!confirm(tr('confirmDeleteAnnouncement'))) return;
+  setBtnLoading(btn, true);
   try {
     const j = await apiPost({ action: 'deleteAnnouncement', data: { id: id } });
-    if (j.status === 'ok') loadAnnouncements();
-    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
-  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+    if (j.status === 'ok') {
+      announcements = announcements.filter(a => a.id !== id);
+      renderAnnouncements();
+    } else { setBtnLoading(btn, false); alert(tf('alertSaveErrTpl', { msg: j.message || '?' })); }
+  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
 }
 
 // ===== TAB TRANG CHỦ (hero shop.html) =====
@@ -736,7 +828,7 @@ function renderHeroSlideGrid(){
   const grid = document.getElementById('hero-slide-grid');
   grid.innerHTML = heroSlides.map(function(s){
     return '<div class="hero-slide-thumb"><img src="' + esc(s.imageUrl) + '">' +
-      '<button class="del-btn" onclick="deleteHeroSlideAdmin(\'' + s.id + '\')">✕</button></div>';
+      '<button class="del-btn" onclick="deleteHeroSlideAdmin(\'' + s.id + '\', this)">✕</button></div>';
   }).join('') + '<div class="hero-slide-add" onclick="document.getElementById(\'hero-file-input\').click()">＋</div>';
 }
 function fillHeroSettingsForm(){
@@ -744,45 +836,51 @@ function fillHeroSettingsForm(){
     document.getElementById('hs-' + k).value = heroSettingsData[k] || '';
   });
 }
-function onHeroImageChosen(ev){
+async function onHeroImageChosen(ev){
   const file = ev.target.files && ev.target.files[0];
   ev.target.value = '';
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async function(){
-    const base64 = reader.result.split(',')[1];
-    try {
-      const up = await apiPost({ action: 'uploadProductImage', data: { filename: file.name, mimeType: file.type, base64Data: base64 } });
-      if (up.status === 'ok') {
-        const add = await apiPost({ action: 'addHeroSlide', data: { imageUrl: up.url } });
-        if (add.status !== 'ok') alert(tf('alertSaveErrTpl', { msg: add.message || '?' }));
-      } else {
-        alert(tf('alertSaveErrTpl', { msg: up.message || '?' }));
-      }
-    } catch (e) {
-      alert(tf('alertConnFailTpl', { msg: e.message }));
+  if (!file.type.startsWith('image/')) { alert(tr('errNotImage')); return; }
+  const addTile = document.querySelector('.hero-slide-add');
+  if (addTile) addTile.textContent = '⏳';
+  try {
+    const resized = await resizeImageFile(file, 1600, 0.82);
+    const up = await apiPost({ action: 'uploadProductImage', data: { filename: 'hero.jpg', mimeType: resized.mimeType, base64Data: resized.base64 } });
+    if (up.status === 'ok') {
+      const add = await apiPost({ action: 'addHeroSlide', data: { imageUrl: up.url } });
+      if (add.status === 'ok') heroSlides.push({ id: add.id, imageUrl: up.url });
+      else alert(tf('alertSaveErrTpl', { msg: add.message || '?' }));
+    } else {
+      alert(tf('alertSaveErrTpl', { msg: up.message || '?' }));
     }
-    loadHeroTab();
-  };
-  reader.readAsDataURL(file);
+  } catch (e) {
+    alert(tf('alertConnFailTpl', { msg: e.message }));
+  }
+  renderHeroSlideGrid();
 }
-async function deleteHeroSlideAdmin(id){
+async function deleteHeroSlideAdmin(id, btn){
   if (!confirm(tr('confirmDeleteHeroSlide'))) return;
+  setBtnLoading(btn, true);
   try {
     const j = await apiPost({ action: 'deleteHeroSlide', data: { id: id } });
-    if (j.status === 'ok') loadHeroTab();
-    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
-  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+    if (j.status === 'ok') {
+      heroSlides = heroSlides.filter(s => s.id !== id);
+      renderHeroSlideGrid();
+    } else { setBtnLoading(btn, false); alert(tf('alertSaveErrTpl', { msg: j.message || '?' })); }
+  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
 }
-async function saveHeroSettings(){
+async function saveHeroSettings(btn){
   const fields = {};
   ['eyebrowVi','eyebrowJa','titleVi','titleJa','subVi','subJa','ctaTextVi','ctaTextJa'].forEach(function(k){
     fields[k] = document.getElementById('hs-' + k).value.trim();
   });
+  setBtnLoading(btn, true);
   try {
     const j = await apiPost({ action: 'updateShopSettings', data: { fields: fields } });
-    if (j.status !== 'ok') alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
-  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
+    setBtnLoading(btn, false);
+    if (j.status === 'ok') { Object.assign(heroSettingsData, fields); flashButton(btn, tr('savedFlash')); }
+    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
 }
 
 applyI18n();
