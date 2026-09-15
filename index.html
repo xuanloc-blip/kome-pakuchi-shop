@@ -51,15 +51,23 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 
 .card{background:var(--paper-card);border:1px solid rgba(46,51,39,.09);border-radius:22px;padding:30px 28px;box-shadow:0 3px 12px rgba(46,51,39,.05);}
 
-/* ===== HERO ===== */
-.hero{position:relative;min-height:540px;display:flex;align-items:center;overflow:hidden;background:var(--green-dark);}
-.hero img.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+/* ===== HERO (carousel 3 slide, kich thuoc tham khao ban v2: cao 640px, chu neo duoi) ===== */
+.hero{position:relative;height:640px;overflow:hidden;background:var(--green-dark);}
+.hero-slide{position:absolute;inset:0;display:flex;align-items:flex-end;opacity:0;transition:opacity .9s ease;pointer-events:none;}
+.hero-slide.active{opacity:1;pointer-events:auto;}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .hero-scrim{position:absolute;inset:0;background:linear-gradient(100deg,rgba(20,48,26,.9) 0%,rgba(20,48,26,.74) 48%,rgba(20,48,26,.36) 100%);}
-.hero-inner{position:relative;width:100%;max-width:1080px;margin:0 auto;padding:80px 24px;}
-.hero-text{max-width:640px;animation:riseIn .7s ease both;}
-.hero-text h1{font-family:var(--heading);font-size:clamp(30px,4.6vw,54px);font-weight:700;line-height:1.36;color:var(--paper);}
+.hero-inner{position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;padding:0 28px 88px;}
+.hero-text{max-width:660px;}
+.hero-slide.active .hero-text{animation:riseIn .8s ease both;}
+.hero-eyebrow{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--leaf-pale);margin-bottom:14px;}
+.hero-text h1{font-family:var(--heading);font-size:clamp(28px,4.6vw,54px);font-weight:700;line-height:1.36;color:var(--paper);}
 .hero-text p{margin-top:24px;font-size:17px;line-height:1.95;color:var(--paper);max-width:520px;}
 .hero-actions{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap;}
+.hero-dots{position:absolute;left:0;right:0;bottom:20px;z-index:3;display:flex;justify-content:center;gap:9px;}
+.hero-dot{width:9px;height:9px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.4);cursor:pointer;transition:all .3s ease;}
+.hero-dot.active{background:var(--paper);width:26px;}
+@media (max-width:640px){ .hero{height:560px;} }
 
 /* ===== FEATURE CARDS ===== */
 .section{max-width:1080px;margin:0 auto;padding:72px 24px;}
@@ -135,18 +143,38 @@ footer{background:var(--green-dark);color:var(--paper);}
 </header>
 
 <main>
-  <section class="hero">
-    <img class="hero-bg" src="images/field-tunnels.jpg" alt="パクチーのトンネル栽培の畑">
-    <div class="hero-scrim"></div>
-    <div class="hero-inner">
-      <div class="hero-text">
-        <h1>朝採れのパクチー、<br>その日のうちにお届け。</h1>
-        <p>1ケース20袋入り（1袋5本）。<br>ご希望の数量と日にちに合わせて、全国にお送りします。</p>
-        <div class="hero-actions">
-          <a class="btn-pill btn-pill-leaf" href="order.html">お見積りを頼む</a>
-          <a class="btn-pill btn-pill-outline-light" href="items.html">商品を見る</a>
+  <section class="hero" id="hero">
+    <div class="hero-slide active" data-slide="0">
+      <img class="hero-bg" src="images/farmer.jpg" alt="畑に立つ株式会社KOMEのスタッフ">
+      <div class="hero-scrim"></div>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <div class="hero-eyebrow">株式会社KOME</div>
+          <h1 id="greeting-text">こんにちは</h1>
         </div>
       </div>
+    </div>
+    <div class="hero-slide" data-slide="1">
+      <img class="hero-bg" src="images/rau mui2.png" alt="パクチー生産をスタート（茨城県猿島郡境町）">
+    </div>
+    <div class="hero-slide" data-slide="2">
+      <img class="hero-bg" src="images/field-tunnels.jpg" alt="パクチーのトンネル栽培の畑">
+      <div class="hero-scrim"></div>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1>朝採れのパクチー、<br>その日のうちにお届け。</h1>
+          <p>1ケース20袋入り（1袋5本）。<br>ご希望の数量と日にちに合わせて、全国にお送りします。</p>
+          <div class="hero-actions">
+            <a class="btn-pill btn-pill-leaf" href="order.html">お見積りを頼む</a>
+            <a class="btn-pill btn-pill-outline-light" href="items.html">商品を見る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-dots" id="hero-dots">
+      <button class="hero-dot active" onclick="goToHeroSlide(0)" aria-label="1"></button>
+      <button class="hero-dot" onclick="goToHeroSlide(1)" aria-label="2"></button>
+      <button class="hero-dot" onclick="goToHeroSlide(2)" aria-label="3"></button>
     </div>
   </section>
 
@@ -283,6 +311,30 @@ async function loadTeaser(){
   } catch (e) { /* API loi thi giu noi dung mac dinh, khong chan trang */ }
 }
 loadTeaser();
+
+// Loi chao theo GIO THUC CUA NGUOI XEM (khong phai gio server) - sang/chieu/toi.
+function setGreeting(){
+  const h = new Date().getHours();
+  const text = h < 11 ? 'おはようございます' : (h < 17 ? 'こんにちは' : 'こんばんは');
+  const el = document.getElementById('greeting-text');
+  if (el) el.textContent = text;
+}
+setGreeting();
+
+// ===== HERO CAROUSEL (3 slide, tu dong chuyen + cham tron) =====
+var heroSlideIndex = 0;
+var heroSlideTimer = null;
+const HERO_SLIDE_COUNT = 3;
+function goToHeroSlide(i){
+  heroSlideIndex = i;
+  document.querySelectorAll('.hero-slide').forEach((el, idx) => el.classList.toggle('active', idx === i));
+  document.querySelectorAll('.hero-dot').forEach((el, idx) => el.classList.toggle('active', idx === i));
+}
+function startHeroAutoplay(){
+  if (heroSlideTimer) clearInterval(heroSlideTimer);
+  heroSlideTimer = setInterval(() => goToHeroSlide((heroSlideIndex + 1) % HERO_SLIDE_COUNT), 5000);
+}
+startHeroAutoplay();
 </script>
 </body>
 </html>
