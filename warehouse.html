@@ -287,10 +287,13 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
 // getMailOrders/updateMailOrder/checkMailOrdersNow + getAdminProducts/addProduct/
 // updateProduct/deleteProduct/uploadProductImage + getAdminAnnouncements/add.../update.../delete...
 const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
-const SHEET_URL_KEY = 'kome_warehouse_sheetUrl';
 const STAFF_KEY = 'kome_warehouse_staff';
 
-var sheetUrl = localStorage.getItem(SHEET_URL_KEY) || DEFAULT_SHEET_URL;
+// Luon dung URL co dinh trong code, KHONG doc tu localStorage nua - tranh truong hop
+// trinh duyet da luu san 1 URL cu (tu ban deploy truoc day) roi de ghi de am tham
+// len URL moi, gay loi 404/"Unexpected token '<'" khi goi API.
+var sheetUrl = DEFAULT_SHEET_URL;
+try { localStorage.removeItem('kome_warehouse_sheetUrl'); } catch (e) {}
 var orders = [];
 var currentFilter = 'all';
 var editingId = null;
