@@ -26,6 +26,18 @@ button,input,textarea,select{font-family:inherit;}
 img{max-width:100%;display:block;}
 @keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
 
+/* ===== HIEU UNG XUAT HIEN KHI CUON CHUOT (scroll reveal) - nhieu kieu khac nhau ===== */
+.reveal{opacity:0;transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1);}
+.reveal.r-up{transform:translateY(40px);}
+.reveal.r-left{transform:translateX(-44px);}
+.reveal.r-right{transform:translateX(44px);}
+.reveal.r-zoom{transform:scale(.92);}
+.reveal.in-view{opacity:1;transform:none;}
+.reveal-stagger > *{transition-delay:calc(var(--r-i, 0) * .12s);}
+@media (prefers-reduced-motion: reduce){
+  .reveal{transition:none;opacity:1;transform:none;}
+}
+
 header{position:sticky;top:0;z-index:60;background:rgba(251,247,238,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);}
 .header-inner{max-width:1080px;margin:0 auto;padding:0 24px;min-height:78px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
 .brand{display:flex;align-items:center;gap:11px;flex-shrink:0;padding:8px 0;cursor:pointer;}
@@ -186,16 +198,16 @@ footer{background:var(--green-dark);color:var(--paper);}
   </section>
 
   <section class="section" style="padding-bottom:8px;">
-    <div class="feature-grid">
-      <div class="card">
+    <div class="feature-grid reveal-stagger">
+      <div class="card reveal r-up" style="--r-i:0;">
         <h3>朝採って、その日に発送</h3>
         <p>朝のうちに刈り取って、その日のうちに発送。翌朝にはお店に届きます。</p>
       </div>
-      <div class="card">
+      <div class="card reveal r-up" style="--r-i:1;">
         <h3>一年じゅう、切れません</h3>
         <p>時期をずらして育てているので、季節を問わずいつもの量をお届けできます。</p>
       </div>
-      <div class="card">
+      <div class="card reveal r-up" style="--r-i:2;">
         <h3>1ケースから注文OK</h3>
         <p>まずは1ケースだけでも大丈夫。定期のお届けもご相談ください。</p>
       </div>
@@ -204,8 +216,8 @@ footer{background:var(--green-dark);color:var(--paper);}
 
   <section class="section">
     <div class="teaser-panel">
-      <div class="teaser-img"><img id="teaser-img" src="" alt="パクチーの商品写真" style="display:none;"></div>
-      <div class="teaser-content">
+      <div class="teaser-img reveal r-left"><img id="teaser-img" src="" alt="パクチーの商品写真" style="display:none;"></div>
+      <div class="teaser-content reveal r-right">
         <h2 id="teaser-name">パクチー（コリアンダー）</h2>
         <p id="teaser-desc">香りと、茎のシャキッとした食感が自慢です。盛り付けにも、たれや薬味の仕込みにも。</p>
         <div class="spec-list">
@@ -219,33 +231,33 @@ footer{background:var(--green-dark);color:var(--paper);}
 
   <section class="day-band">
     <div class="section">
-      <h2>畑からお店まで、こんな一日です</h2>
-      <div class="day-grid">
-        <div class="day-step"><div class="time">朝5時</div><div class="label">収穫</div><p>暑くなる前に刈り取ります。</p></div>
-        <div class="day-step"><div class="time">朝8時</div><div class="label">袋詰め</div><p>1袋5本、手で詰めます。</p></div>
-        <div class="day-step"><div class="time">昼12時</div><div class="label">発送</div><p>冷蔵便で送り出します。</p></div>
-        <div class="day-step"><div class="time">翌朝</div><div class="label">お届け</div><p>仕込みの時間に間に合います。</p></div>
+      <h2 class="reveal r-up">畑からお店まで、こんな一日です</h2>
+      <div class="day-grid reveal-stagger">
+        <div class="day-step reveal r-up" style="--r-i:0;"><div class="time">朝5時</div><div class="label">収穫</div><p>暑くなる前に刈り取ります。</p></div>
+        <div class="day-step reveal r-up" style="--r-i:1;"><div class="time">朝8時</div><div class="label">袋詰め</div><p>1袋5本、手で詰めます。</p></div>
+        <div class="day-step reveal r-up" style="--r-i:2;"><div class="time">昼12時</div><div class="label">発送</div><p>冷蔵便で送り出します。</p></div>
+        <div class="day-step reveal r-up" style="--r-i:3;"><div class="time">翌朝</div><div class="label">お届け</div><p>仕込みの時間に間に合います。</p></div>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <h2 class="section-h2">畑のこと</h2>
-    <p class="section-lead">種まきから出荷まで、家族と少人数のスタッフで毎日見ています。畑はいつでも見に来てください。</p>
-    <div class="farm-grid">
-      <figure><div class="farm-photo"><img src="images/seeding.jpg" alt="一粒ずつ種をまく様子"></div><figcaption>一粒ずつ、手でまいています</figcaption></figure>
-      <figure><div class="farm-photo"><img src="images/sprout.jpg" alt="発芽したパクチーの芽"></div><figcaption>数日でかわいい芽が出ます</figcaption></figure>
-      <figure><div class="farm-photo"><img src="images/farmer.jpg" alt="畑を見回る生産者"></div><figcaption>毎日ひと回りして育ち具合を確認</figcaption></figure>
+    <h2 class="section-h2 reveal r-up">畑のこと</h2>
+    <p class="section-lead reveal r-up">種まきから出荷まで、家族と少人数のスタッフで毎日見ています。畑はいつでも見に来てください。</p>
+    <div class="farm-grid reveal-stagger">
+      <figure class="reveal r-zoom" style="--r-i:0;"><div class="farm-photo"><img src="images/seeding.jpg" alt="一粒ずつ種をまく様子"></div><figcaption>一粒ずつ、手でまいています</figcaption></figure>
+      <figure class="reveal r-zoom" style="--r-i:1;"><div class="farm-photo"><img src="images/sprout.jpg" alt="発芽したパクチーの芽"></div><figcaption>数日でかわいい芽が出ます</figcaption></figure>
+      <figure class="reveal r-zoom" style="--r-i:2;"><div class="farm-photo"><img src="images/farmer.jpg" alt="畑を見回る生産者"></div><figcaption>毎日ひと回りして育ち具合を確認</figcaption></figure>
     </div>
   </section>
 
   <section class="closing-cta">
     <div class="closing-cta-inner">
-      <div>
+      <div class="reveal r-left">
         <h2>まずは気軽に聞いてください。</h2>
         <p>数量と希望日をお知らせいただければ、1営業日以内にお返事します。</p>
       </div>
-      <a class="btn-pill btn-pill-solid" href="order.html">お見積りを頼む</a>
+      <a class="btn-pill btn-pill-solid reveal r-right" href="order.html">お見積りを頼む</a>
     </div>
   </section>
 </main>
@@ -351,6 +363,30 @@ function startHeroAutoplay(){
   heroSlideTimer = setInterval(() => goToHeroSlide((heroSlideIndex + 1) % HERO_SLIDE_COUNT), 5000);
 }
 startHeroAutoplay();
+
+// ===== HIEU UNG XUAT HIEN KHI CUON CHUOT (scroll reveal) =====
+// Cuon toi dau thi phan tu co class .reveal trong vung nhin se duoc them .in-view
+// (kich hoat transition khai bao trong CSS: r-up/r-left/r-right/r-zoom). Neu trinh
+// duyet khong ho tro IntersectionObserver hoac nguoi dung bat "giam chuyen dong"
+// thi hien het ngay, khong cho doi hieu ung.
+function initScrollReveal(){
+  const els = document.querySelectorAll('.reveal');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!('IntersectionObserver' in window) || reduceMotion) {
+    els.forEach(el => el.classList.add('in-view'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  els.forEach(el => io.observe(el));
+}
+initScrollReveal();
 </script>
 </body>
 </html>
