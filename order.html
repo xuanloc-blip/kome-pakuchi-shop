@@ -53,7 +53,16 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .f-field input,.f-field textarea{width:100%;padding:16px;border:1.5px solid rgba(46,51,39,.2);border-radius:14px;background:#fff;font-size:16px;}
 .f-field input:focus,.f-field textarea:focus{outline:none;border-color:var(--green);}
 .f-field textarea{min-height:120px;line-height:1.9;resize:vertical;}
+.f-field .f-hint{font-size:12.5px;color:var(--ink-faint);margin-top:7px;}
 .form-grid-gap{display:grid;gap:20px;}
+
+.confirm-list{display:grid;gap:0;margin-bottom:8px;}
+.confirm-row{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:15px 0;border-top:1px solid var(--hairline);}
+.confirm-row:last-child{border-bottom:1px solid var(--hairline);}
+.confirm-row .k{font-size:13px;font-weight:700;color:var(--ink-soft);}
+.confirm-row .v{font-size:15px;line-height:1.8;white-space:pre-wrap;}
+.confirm-lead{font-size:14.5px;color:var(--ink-soft);margin-bottom:6px;}
+.confirm-actions{display:grid;gap:12px;margin-top:26px;}
 .btn-pill{cursor:pointer;font-size:17px;font-weight:700;padding:21px;border-radius:999px;border:none;width:100%;}
 .btn-submit{background:var(--green);color:var(--paper);margin-top:4px;}
 .btn-submit:hover{background:var(--green-dark);}
@@ -140,6 +149,19 @@ footer{background:var(--green-dark);color:var(--paper);}
           <span class="f-label">会社名・店舗名<span class="req">必須</span></span>
           <input id="q-company" placeholder="例）株式会社○○　○○店">
         </label>
+        <div class="f-field">
+          <span class="f-label">郵便番号</span>
+          <input id="q-postal" inputmode="numeric" maxlength="8" placeholder="123-4567" oninput="onPostalInput()">
+          <p class="f-hint">郵便番号を入力すると、住所が自動で入力されます。</p>
+        </div>
+        <label class="f-field">
+          <span class="f-label">ご住所</span>
+          <input id="q-address" placeholder="都道府県・市区町村・番地など">
+        </label>
+        <label class="f-field">
+          <span class="f-label">建物名・部屋番号など</span>
+          <input id="q-addressDetail" placeholder="例）○○ビル3F">
+        </label>
         <label class="f-field">
           <span class="f-label">お名前<span class="req">必須</span></span>
           <input id="q-name" placeholder="例）山田 太郎">
@@ -161,9 +183,18 @@ footer{background:var(--green-dark);color:var(--paper);}
           <textarea id="q-message" placeholder="お届け先やご質問など、わかる範囲でどうぞ。"></textarea>
         </label>
         <div class="form-err" id="q-err">必須項目（会社名・店舗名／お名前／電話番号）をご入力ください。</div>
-        <button type="button" class="btn-pill btn-submit" id="q-submit-btn" onclick="submitQuote()">送信する</button>
+        <button type="button" class="btn-pill btn-submit" id="q-submit-btn" onclick="goToConfirm()">確認画面へ</button>
         <p class="form-note">いただいた内容は、ご連絡だけに使います。</p>
       </form>
+
+      <div id="confirm-view" style="display:none;">
+        <p class="confirm-lead">下の内容でお間違いなければ「この内容で送信する」を押してください。</p>
+        <div class="confirm-list" id="confirm-list"></div>
+        <div class="confirm-actions">
+          <button type="button" class="btn-pill btn-submit" id="q-confirm-submit-btn" onclick="submitQuote()">この内容で送信する</button>
+          <button type="button" class="btn-outline-plain" style="width:100%;" onclick="backToForm()">内容を修正する</button>
+        </div>
+      </div>
     </div>
 
     <div class="contact-col">
@@ -220,6 +251,22 @@ footer{background:var(--green-dark);color:var(--paper);}
 <script>
 const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
 function apiPost(body){ return fetch(DEFAULT_SHEET_URL, { method: 'POST', body: JSON.stringify(body) }).then(r => r.json()); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ===== TU DONG DIEN DIA CHI THEO MA BUU DIEN (zipcloud - mien phi, ho tro CORS) =====
+function onPostalInput(){
+  const raw = document.getElementById('q-postal').value.replace(/[^0-9]/g, '');
+  if (raw.length !== 7) return;
+  fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + raw)
+    .then(r => r.json())
+    .then(j => {
+      if (j.status === 200 && j.results && j.results.length) {
+        const r0 = j.results[0];
+        document.getElementById('q-address').value = r0.address1 + r0.address2 + r0.address3;
+      }
+    })
+    .catch(() => { /* Loi tra cuu thi bo qua, khach tu go tay dia chi */ });
+}
 
 // ===== FAQ (single-open accordion, cau 0 mo san) =====
 const faqData = [
@@ -240,15 +287,41 @@ function renderFaq(){
 function toggleFaq(i){ openFaq = (openFaq === i) ? -1 : i; renderFaq(); }
 renderFaq();
 
-// ===== FORM XIN BAO GIA =====
-async function submitQuote(){
+// ===== FORM XIN BAO GIA (co man xac nhan truoc khi gui that su) =====
+function goToConfirm(){
   const v = id => document.getElementById(id).value.trim();
   const company = v('q-company'), name = v('q-name'), phone = v('q-phone');
   const errEl = document.getElementById('q-err');
   if (!company || !name || !phone) { errEl.classList.add('show'); return; }
   errEl.classList.remove('show');
 
-  const btn = document.getElementById('q-submit-btn');
+  const rows = [
+    ['会社名・店舗名', company],
+    ['郵便番号', v('q-postal')],
+    ['ご住所', v('q-address')],
+    ['建物名・部屋番号など', v('q-addressDetail')],
+    ['お名前', name],
+    ['電話番号', phone],
+    ['メールアドレス', v('q-email')],
+    ['ご希望の数量とお届け日', v('q-qtydate')],
+    ['ご要望・ご質問', v('q-message')]
+  ].filter(function(r){ return r[1]; });
+
+  document.getElementById('confirm-list').innerHTML = rows.map(function(r){
+    return '<div class="confirm-row"><div class="k">' + esc(r[0]) + '</div><div class="v">' + esc(r[1]) + '</div></div>';
+  }).join('');
+
+  document.getElementById('quote-form').style.display = 'none';
+  document.getElementById('confirm-view').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function backToForm(){
+  document.getElementById('confirm-view').style.display = 'none';
+  document.getElementById('quote-form').style.display = 'grid';
+}
+async function submitQuote(){
+  const v = id => document.getElementById(id).value.trim();
+  const btn = document.getElementById('q-confirm-submit-btn');
   btn.disabled = true;
   const orig = btn.textContent;
   btn.textContent = '送信中...';
@@ -257,12 +330,13 @@ async function submitQuote(){
     const j = await apiPost({
       action: 'submitQuoteRequest',
       data: {
-        companyName: company, contactName: name, phone: phone,
-        email: v('q-email'), desiredQtyDate: v('q-qtydate'), message: v('q-message')
+        companyName: v('q-company'), contactName: v('q-name'), phone: v('q-phone'),
+        email: v('q-email'), desiredQtyDate: v('q-qtydate'), message: v('q-message'),
+        postalCode: v('q-postal'), address: v('q-address'), addressDetail: v('q-addressDetail')
       }
     });
     if (j.status === 'ok') {
-      document.getElementById('quote-form').style.display = 'none';
+      document.getElementById('confirm-view').style.display = 'none';
       document.getElementById('success-view').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -277,6 +351,7 @@ async function submitQuote(){
 function resetForm(){
   document.getElementById('quote-form').reset();
   document.getElementById('quote-form').style.display = 'grid';
+  document.getElementById('confirm-view').style.display = 'none';
   document.getElementById('success-view').style.display = 'none';
 }
 </script>
