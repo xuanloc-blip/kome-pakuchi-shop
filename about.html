@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会社案内｜株式会社KOME</title>
+<meta name="description" content="株式会社KOMEの会社概要・パクチー生産へのこだわり・畑の場所のご案内。">
+<link rel="icon" type="image/png" href="logokome.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBF7EE; --paper-card:#FFFDF8; --paper-deep:#F3EDE0; --paper-hover:#F0EADC;
+  --ink:#2E3327; --ink-soft:#5F6557; --ink-faint:#868C7D; --placeholder:#ADA99C;
+  --green:#2F7A3E; --green-dark:#24592F; --green-deepest:#17331C;
+  --leaf:#8FBF52; --leaf-hover:#A0CF63; --leaf-pale:#C7E5A2; --on-dark-soft:#E6EFDC;
+  --accent-brown:#95591A; --hairline:rgba(46,51,39,.14);
+  --heading:'Zen Maru Gothic',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:var(--green);text-decoration:none;}
+a:hover{color:var(--green-dark);}
+button,input,textarea,select{font-family:inherit;}
+img{max-width:100%;display:block;}
+
+header{position:sticky;top:0;z-index:60;background:rgba(251,247,238,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);}
+.header-inner{max-width:1080px;margin:0 auto;padding:0 24px;min-height:78px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:11px;flex-shrink:0;padding:8px 0;cursor:pointer;}
+.brand img{width:40px;height:40px;border-radius:10px;flex-shrink:0;}
+.brand-name{font-family:var(--heading);font-size:18px;font-weight:700;letter-spacing:.03em;}
+nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;}
+.nav-btn{border:none;background:none;cursor:pointer;font-size:15px;font-weight:700;padding:14px 16px;border-radius:999px;color:var(--ink);}
+.nav-btn:hover{background:var(--paper-hover);}
+.nav-btn.active{color:var(--paper);background:var(--green);}
+.nav-btn.active:hover{background:var(--green);}
+.phone-pill{flex-shrink:0;background:var(--green);color:var(--paper);font-size:15px;font-weight:700;padding:14px 22px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;}
+.phone-pill:hover{background:var(--green-dark);color:var(--paper);}
+
+.section-top{max-width:1080px;margin:0 auto;padding:64px 24px;border-bottom:1px solid var(--hairline);}
+.section-eyebrow{font-size:10.5px;letter-spacing:.1em;font-weight:700;color:var(--accent-brown);margin-bottom:16px;}
+.section-top h1{font-family:var(--heading);font-size:clamp(28px,3.6vw,40px);font-weight:700;letter-spacing:.03em;}
+
+.greeting-section{max-width:1080px;margin:0 auto;padding:64px 24px;}
+.greeting-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px;align-items:center;}
+.greeting-img{aspect-ratio:4/5;overflow:hidden;border-radius:20px;background:var(--paper-deep);}
+.greeting-img img{width:100%;height:100%;object-fit:cover;}
+.greeting-content h2{font-family:var(--heading);font-size:26px;font-weight:700;line-height:1.6;letter-spacing:.02em;margin-bottom:22px;}
+.greeting-content p{font-size:14px;line-height:2;color:var(--ink-soft);margin-bottom:18px;}
+
+.overview-section{background:var(--paper-deep);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);}
+.overview-inner{max-width:1080px;margin:0 auto;padding:64px 24px;}
+.overview-inner h2{font-family:var(--heading);font-size:24px;font-weight:700;letter-spacing:.03em;margin-bottom:30px;}
+.overview-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 48px;}
+.overview-row{display:grid;grid-template-columns:100px 1fr;gap:14px;padding:15px 0;border-top:1px solid var(--hairline);}
+.overview-row:last-child{border-bottom:1px solid var(--hairline);}
+.overview-row .k{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-soft);}
+.overview-row .v{font-size:14px;line-height:1.8;}
+
+.location-section{max-width:1080px;margin:0 auto;padding:64px 24px 96px;}
+.location-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:start;}
+.location-grid h2{font-family:var(--heading);font-size:22px;font-weight:700;letter-spacing:.03em;margin-bottom:18px;}
+.location-grid>div>p{font-size:13.5px;line-height:2;color:var(--ink-soft);margin-bottom:24px;}
+.location-address{border-top:1px solid var(--hairline);padding-top:16px;}
+.location-address .k{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-soft);margin-bottom:8px;}
+.location-address .v{font-size:14px;line-height:1.9;}
+.map-frame{aspect-ratio:16/10;border-radius:20px;overflow:hidden;background:var(--paper-deep);}
+.map-frame iframe{width:100%;height:100%;border:0;}
+
+footer{background:var(--green-dark);color:var(--paper);}
+.footer-inner{max-width:1080px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px;}
+.footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
+.footer-brand img{width:40px;height:40px;border-radius:10px;}
+.footer-brand-name{font-family:var(--heading);font-size:19px;font-weight:700;}
+.footer-info{font-size:15px;line-height:1.95;color:var(--on-dark-soft);}
+.footer-links{display:grid;gap:14px;justify-items:start;align-content:start;}
+.footer-bottom-wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+.footer-bottom{border-top:1px solid rgba(251,247,238,.2);padding:20px 0 30px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.footer-bottom a{font-size:13px;color:var(--on-dark-soft);}
+.footer-bottom a:hover{color:var(--leaf-pale);}
+.footer-copyright{font-size:13px;color:rgba(251,247,238,.6);}
+.footer-legal-links{display:flex;gap:20px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="brand" href="index.html"><img src="logokome.png" alt="KOME"><span class="brand-name">株式会社KOME</span></a>
+    <nav class="main-nav">
+      <a class="nav-btn" href="index.html">トップ</a>
+      <a class="nav-btn" href="items.html">商品</a>
+      <a class="nav-btn" href="order.html">ご注文・お問合わせ</a>
+      <a class="nav-btn active" href="about.html">会社案内</a>
+    </nav>
+    <a class="phone-pill" href="tel:0280813630">お電話 0280-81-3630</a>
+  </div>
+</header>
+
+<main>
+  <section class="section-top">
+    <div class="section-eyebrow">私たちのこと</div>
+    <h1>会社案内</h1>
+  </section>
+
+  <section class="greeting-section">
+    <div class="greeting-grid">
+      <div class="greeting-img"><img src="images/farmer.jpg" alt="畑で作業をする生産者"></div>
+      <div class="greeting-content">
+        <div class="section-eyebrow">ごあいさつ</div>
+        <h2>おいしいと言ってもらえる<br>パクチーを、毎日つくっています。</h2>
+        <p>パクチーは、収穫してからの時間で香りも食感も変わってしまう野菜です。だからこそ私たちは、朝に採ったものをその日のうちに送り出すことにこだわっています。</p>
+        <p>畑は少人数で見ていますので、「今週は葉を大きめに」「茎をしっかり」といったご相談にも応じられます。お店の使い方に合わせて育て方を調整できるのが、私たちの強みです。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="overview-section">
+    <div class="overview-inner">
+      <h2>会社概要</h2>
+      <div class="overview-cols">
+        <div>
+          <div class="overview-row"><div class="k">名称</div><div class="v">株式会社KOME</div></div>
+          <div class="overview-row"><div class="k">所在地</div><div class="v">〒306-0404　茨城県猿島郡境町長井戸1691-1</div></div>
+          <div class="overview-row"><div class="k">連絡先</div><div class="v">TEL 0280-81-3630<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</div></div>
+        </div>
+        <div>
+          <div class="overview-row"><div class="k">事業内容</div><div class="v">パクチーの生産および業務用卸売</div></div>
+          <div class="overview-row"><div class="k">栽培品目</div><div class="v">パクチー（コリアンダー）</div></div>
+          <div class="overview-row"><div class="k">出荷エリア</div><div class="v">全国（冷蔵便）</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="location-section">
+    <div class="location-grid">
+      <div>
+        <h2>畑の場所</h2>
+        <p>見学したい方は、前もってご連絡ください。収穫の時間に合わせてご案内します。</p>
+        <div class="location-address">
+          <div class="k">住所</div>
+          <div class="v">〒306-0404　茨城県猿島郡境町長井戸1691-1</div>
+        </div>
+      </div>
+      <div class="map-frame">
+        <iframe src="https://maps.google.com/maps?q=%E8%8C%A8%E5%9F%8E%E7%9C%8C%E7%8C%BF%E5%B3%B6%E9%83%A1%E5%A2%83%E7%94%BA%E9%95%B7%E4%BA%95%E6%88%B61691-1&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="畑の場所の地図"></iframe>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
+      <p class="footer-info">〒306-0404　茨城県猿島郡境町長井戸1691-1<br>TEL 0280-81-3630（朝9時〜夕方6時）<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</p>
+    </div>
+    <div class="footer-links">
+      <a href="index.html" style="color:var(--paper);font-size:15px;font-weight:700;">トップ</a>
+      <a href="items.html" style="color:var(--paper);font-size:15px;font-weight:700;">商品</a>
+      <a href="order.html" style="color:var(--paper);font-size:15px;font-weight:700;">ご注文・お問合わせ</a>
+      <a href="about.html" style="color:var(--paper);font-size:15px;font-weight:700;">会社案内</a>
+    </div>
+    <div>
+      <p class="footer-info">パクチーの生産・業務用卸売<br>1ケース20袋入り／1袋5本入り<br>冷蔵便で全国発送</p>
+    </div>
+  </div>
+  <div class="footer-bottom-wrap">
+    <div class="footer-bottom">
+      <div class="footer-legal-links">
+        <a href="#privacy">個人情報保護方針</a>
+        <a href="#terms">特定商取引法に関する表記</a>
+      </div>
+      <div class="footer-copyright">© 2026 株式会社KOME</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
