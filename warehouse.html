@@ -98,12 +98,14 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
 .m-field input:focus,.m-field textarea:focus,.m-field select:focus{outline:none;border-color:var(--green);background:var(--white);}
 .m-field textarea{min-height:60px;resize:vertical;}
 .m-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.m-actions{display:flex;gap:10px;margin-top:18px;}
+.m-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
 .m-actions button{flex:1;padding:13px;border-radius:999px;border:none;font-weight:700;font-size:13px;cursor:pointer;transition:background .15s ease;}
 .m-actions .save{background:var(--green);color:#fff;}
 .m-actions .save:hover{background:var(--green-dark);}
 .m-actions .cancel{background:var(--gray-light);color:var(--gray2);}
 .m-actions .cancel:hover{background:var(--gray4);}
+.m-actions .delete{background:var(--red-light);color:var(--red);flex-basis:100%;}
+.m-actions .delete:hover{background:var(--red);color:#fff;}
 
 /* ===== SẢN PHẨM / THÔNG BÁO ===== */
 .top-action-row{display:flex;justify-content:flex-end;margin-bottom:18px;}
@@ -278,6 +280,7 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
     <div class="m-actions">
       <button class="cancel" onclick="closeModal()" data-i18n="btnCancel">キャンセル</button>
       <button class="save" onclick="saveModal(this)" data-i18n="btnSave">保存</button>
+      <button class="delete" onclick="deleteOrder(this)" data-i18n="btnDeleteOrder">注文を削除</button>
     </div>
   </div>
 </div>
@@ -368,6 +371,8 @@ const I18N = {
   labelStatus:      {vi:'Trạng thái', ja:'ステータス'},
   btnCancel:        {vi:'Hủy', ja:'キャンセル'},
   btnSave:          {vi:'Lưu', ja:'保存'},
+  btnDeleteOrder:   {vi:'Xóa đơn hàng', ja:'注文を削除'},
+  confirmDeleteOrder: {vi:'Xóa đơn hàng này? Không thể hoàn tác.', ja:'この注文を削除しますか？元に戻せません。'},
   statusLoading:    {vi:'Đang tải...', ja:'読み込み中...'},
   statusOkTpl:      {vi:'Kết nối OK ({t})', ja:'接続OK（{t}）'},
   statusErr:        {vi:'Lỗi', ja:'エラー'},
@@ -669,6 +674,26 @@ async function saveModal(btn){
     if (j.status === 'ok') {
       const o = orders.find(x => x.id === editingId);
       if (o) Object.assign(o, fields);
+      renderOrders();
+      setBtnLoading(btn, false);
+      closeModal();
+    } else {
+      setBtnLoading(btn, false);
+      alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
+    }
+  } catch (e) {
+    setBtnLoading(btn, false);
+    alert(tf('alertConnFailTpl', { msg: e.message }));
+  }
+}
+async function deleteOrder(btn){
+  if (!editingId) return;
+  if (!confirm(tr('confirmDeleteOrder'))) return;
+  setBtnLoading(btn, true);
+  try {
+    const j = await apiPost({ action: 'deleteMailOrder', data: { id: editingId } });
+    if (j.status === 'ok') {
+      orders = orders.filter(x => x.id !== editingId);
       renderOrders();
       setBtnLoading(btn, false);
       closeModal();
