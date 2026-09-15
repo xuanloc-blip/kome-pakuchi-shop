@@ -52,6 +52,9 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .item-img{position:relative;aspect-ratio:1/1;border-radius:24px;overflow:hidden;background:var(--paper-deep);}
 .item-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s ease;}
 .item-img img.active{opacity:1;}
+.item-img-dots{position:absolute;left:0;right:0;bottom:14px;z-index:2;display:flex;justify-content:center;gap:8px;}
+.item-img-dot{width:8px;height:8px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.55);cursor:pointer;transition:all .25s ease;}
+.item-img-dot.active{background:#fff;width:22px;}
 .item-info h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:18px;}
 .item-info>p{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:30px;}
 .spec-card{background:var(--paper-card);border:1px solid rgba(46,51,39,.09);border-radius:22px;padding:8px 26px;box-shadow:0 3px 12px rgba(46,51,39,.05);}
@@ -178,20 +181,40 @@ const FALLBACK_ITEM = {
 
 // Toi da 2 anh/san pham (imageUrl, imageUrl2) - neu co ca 2 thi tu dong
 // chuyen doi (crossfade) qua startItemImageCycles(), neu chi co 1 thi hien tinh.
+// Co cham tron de khach bam chon 1 anh xem ki - bam vao thi DUNG han tu dong chuyen,
+// khong de anh cu doi lien tuc lam mat anh khach dang muon nhin.
 function itemImagesHtml(p){
   const imgs = [p.imageUrl, p.imageUrl2].filter(Boolean);
-  return imgs.map((src, i) => '<img src="' + esc(src) + '" alt="' + esc(p.name) + '" class="' + (i === 0 ? 'active' : '') + '">').join('');
+  const imgsHtml = imgs.map((src, i) => '<img src="' + esc(src) + '" alt="' + esc(p.name) + '" class="' + (i === 0 ? 'active' : '') + '">').join('');
+  if (imgs.length < 2) return imgsHtml;
+  const dotsHtml = '<div class="item-img-dots">' + imgs.map((_, i) =>
+    '<button type="button" class="item-img-dot' + (i === 0 ? ' active' : '') + '" onclick="goToItemImage(this, ' + i + ')" aria-label="' + (i + 1) + '"></button>'
+  ).join('') + '</div>';
+  return imgsHtml + dotsHtml;
+}
+const itemAutoplayTimers = new Map();
+function goToItemImage(dotEl, i){
+  const box = dotEl.closest('.item-img');
+  if (!box) return;
+  const timer = itemAutoplayTimers.get(box);
+  if (timer) { clearInterval(timer); itemAutoplayTimers.delete(box); }
+  box.querySelectorAll('img').forEach((img, idx) => img.classList.toggle('active', idx === i));
+  box.querySelectorAll('.item-img-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
 }
 function startItemImageCycles(){
   document.querySelectorAll('.item-img').forEach(box => {
     const imgs = box.querySelectorAll('img');
     if (imgs.length < 2) return;
     let idx = 0;
-    setInterval(() => {
+    const timer = setInterval(() => {
       imgs[idx].classList.remove('active');
+      const dots = box.querySelectorAll('.item-img-dot');
+      if (dots[idx]) dots[idx].classList.remove('active');
       idx = (idx + 1) % imgs.length;
       imgs[idx].classList.add('active');
+      if (dots[idx]) dots[idx].classList.add('active');
     }, 4000);
+    itemAutoplayTimers.set(box, timer);
   });
 }
 
