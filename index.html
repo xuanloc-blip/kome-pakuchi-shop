@@ -64,6 +64,9 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .hero-text h1{font-family:var(--heading);font-size:clamp(28px,4.6vw,54px);font-weight:700;line-height:1.36;color:var(--paper);}
 .hero-text p{margin-top:24px;font-size:17px;line-height:1.95;color:var(--paper);max-width:520px;}
 .hero-actions{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap;}
+/* slide sang mau (nen anh trang) - doi chu sang mau toi de de doc */
+.hero-slide.light .hero-eyebrow{color:var(--green-dark);}
+.hero-slide.light .hero-text h1{color:var(--ink);}
 .hero-dots{position:absolute;left:0;right:0;bottom:20px;z-index:3;display:flex;justify-content:center;gap:9px;}
 .hero-dot{width:9px;height:9px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.4);cursor:pointer;transition:all .3s ease;}
 .hero-dot.active{background:var(--paper);width:26px;}
@@ -144,9 +147,8 @@ footer{background:var(--green-dark);color:var(--paper);}
 
 <main>
   <section class="hero" id="hero">
-    <div class="hero-slide active" data-slide="0">
-      <img class="hero-bg" src="images/farmer.jpg" alt="畑に立つ株式会社KOMEのスタッフ">
-      <div class="hero-scrim"></div>
+    <div class="hero-slide light active" data-slide="0">
+      <img class="hero-bg" src="images/raumui1.png" alt="手で持った新鮮なパクチーの束" style="background:#fff;">
       <div class="hero-inner">
         <div class="hero-text">
           <div class="hero-eyebrow">株式会社KOME</div>
