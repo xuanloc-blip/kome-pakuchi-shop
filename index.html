@@ -19,6 +19,10 @@
 <link rel="icon" type="image/png" href="logokome.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Bat dau ket noi TRUOC toi Apps Script (DNS/TLS) ngay khi trang bat dau tai,
+     thay vi doi den luc script chay moi bat dau ket noi - rut ngan vai tram ms. -->
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -272,17 +276,16 @@ footer{background:var(--green-dark);color:var(--paper);}
   </section>
 
   <section class="section">
-    <!-- An san toan luc dau (khong dat gia tri mac dinh) - chi hien 1 LAN DUY NHAT
-         SAU KHI da co du du lieu that + anh that tu loadTeaser(), tranh hien 1 noi
-         dung tam roi doi sang noi dung khac (flash sai thong tin). Neu API loi thi
-         khoi nay khong hien gi ca thay vi hien thong tin sai. -->
-    <div class="teaser-panel" id="teaser-panel" style="display:none;">
-      <div class="teaser-img reveal r-left"><img id="teaser-img" alt="パクチーの商品写真" decoding="async"></div>
+    <!-- Thong tin san pham ghi cung trong HTML (khong goi API nua) - Apps Script
+         doi khi tra ve loi 404 chap chon (da kiem chung thuc te), khong phu hop de
+         hien thi cong khai. Muon doi/them san pham thi sua truc tiep tai day. -->
+    <div class="teaser-panel">
+      <div class="teaser-img reveal r-left"><img src="images/product-pakuchi-1.jpg" alt="パクチーの商品写真" loading="lazy" decoding="async"></div>
       <div class="teaser-content reveal r-right">
-        <h2><span id="teaser-name"></span><span id="teaser-badge" class="stock-badge" style="display:none;">在庫切れ</span></h2>
-        <p id="teaser-desc"></p>
+        <h2>パクチー（1束）</h2>
+        <p>新鮮なパクチーです。</p>
         <div class="spec-list">
-          <div class="spec-row"><span class="label">規格</span><span class="value" id="teaser-spec"></span></div>
+          <div class="spec-row"><span class="label">規格</span><span class="value">1束（約100g）</span></div>
           <div class="spec-row"><span class="label">価格</span><span class="value">お見積り（無料）</span></div>
         </div>
         <a class="btn-pill btn-pill-outline" href="items.html">くわしく見る</a>
@@ -351,30 +354,6 @@ footer{background:var(--green-dark);color:var(--paper);}
 </footer>
 
 <script>
-// Cung 1 Apps Script deployment voi warehouse.html - dung action getShopProducts
-// (cong khai, khong hien gia that) de lay san pham dau tien lam "product teaser".
-const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
-var jsonpSeq = 0;
-function fetchJSONP(url){
-  return new Promise((res, rej) => {
-    const cb = 'kome_cb_' + (++jsonpSeq) + '_' + Date.now();
-    const s = document.createElement('script');
-    const t = setTimeout(() => { cl(); rej(new Error('Timeout')); }, 10000);
-    function onGlobalError(ev){
-      const msg = (ev && ev.message) || '';
-      if (msg.indexOf(cb) !== -1) { cl(); rej(new Error('Server response error')); }
-    }
-    window.addEventListener('error', onGlobalError);
-    window[cb] = d => { cl(); res(d); };
-    function cl(){ clearTimeout(t); delete window[cb]; window.removeEventListener('error', onGlobalError); s.parentNode && s.parentNode.removeChild(s); }
-    s.onerror = () => { cl(); rej(new Error('connection error')); };
-    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
-    document.head.appendChild(s);
-  });
-}
-function apiGet(actionQuery){ return fetchJSONP(DEFAULT_SHEET_URL + '?' + actionQuery); }
-function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
 // ===== HIEU UNG XUAT HIEN KHI CUON CHUOT (scroll reveal) =====
 // Cuon toi dau thi phan tu co class .reveal trong vung nhin se duoc them .in-view
 // (kich hoat transition khai bao trong CSS: r-up/r-left/r-right/r-zoom). Neu trinh
@@ -400,26 +379,6 @@ function initScrollReveal(){
   els.forEach(el => io.observe(el));
 }
 initScrollReveal();
-
-async function loadTeaser(){
-  try {
-    const j = await apiGet('action=getShopProducts');
-    if (j.status === 'success' && j.data && j.data.length) {
-      const p = j.data[0];
-      // Chi hien khoi nay khi co CA ten LAN anh - tranh truong hop chi co chu
-      // khong co anh (nhin sai/thieu), dung dung y voi trang items.html.
-      if (p.name && p.imageUrl) {
-        document.getElementById('teaser-name').textContent = p.name;
-        document.getElementById('teaser-desc').textContent = p.description || '';
-        document.getElementById('teaser-spec').textContent = p.spec || '';
-        if (p.status === '在庫切れ') document.getElementById('teaser-badge').style.display = '';
-        document.getElementById('teaser-img').src = p.imageUrl;
-        document.getElementById('teaser-panel').style.display = 'grid';
-      }
-    }
-  } catch (e) { /* API loi thi khong hien khoi nay, khong hien thong tin sai */ }
-}
-loadTeaser();
 
 // Loi chao theo GIO THUC CUA NGUOI XEM (khong phai gio server) - sang/chieu/toi.
 function setGreeting(){
