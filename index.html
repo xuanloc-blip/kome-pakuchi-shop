@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>株式会社KOME｜パクチー業務用卸売</title>
 <meta name="description" content="朝採れのパクチーをその日のうちに発送。飲食店様・卸業者様向けの業務用パクチー生産・卸売。">
+<!-- Anh + tieu de xem truoc khi gui link qua LINE / Facebook / Zalo -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="株式会社KOME">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="株式会社KOME｜パクチー業務用卸売">
+<meta property="og:description" content="朝採れのパクチーをその日のうちに発送。飲食店様・卸業者様向けの業務用パクチー生産・卸売。">
+<meta property="og:url" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/index.html">
+<meta property="og:image" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="logokome.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,6 +106,7 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .teaser-img{aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:var(--paper-hover);}
 .teaser-img img{width:100%;height:100%;object-fit:cover;}
 .teaser-content h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:16px;}
+.stock-badge{display:inline-block;vertical-align:middle;margin-left:12px;font-size:13px;font-weight:700;padding:6px 15px;border-radius:999px;background:#FBEAE9;color:#B3261E;}
 .teaser-content p{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:26px;}
 .spec-row{display:flex;gap:12px;align-items:baseline;}
 .spec-row .label{font-size:14px;font-weight:700;color:var(--ink-soft);min-width:64px;}
@@ -146,6 +158,9 @@ footer{background:var(--green-dark);color:var(--paper);}
 .footer-copyright{font-size:13px;color:rgba(251,247,238,.6);}
 .footer-legal-links{display:flex;gap:20px;flex-wrap:wrap;}
 </style>
+<!-- Neu trinh duyet TAT JavaScript: bo hieu ung cuon, hien thang noi dung
+     (khong co dong nay thi cac khoi .reveal se mai o opacity:0 = trang trang). -->
+<noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 </head>
 <body>
 
@@ -158,14 +173,14 @@ footer{background:var(--green-dark);color:var(--paper);}
       <a class="nav-btn" href="order.html">ご注文・お問合わせ</a>
       <a class="nav-btn" href="about.html">会社案内</a>
     </nav>
-    <a class="phone-pill" href="tel:0280813630">お電話 0280-81-3630</a>
+    <a class="phone-pill" href="tel:0367096655">お電話 03-6709-6655</a>
   </div>
 </header>
 
 <main>
   <section class="hero" id="hero">
     <div class="hero-slide light active" data-slide="0">
-      <img class="hero-bg" src="images/raumui1.jpg" alt="手で持った新鮮なパクチーの束" style="background:#fff;">
+      <img class="hero-bg" src="images/raumui1.jpg" alt="手で持った新鮮なパクチーの束" style="background:#fff;" fetchpriority="high" decoding="async">
       <div class="hero-inner">
         <div class="hero-text">
           <div class="hero-eyebrow">株式会社KOME</div>
@@ -174,10 +189,10 @@ footer{background:var(--green-dark);color:var(--paper);}
       </div>
     </div>
     <div class="hero-slide" data-slide="1">
-      <img class="hero-bg" src="images/rau mui2.jpg" alt="パクチー生産をスタート（茨城県猿島郡境町）">
+      <img class="hero-bg" src="images/rau mui2.jpg" alt="パクチー生産をスタート" fetchpriority="low" decoding="async">
     </div>
     <div class="hero-slide" data-slide="2">
-      <img class="hero-bg" src="images/field-tunnels.jpg" alt="パクチーのトンネル栽培の畑">
+      <img class="hero-bg" src="images/field-tunnels.jpg" alt="パクチーのトンネル栽培の畑" fetchpriority="low" decoding="async">
       <div class="hero-scrim"></div>
       <div class="hero-inner">
         <div class="hero-text">
@@ -215,13 +230,17 @@ footer{background:var(--green-dark);color:var(--paper);}
   </section>
 
   <section class="section">
-    <div class="teaser-panel">
-      <div class="teaser-img reveal r-left"><img id="teaser-img" src="" alt="パクチーの商品写真" style="display:none;"></div>
+    <!-- An san toan luc dau (khong dat gia tri mac dinh) - chi hien 1 LAN DUY NHAT
+         SAU KHI da co du du lieu that + anh that tu loadTeaser(), tranh hien 1 noi
+         dung tam roi doi sang noi dung khac (flash sai thong tin). Neu API loi thi
+         khoi nay khong hien gi ca thay vi hien thong tin sai. -->
+    <div class="teaser-panel" id="teaser-panel" style="display:none;">
+      <div class="teaser-img reveal r-left"><img id="teaser-img" alt="パクチーの商品写真" decoding="async"></div>
       <div class="teaser-content reveal r-right">
-        <h2 id="teaser-name">パクチー（コリアンダー）</h2>
-        <p id="teaser-desc">香りと、茎のシャキッとした食感が自慢です。盛り付けにも、たれや薬味の仕込みにも。</p>
+        <h2><span id="teaser-name"></span><span id="teaser-badge" class="stock-badge" style="display:none;">在庫切れ</span></h2>
+        <p id="teaser-desc"></p>
         <div class="spec-list">
-          <div class="spec-row"><span class="label">規格</span><span class="value" id="teaser-spec">1ケース 20袋入り（1袋5本）</span></div>
+          <div class="spec-row"><span class="label">規格</span><span class="value" id="teaser-spec"></span></div>
           <div class="spec-row"><span class="label">価格</span><span class="value">お見積り（無料）</span></div>
         </div>
         <a class="btn-pill btn-pill-outline" href="items.html">くわしく見る</a>
@@ -245,9 +264,9 @@ footer{background:var(--green-dark);color:var(--paper);}
     <h2 class="section-h2 reveal r-up">畑のこと</h2>
     <p class="section-lead reveal r-up">種まきから出荷まで、家族と少人数のスタッフで毎日見ています。畑はいつでも見に来てください。</p>
     <div class="farm-grid reveal-stagger">
-      <figure class="reveal r-zoom" style="--r-i:0;"><div class="farm-photo"><img src="images/seeding.jpg" alt="一粒ずつ種をまく様子"></div><figcaption>一粒ずつ、手でまいています</figcaption></figure>
-      <figure class="reveal r-zoom" style="--r-i:1;"><div class="farm-photo"><img src="images/sprout.jpg" alt="発芽したパクチーの芽"></div><figcaption>数日でかわいい芽が出ます</figcaption></figure>
-      <figure class="reveal r-zoom" style="--r-i:2;"><div class="farm-photo"><img src="images/farmer.jpg" alt="畑を見回る生産者"></div><figcaption>毎日ひと回りして育ち具合を確認</figcaption></figure>
+      <figure class="reveal r-zoom" style="--r-i:0;"><div class="farm-photo"><img src="images/seeding.jpg" alt="一粒ずつ種をまく様子" loading="lazy" decoding="async"></div><figcaption>一粒ずつ、手でまいています</figcaption></figure>
+      <figure class="reveal r-zoom" style="--r-i:1;"><div class="farm-photo"><img src="images/sprout.jpg" alt="発芽したパクチーの芽" loading="lazy" decoding="async"></div><figcaption>数日でかわいい芽が出ます</figcaption></figure>
+      <figure class="reveal r-zoom" style="--r-i:2;"><div class="farm-photo"><img src="images/farmer.jpg" alt="畑を見回る生産者" loading="lazy" decoding="async"></div><figcaption>毎日ひと回りして育ち具合を確認</figcaption></figure>
     </div>
   </section>
 
@@ -266,7 +285,7 @@ footer{background:var(--green-dark);color:var(--paper);}
   <div class="footer-inner">
     <div>
       <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
-      <p class="footer-info">〒306-0404　茨城県猿島郡境町長井戸1691-1<br>TEL 0280-81-3630（朝9時〜夕方6時）<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</p>
+      <p class="footer-info">〒169-0075　東京都新宿区高田馬場2丁目1番2号　TOHMA高田馬場6階<br>TEL 03-6709-6655（朝9時〜夕方6時）<br>FAX 03-6709-6656<br>Email pakuchi@komejapan.com</p>
     </div>
     <div>
       <div class="footer-heading">メニュー</div>
@@ -323,20 +342,49 @@ function fetchJSONP(url){
 function apiGet(actionQuery){ return fetchJSONP(DEFAULT_SHEET_URL + '?' + actionQuery); }
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+// ===== HIEU UNG XUAT HIEN KHI CUON CHUOT (scroll reveal) =====
+// Cuon toi dau thi phan tu co class .reveal trong vung nhin se duoc them .in-view
+// (kich hoat transition khai bao trong CSS: r-up/r-left/r-right/r-zoom). Neu trinh
+// duyet khong ho tro IntersectionObserver hoac nguoi dung bat "giam chuyen dong"
+// thi hien het ngay, khong cho doi hieu ung.
+// CHAY DAU TIEN trong script: cac phan tu .reveal dang opacity:0, neu doan code nao
+// phia duoi loi truoc khi ham nay chay thi nua trang se vo hinh vinh vien.
+function initScrollReveal(){
+  const els = document.querySelectorAll('.reveal');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!('IntersectionObserver' in window) || reduceMotion) {
+    els.forEach(el => el.classList.add('in-view'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  els.forEach(el => io.observe(el));
+}
+initScrollReveal();
+
 async function loadTeaser(){
   try {
     const j = await apiGet('action=getShopProducts');
     if (j.status === 'success' && j.data && j.data.length) {
       const p = j.data[0];
-      if (p.name) document.getElementById('teaser-name').textContent = p.name;
-      if (p.description) document.getElementById('teaser-desc').textContent = p.description;
-      if (p.spec) document.getElementById('teaser-spec').textContent = p.spec;
-      if (p.imageUrl) {
-        const img = document.getElementById('teaser-img');
-        img.src = p.imageUrl; img.style.display = '';
+      // Chi hien khoi nay khi co CA ten LAN anh - tranh truong hop chi co chu
+      // khong co anh (nhin sai/thieu), dung dung y voi trang items.html.
+      if (p.name && p.imageUrl) {
+        document.getElementById('teaser-name').textContent = p.name;
+        document.getElementById('teaser-desc').textContent = p.description || '';
+        document.getElementById('teaser-spec').textContent = p.spec || '';
+        if (p.status === '在庫切れ') document.getElementById('teaser-badge').style.display = '';
+        document.getElementById('teaser-img').src = p.imageUrl;
+        document.getElementById('teaser-panel').style.display = 'grid';
       }
     }
-  } catch (e) { /* API loi thi giu noi dung mac dinh, khong chan trang */ }
+  } catch (e) { /* API loi thi khong hien khoi nay, khong hien thong tin sai */ }
 }
 loadTeaser();
 
@@ -363,30 +411,6 @@ function startHeroAutoplay(){
   heroSlideTimer = setInterval(() => goToHeroSlide((heroSlideIndex + 1) % HERO_SLIDE_COUNT), 5000);
 }
 startHeroAutoplay();
-
-// ===== HIEU UNG XUAT HIEN KHI CUON CHUOT (scroll reveal) =====
-// Cuon toi dau thi phan tu co class .reveal trong vung nhin se duoc them .in-view
-// (kich hoat transition khai bao trong CSS: r-up/r-left/r-right/r-zoom). Neu trinh
-// duyet khong ho tro IntersectionObserver hoac nguoi dung bat "giam chuyen dong"
-// thi hien het ngay, khong cho doi hieu ung.
-function initScrollReveal(){
-  const els = document.querySelectorAll('.reveal');
-  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!('IntersectionObserver' in window) || reduceMotion) {
-    els.forEach(el => el.classList.add('in-view'));
-    return;
-  }
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
-  els.forEach(el => io.observe(el));
-}
-initScrollReveal();
 </script>
 </body>
 </html>
