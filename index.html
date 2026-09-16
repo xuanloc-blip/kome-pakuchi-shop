@@ -79,10 +79,8 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
   .nav-btn{width:100%;text-align:left;padding:14px 14px;}
   .brand img{width:32px;height:32px;}
   .brand-name{font-size:15px;}
-  .phone-pill{order:2;padding:0;width:40px;height:40px;justify-content:center;flex-shrink:0;gap:0;}
-  .phone-pill .ppill-text{display:none;}
-  .phone-pill .ppill-icon{display:block;width:17px;height:17px;}
-  .menu-toggle{order:3;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:var(--paper-hover);cursor:pointer;flex-shrink:0;}
+  .phone-pill{display:none;}
+  .menu-toggle{order:-1;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:var(--paper-hover);cursor:pointer;flex-shrink:0;}
   .menu-toggle svg{width:19px;height:19px;}
   .nav-toggle-cb:checked ~ .menu-toggle{background:var(--green);color:var(--paper);}
 }
@@ -118,20 +116,20 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .hero-dots{position:absolute;left:0;right:0;bottom:20px;z-index:3;display:flex;justify-content:center;gap:9px;}
 .hero-dot{width:9px;height:9px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.4);cursor:pointer;transition:all .3s ease;}
 .hero-dot.active{background:var(--paper);width:26px;}
-/* Man hinh dien thoai: anh hero (nhat la field-tunnels.jpg, ti le ngang 1.5:1) bi cat
-   2 ben qua nhieu neu khung con cao nhu ban desktop, vi khung doc hep buoc object-fit:
-   cover phai cat rong de vua chieu cao. Giam chieu cao khung + gon lai chu/khoang cach
-   ben duoi de bot cat ma van du cho chu khong bi tran len tren. */
+/* Man hinh dien thoai: doi khung hero sang ti le 16:9 (rong hon, thap hon) thay vi
+   chieu cao co dinh gan bang ban desktop - anh se hien DAY DU chieu rong (gan nhu
+   khong con cat 2 ben) giong ban web, chi cat bot tren/duoi thay vi cat 2 ben. Vi
+   khung thap han han nen phai gon lai chu/nut trong slide 3 cho vua, va bot 1 nut
+   phu (chi giu nut chinh) de khong bi tran chu len tren. */
 @media (max-width:640px){
-  .hero{height:460px;}
-  .hero-inner{padding-bottom:32px;}
-  .hero-text h1{font-size:clamp(24px,7vw,36px);line-height:1.32;}
-  .hero-text p{margin-top:14px;font-size:15px;line-height:1.7;}
-  .hero-actions{margin-top:18px;gap:10px;}
-  .hero-actions .btn-pill{padding:14px 22px;font-size:15px;}
-}
-@media (max-width:400px){
-  .hero{height:420px;}
+  .hero{height:auto;aspect-ratio:16/9;}
+  .hero-inner{padding-bottom:14px;}
+  .hero-eyebrow{font-size:11px;margin-bottom:6px;}
+  .hero-text h1{font-size:clamp(17px,5.2vw,24px);line-height:1.25;}
+  .hero-text p{margin-top:8px;font-size:12.5px;line-height:1.5;}
+  .hero-actions{margin-top:10px;gap:8px;}
+  .hero-actions .btn-pill{padding:10px 16px;font-size:12.5px;}
+  .hero-actions .btn-pill-outline-light{display:none;}
 }
 
 /* ===== FEATURE CARDS ===== */
