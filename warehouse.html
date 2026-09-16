@@ -151,16 +151,6 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
 .ann-actions .delete{background:var(--red-light);color:var(--red);}
 .ann-actions .delete:hover{background:var(--red);color:#fff;}
 
-/* ===== TAB: TRANG CHỦ ===== */
-#hero-settings-content{max-width:800px;margin:0 auto;padding:28px 24px 70px;}
-.hero-section-title{font-family:var(--heading);font-size:16px;font-weight:700;color:var(--green-dark);margin-bottom:6px;}
-.hero-section-hint{font-size:12px;color:var(--gray3);margin-bottom:16px;line-height:1.7;}
-.hero-slide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
-.hero-slide-thumb{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:var(--gray-light);}
-.hero-slide-thumb img{width:100%;height:100%;object-fit:cover;}
-.hero-slide-thumb .del-btn{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(20,30,20,.65);color:#fff;font-size:12px;cursor:pointer;line-height:1;}
-.hero-slide-add{aspect-ratio:16/9;border:2px dashed var(--gray4);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--gray3);cursor:pointer;background:var(--white);transition:all .15s ease;}
-.hero-slide-add:hover{border-color:var(--green);color:var(--green);background:var(--gray-light);}
 </style>
 </head>
 <body>
@@ -181,7 +171,6 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
   <button class="main-tab-btn active" data-tab="orders" onclick="switchTab('orders')" data-i18n="tabOrders">📦 注文管理</button>
   <button class="main-tab-btn" data-tab="products" onclick="switchTab('products')" data-i18n="tabProducts">🌿 商品管理</button>
   <button class="main-tab-btn" data-tab="announcements" onclick="switchTab('announcements')" data-i18n="tabAnnouncements">📢 お知らせ管理</button>
-  <button class="main-tab-btn" data-tab="hero" onclick="switchTab('hero')" data-i18n="tabHero">🖼 トップページ</button>
 </div>
 
 <!-- ===== TAB: ĐƠN HÀNG ===== -->
@@ -210,7 +199,9 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
   <div id="products-content">
     <div class="top-action-row"><button class="btn-add" onclick="addProductCard(this)" data-i18n="btnAddProduct">+ 商品を追加</button></div>
     <div class="prod-grid" id="prod-grid"></div>
-    <input type="file" id="prod-file-input" accept="image/*" style="display:none;" onchange="onProductImageChosen(event)">
+    <!-- Liet ke ro duoi file ben canh image/*: hop thoai chon file cua Windows loc theo
+         MIME, may nao dang ky MIME .jpg bi hong se AN luon file .jpg neu chi de image/* -->
+    <input type="file" id="prod-file-input" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.heic" style="display:none;" onchange="onProductImageChosen(event)">
   </div>
 </div>
 
@@ -219,35 +210,6 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
   <div id="announcements-content">
     <div class="top-action-row"><button class="btn-add" onclick="addAnnouncementCard(this)" data-i18n="btnAddAnnouncement">+ お知らせを追加</button></div>
     <div class="ann-list" id="ann-list"></div>
-  </div>
-</div>
-
-<!-- ===== TAB: TRANG CHỦ (hero shop.html) ===== -->
-<div class="tab-panel" id="tab-hero">
-  <div id="hero-settings-content">
-    <h3 class="hero-section-title" data-i18n="heroImagesTitle">スライド画像（複数可）</h3>
-    <p class="hero-section-hint" data-i18n="heroImagesHint">複数の画像を追加すると、ショップのトップに自動で切り替わるスライドショーとして表示されます。</p>
-    <div class="hero-slide-grid" id="hero-slide-grid"></div>
-    <input type="file" id="hero-file-input" accept="image/*" style="display:none;" onchange="onHeroImageChosen(event)">
-
-    <h3 class="hero-section-title" style="margin-top:26px;" data-i18n="heroTextTitle">見出し・説明文</h3>
-    <div class="m-row2">
-      <div class="m-field"><label data-i18n="heroLabelEyebrowVi">小見出し（VI）</label><input id="hs-eyebrowVi"></div>
-      <div class="m-field"><label data-i18n="heroLabelEyebrowJa">小見出し（JA）</label><input id="hs-eyebrowJa"></div>
-    </div>
-    <div class="m-row2">
-      <div class="m-field"><label data-i18n="heroLabelTitleVi">タイトル（VI）</label><textarea id="hs-titleVi"></textarea></div>
-      <div class="m-field"><label data-i18n="heroLabelTitleJa">タイトル（JA）</label><textarea id="hs-titleJa"></textarea></div>
-    </div>
-    <div class="m-row2">
-      <div class="m-field"><label data-i18n="heroLabelSubVi">説明文（VI）</label><textarea id="hs-subVi"></textarea></div>
-      <div class="m-field"><label data-i18n="heroLabelSubJa">説明文（JA）</label><textarea id="hs-subJa"></textarea></div>
-    </div>
-    <div class="m-row2">
-      <div class="m-field"><label data-i18n="heroLabelCtaVi">CTA文言（VI）</label><input id="hs-ctaTextVi"></div>
-      <div class="m-field"><label data-i18n="heroLabelCtaJa">CTA文言（JA）</label><input id="hs-ctaTextJa"></div>
-    </div>
-    <div class="top-action-row"><button class="btn-add" onclick="saveHeroSettings(this)" data-i18n="btnSaveHero">💾 保存</button></div>
   </div>
 </div>
 
@@ -304,9 +266,6 @@ var products = [];
 var announcements = [];
 var uploadTargetProductId = null;
 var uploadTargetSlot = 1;
-var heroSlides = [];
-var heroSettingsData = {};
-var heroTabLoaded = false;
 
 document.getElementById('staff-input').value = localStorage.getItem(STAFF_KEY) || '';
 document.getElementById('staff-input').addEventListener('change', function(){
@@ -325,20 +284,6 @@ const I18N = {
   tabOrders:        {vi:'📦 Đơn hàng', ja:'📦 注文管理'},
   tabProducts:      {vi:'🌿 Sản phẩm', ja:'🌿 商品管理'},
   tabAnnouncements: {vi:'📢 Thông báo', ja:'📢 お知らせ管理'},
-  tabHero:          {vi:'🖼 Trang chủ', ja:'🖼 トップページ'},
-  heroImagesTitle:  {vi:'Ảnh slide (có thể thêm nhiều ảnh)', ja:'スライド画像（複数可）'},
-  heroImagesHint:   {vi:'Thêm nhiều ảnh sẽ tự động chuyển thành slideshow ở đầu trang shop.', ja:'複数の画像を追加すると、ショップのトップに自動で切り替わるスライドショーとして表示されます。'},
-  heroTextTitle:    {vi:'Tiêu đề & mô tả', ja:'見出し・説明文'},
-  heroLabelEyebrowVi:{vi:'Dòng nhỏ phía trên (VI)', ja:'小見出し（VI）'},
-  heroLabelEyebrowJa:{vi:'Dòng nhỏ phía trên (JA)', ja:'小見出し（JA）'},
-  heroLabelTitleVi: {vi:'Tiêu đề lớn (VI)', ja:'タイトル（VI）'},
-  heroLabelTitleJa: {vi:'Tiêu đề lớn (JA)', ja:'タイトル（JA）'},
-  heroLabelSubVi:   {vi:'Mô tả phụ (VI)', ja:'説明文（VI）'},
-  heroLabelSubJa:   {vi:'Mô tả phụ (JA)', ja:'説明文（JA）'},
-  heroLabelCtaVi:   {vi:'Chữ trên thanh giá (VI)', ja:'CTA文言（VI）'},
-  heroLabelCtaJa:   {vi:'Chữ trên thanh giá (JA)', ja:'CTA文言（JA）'},
-  btnSaveHero:      {vi:'💾 Lưu', ja:'💾 保存'},
-  confirmDeleteHeroSlide: {vi:'Xóa ảnh này?', ja:'この画像を削除しますか？'},
   errNotImage:      {vi:'Vui lòng chọn file ảnh (jpg, png...)', ja:'画像ファイルを選択してください'},
   savedFlash:       {vi:'✓ Đã lưu', ja:'✓ 保存済み'},
   btnCheckMail:     {vi:'📬 Kiểm tra mail ngay', ja:'📬 メールを今すぐ確認'},
@@ -458,7 +403,6 @@ function switchTab(name){
   document.getElementById('tab-' + name).classList.add('active');
   if (name === 'products' && !products.length) loadProducts();
   if (name === 'announcements' && !announcements.length) loadAnnouncements();
-  if (name === 'hero' && !heroTabLoaded) loadHeroTab();
 }
 
 var jsonpSeq = 0;
@@ -515,7 +459,7 @@ function looksLikeImageFile(file){
 
 // Thu nho + nen anh NGAY TREN TRINH DUYET truoc khi gui len server (qua canvas) - anh
 // dien thoai goc thuong 3-10MB, sau buoc nay con ~150-400KB nen upload nhanh hon RAT
-// NHIEU va khong ton quota Drive. 1600px la du net cho card san pham/hero (Drive con
+// NHIEU va khong ton quota Drive. 1600px la du net cho anh san pham (Drive con
 // tu resize xuong 1000px khi hien thi qua URL thumbnail).
 function resizeImageFile(file, maxDim, quality){
   return new Promise(function(resolve, reject){
@@ -903,79 +847,6 @@ async function deleteAnnouncement(id, btn){
       announcements = announcements.filter(a => a.id !== id);
       renderAnnouncements();
     } else { setBtnLoading(btn, false); alert(tf('alertSaveErrTpl', { msg: j.message || '?' })); }
-  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
-}
-
-// ===== TAB TRANG CHỦ (hero shop.html) =====
-async function loadHeroTab(){
-  heroTabLoaded = true;
-  try {
-    const [slidesRes, settingsRes] = await Promise.all([
-      apiGet('action=getHeroSlides'),
-      apiGet('action=getShopSettings')
-    ]);
-    if (slidesRes.status === 'success') { heroSlides = slidesRes.data || []; renderHeroSlideGrid(); }
-    if (settingsRes.status === 'success') { heroSettingsData = settingsRes.data || {}; fillHeroSettingsForm(); }
-  } catch (e) {
-    alert(tf('alertConnFailTpl', { msg: e.message }));
-  }
-}
-function renderHeroSlideGrid(){
-  const grid = document.getElementById('hero-slide-grid');
-  grid.innerHTML = heroSlides.map(function(s){
-    return '<div class="hero-slide-thumb"><img src="' + esc(s.imageUrl) + '">' +
-      '<button class="del-btn" onclick="deleteHeroSlideAdmin(\'' + s.id + '\', this)">✕</button></div>';
-  }).join('') + '<div class="hero-slide-add" onclick="document.getElementById(\'hero-file-input\').click()">＋</div>';
-}
-function fillHeroSettingsForm(){
-  ['eyebrowVi','eyebrowJa','titleVi','titleJa','subVi','subJa','ctaTextVi','ctaTextJa'].forEach(function(k){
-    document.getElementById('hs-' + k).value = heroSettingsData[k] || '';
-  });
-}
-async function onHeroImageChosen(ev){
-  const file = ev.target.files && ev.target.files[0];
-  ev.target.value = '';
-  if (!file) return;
-  if (!looksLikeImageFile(file)) { alert(tr('errNotImage')); return; }
-  const addTile = document.querySelector('.hero-slide-add');
-  if (addTile) addTile.textContent = '⏳';
-  try {
-    const resized = await resizeImageFile(file, 1600, 0.82);
-    const up = await apiPost({ action: 'uploadProductImage', data: { filename: 'hero.jpg', mimeType: resized.mimeType, base64Data: resized.base64 } });
-    if (up.status === 'ok') {
-      const add = await apiPost({ action: 'addHeroSlide', data: { imageUrl: up.url } });
-      if (add.status === 'ok') heroSlides.push({ id: add.id, imageUrl: up.url });
-      else alert(tf('alertSaveErrTpl', { msg: add.message || '?' }));
-    } else {
-      alert(tf('alertSaveErrTpl', { msg: up.message || '?' }));
-    }
-  } catch (e) {
-    alert(tf('alertConnFailTpl', { msg: e.message }));
-  }
-  renderHeroSlideGrid();
-}
-async function deleteHeroSlideAdmin(id, btn){
-  if (!confirm(tr('confirmDeleteHeroSlide'))) return;
-  setBtnLoading(btn, true);
-  try {
-    const j = await apiPost({ action: 'deleteHeroSlide', data: { id: id } });
-    if (j.status === 'ok') {
-      heroSlides = heroSlides.filter(s => s.id !== id);
-      renderHeroSlideGrid();
-    } else { setBtnLoading(btn, false); alert(tf('alertSaveErrTpl', { msg: j.message || '?' })); }
-  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
-}
-async function saveHeroSettings(btn){
-  const fields = {};
-  ['eyebrowVi','eyebrowJa','titleVi','titleJa','subVi','subJa','ctaTextVi','ctaTextJa'].forEach(function(k){
-    fields[k] = document.getElementById('hs-' + k).value.trim();
-  });
-  setBtnLoading(btn, true);
-  try {
-    const j = await apiPost({ action: 'updateShopSettings', data: { fields: fields } });
-    setBtnLoading(btn, false);
-    if (j.status === 'ok') { Object.assign(heroSettingsData, fields); flashButton(btn, tr('savedFlash')); }
-    else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
   } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
 }
 
