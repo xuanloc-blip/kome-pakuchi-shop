@@ -4,7 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>会社案内｜株式会社KOME</title>
-<meta name="description" content="株式会社KOMEの会社概要・パクチー生産へのこだわり・畑の場所のご案内。">
+<meta name="description" content="株式会社KOMEの会社概要・パクチー生産へのこだわりのご案内。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="株式会社KOME">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="会社案内｜株式会社KOME">
+<meta property="og:description" content="株式会社KOMEの会社概要・パクチー生産へのこだわりのご案内。">
+<meta property="og:url" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/about.html">
+<meta property="og:image" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="logokome.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,16 +68,6 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .overview-row .k{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-soft);}
 .overview-row .v{font-size:14px;line-height:1.8;}
 
-.location-section{max-width:1080px;margin:0 auto;padding:64px 24px 96px;}
-.location-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:start;}
-.location-grid h2{font-family:var(--heading);font-size:22px;font-weight:700;letter-spacing:.03em;margin-bottom:18px;}
-.location-grid>div>p{font-size:13.5px;line-height:2;color:var(--ink-soft);margin-bottom:24px;}
-.location-address{border-top:1px solid var(--hairline);padding-top:16px;}
-.location-address .k{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-soft);margin-bottom:8px;}
-.location-address .v{font-size:14px;line-height:1.9;}
-.map-frame{aspect-ratio:16/10;border-radius:20px;overflow:hidden;background:var(--paper-deep);}
-.map-frame iframe{width:100%;height:100%;border:0;}
-
 footer{background:var(--green-dark);color:var(--paper);}
 .footer-inner{max-width:1080px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px;}
 .footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
@@ -99,7 +99,7 @@ footer{background:var(--green-dark);color:var(--paper);}
       <a class="nav-btn" href="order.html">ご注文・お問合わせ</a>
       <a class="nav-btn active" href="about.html">会社案内</a>
     </nav>
-    <a class="phone-pill" href="tel:0280813630">お電話 0280-81-3630</a>
+    <a class="phone-pill" href="tel:0367096655">お電話 03-6709-6655</a>
   </div>
 </header>
 
@@ -111,7 +111,7 @@ footer{background:var(--green-dark);color:var(--paper);}
 
   <section class="greeting-section">
     <div class="greeting-grid">
-      <div class="greeting-img"><img src="images/farmer.jpg" alt="畑で作業をする生産者"></div>
+      <div class="greeting-img"><img src="images/farmer.jpg" alt="畑で作業をする生産者" loading="lazy" decoding="async"></div>
       <div class="greeting-content">
         <div class="section-eyebrow">ごあいさつ</div>
         <h2>おいしいと言ってもらえる<br>パクチーを、毎日つくっています。</h2>
@@ -126,34 +126,16 @@ footer{background:var(--green-dark);color:var(--paper);}
       <h2>会社概要</h2>
       <div class="overview-cols">
         <div>
-          <div class="overview-row"><div class="k">名称</div><div class="v">株式会社KOME</div></div>
-          <div class="overview-row"><div class="k">所在地</div><div class="v">〒306-0404　茨城県猿島郡境町長井戸1691-1</div></div>
-          <div class="overview-row"><div class="k">連絡先</div><div class="v">TEL 0280-81-3630<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</div></div>
+          <div class="overview-row"><div class="k">社名</div><div class="v">株式会社KOME<br>(英文名：KOME Co., Ltd.)</div></div>
+          <div class="overview-row"><div class="k">代表者</div><div class="v">代表取締役　グエン　ゴック　ハ</div></div>
+          <div class="overview-row"><div class="k">所在地</div><div class="v">【本社】<br>〒169-0075　東京都新宿区高田馬場2丁目1番2号　TOHMA高田馬場6階<br>TEL 03-6709-6655　FAX 03-6709-6656<br>URL www.komejapan.com</div></div>
         </div>
         <div>
-          <div class="overview-row"><div class="k">事業内容</div><div class="v">パクチーの生産および業務用卸売</div></div>
-          <div class="overview-row"><div class="k">栽培品目</div><div class="v">パクチー（コリアンダー）</div></div>
-          <div class="overview-row"><div class="k">出荷エリア</div><div class="v">全国（冷蔵便）</div></div>
+          <div class="overview-row"><div class="k">資本金</div><div class="v">1,000万円</div></div>
+          <div class="overview-row"><div class="k">会社設立</div><div class="v">令和1年8月</div></div>
+          <div class="overview-row"><div class="k">会社概要</div><div class="v">東南アジア諸国から食材等の輸入<br>食料品及び酒類の卸売</div></div>
+          <div class="overview-row"><div class="k">取引銀行</div><div class="v">三井住友銀行・きらぼし銀行・GMOあおぞらネット銀行</div></div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="location-section">
-    <div class="location-grid">
-      <div>
-        <h2>畑の場所</h2>
-        <p>見学したい方は、前もってご連絡ください。収穫の時間に合わせてご案内します。</p>
-        <div class="location-address">
-          <div class="k">住所</div>
-          <div class="v">〒306-0404　茨城県猿島郡境町長井戸1691-1</div>
-        </div>
-      </div>
-      <div>
-        <div class="map-frame">
-          <iframe src="https://maps.google.com/maps?q=36.1218445,139.7912105&z=17&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="畑の場所の地図（(株)KOME茨城倉庫）"></iframe>
-        </div>
-        <a href="https://maps.app.goo.gl/EBgSPFb26wvGGWrZ7" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;font-size:13px;font-weight:700;">Google マップで開く ↗</a>
       </div>
     </div>
   </section>
@@ -163,7 +145,7 @@ footer{background:var(--green-dark);color:var(--paper);}
   <div class="footer-inner">
     <div>
       <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
-      <p class="footer-info">〒306-0404　茨城県猿島郡境町長井戸1691-1<br>TEL 0280-81-3630（朝9時〜夕方6時）<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</p>
+      <p class="footer-info">〒169-0075　東京都新宿区高田馬場2丁目1番2号　TOHMA高田馬場6階<br>TEL 03-6709-6655（朝9時〜夕方6時）<br>FAX 03-6709-6656<br>Email pakuchi@komejapan.com</p>
     </div>
     <div>
       <div class="footer-heading">メニュー</div>
