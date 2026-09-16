@@ -92,18 +92,10 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .overview-row:last-child{border-bottom:1px solid var(--hairline);}
 .overview-row .k{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-soft);}
 .overview-row .v{font-size:14px;line-height:1.8;}
+.overview-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;margin-bottom:4px;}
+.overview-brand img{width:28px;height:28px;border-radius:8px;flex-shrink:0;}
 
 footer{background:var(--green-dark);color:var(--paper);}
-.footer-inner{max-width:1080px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px;}
-.footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
-.footer-brand img{width:40px;height:40px;border-radius:10px;}
-.footer-brand-name{font-family:var(--heading);font-size:19px;font-weight:700;}
-.footer-info{font-size:15px;line-height:1.95;color:var(--on-dark-soft);}
-.footer-heading{font-family:var(--heading);font-size:14px;font-weight:700;letter-spacing:.05em;color:var(--leaf-pale);margin-bottom:18px;}
-.footer-order-list{display:grid;gap:10px;margin-bottom:24px;list-style:none;}
-.footer-order-list li{font-size:14px;line-height:1.7;color:var(--on-dark-soft);}
-.footer-btn-outline{display:inline-flex;align-items:center;justify-content:center;padding:13px 26px;border-radius:999px;border:1.5px solid rgba(251,247,238,.6);color:var(--paper);font-size:14px;font-weight:700;background:rgba(251,247,238,.08);}
-.footer-btn-outline:hover{background:rgba(251,247,238,.18);color:var(--paper);}
 .footer-bottom-wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
 .footer-bottom{border-top:1px solid rgba(251,247,238,.2);padding:20px 0 30px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 .footer-bottom a{font-size:13px;color:var(--on-dark-soft);}
@@ -152,7 +144,7 @@ footer{background:var(--green-dark);color:var(--paper);}
       <h2>会社概要</h2>
       <div class="overview-cols">
         <div>
-          <div class="overview-row"><div class="k">社名</div><div class="v">株式会社KOME<br>(英文名：KOME Co., Ltd.)</div></div>
+          <div class="overview-row"><div class="k">社名</div><div class="v"><div class="overview-brand"><img src="logokome.png" alt="KOME">株式会社KOME</div>(英文名：KOME Co., Ltd.)</div></div>
           <div class="overview-row"><div class="k">代表者</div><div class="v">代表取締役　グエン　ゴック　ハ</div></div>
           <div class="overview-row"><div class="k">所在地</div><div class="v">【本社】<br>〒169-0075　東京都新宿区高田馬場2丁目1番2号　TOHMA高田馬場6階<br>TEL 03-6709-6655　FAX 03-6709-6656<br>URL www.komejapan.com</div></div>
         </div>
@@ -167,22 +159,7 @@ footer{background:var(--green-dark);color:var(--paper);}
   </section>
 </main>
 
-<footer>
-  <div class="footer-inner">
-    <div>
-      <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
-      <p class="footer-info">〒169-0075　東京都新宿区高田馬場2丁目1番2号　TOHMA高田馬場6階<br>TEL 03-6709-6655（朝9時〜夕方6時）<br>FAX 03-6709-6656<br>Email pakuchi@komejapan.com</p>
-    </div>
-    <div>
-      <div class="footer-heading">ご注文について</div>
-      <ul class="footer-order-list">
-        <li>1ケース20袋入り／1袋5本入り</li>
-        <li>1ケースより承ります</li>
-        <li>前日15時までのご注文で翌日出荷</li>
-      </ul>
-      <a class="footer-btn-outline" href="order.html">お見積り依頼</a>
-    </div>
-  </div>
+<footer style="padding-top:20px;">
   <div class="footer-bottom-wrap">
     <div class="footer-bottom">
       <div class="footer-legal-links">
