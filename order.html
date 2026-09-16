@@ -63,10 +63,8 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
   .nav-btn{width:100%;text-align:left;padding:14px 14px;}
   .brand img{width:32px;height:32px;}
   .brand-name{font-size:15px;}
-  .phone-pill{order:2;padding:0;width:40px;height:40px;justify-content:center;flex-shrink:0;gap:0;}
-  .phone-pill .ppill-text{display:none;}
-  .phone-pill .ppill-icon{display:block;width:17px;height:17px;}
-  .menu-toggle{order:3;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:var(--paper-hover);cursor:pointer;flex-shrink:0;}
+  .phone-pill{display:none;}
+  .menu-toggle{order:-1;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:var(--paper-hover);cursor:pointer;flex-shrink:0;}
   .menu-toggle svg{width:19px;height:19px;}
   .nav-toggle-cb:checked ~ .menu-toggle{background:var(--green);color:var(--paper);}
 }
