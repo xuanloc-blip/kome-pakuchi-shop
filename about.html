@@ -3,15 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>株式会社KOME｜パクチー業務用卸売</title>
-<meta name="description" content="朝採れのパクチーをその日のうちに発送。飲食店様・卸業者様向けの業務用パクチー生産・卸売。">
-<!-- Anh + tieu de xem truoc khi gui link qua LINE / Facebook / Zalo -->
+<title>会社案内｜株式会社KOME</title>
+<meta name="description" content="株式会社KOMEの会社概要・パクチー生産へのこだわりのご案内。">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="株式会社KOME">
 <meta property="og:locale" content="ja_JP">
-<meta property="og:title" content="株式会社KOME｜パクチー業務用卸売">
-<meta property="og:description" content="朝採れのパクチーをその日のうちに発送。飲食店様・卸業者様向けの業務用パクチー生産・卸売。">
-<meta property="og:url" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/index.html">
+<meta property="og:title" content="会社案内｜株式会社KOME">
+<meta property="og:description" content="株式会社KOMEの会社概要・パクチー生産へのこだわりのご案内。">
+<meta property="og:url" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/about.html">
 <meta property="og:image" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/images/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -19,10 +18,6 @@
 <link rel="icon" type="image/png" href="logokome.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Bat dau ket noi TRUOC toi Apps Script (DNS/TLS) ngay khi trang bat dau tai,
-     thay vi doi den luc script chay moi bat dau ket noi - rut ngan vai tram ms. -->
-<link rel="preconnect" href="https://script.google.com">
-<link rel="preconnect" href="https://script.googleusercontent.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -39,19 +34,6 @@ a{color:var(--green);text-decoration:none;}
 a:hover{color:var(--green-dark);}
 button,input,textarea,select{font-family:inherit;}
 img{max-width:100%;display:block;}
-@keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
-
-/* ===== HIEU UNG XUAT HIEN KHI CUON CHUOT (scroll reveal) - nhieu kieu khac nhau ===== */
-.reveal{opacity:0;transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1);}
-.reveal.r-up{transform:translateY(40px);}
-.reveal.r-left{transform:translateX(-44px);}
-.reveal.r-right{transform:translateX(44px);}
-.reveal.r-zoom{transform:scale(.92);}
-.reveal.in-view{opacity:1;transform:none;}
-.reveal-stagger > *{transition-delay:calc(var(--r-i, 0) * .12s);}
-@media (prefers-reduced-motion: reduce){
-  .reveal{transition:none;opacity:1;transform:none;}
-}
 
 header{position:sticky;top:0;z-index:60;background:rgba(251,247,238,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);}
 .header-inner{max-width:1080px;margin:0 auto;padding:0 24px;min-height:78px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
@@ -68,9 +50,6 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .nav-toggle-cb{position:absolute;opacity:0;pointer-events:none;}
 .menu-toggle{display:none;}
 .phone-pill .ppill-icon{display:none;}
-/* Man hinh dien thoai: gop 4 muc menu vao 1 nut hamburger (checkbox an, khong can
-   JS) - thay vi de header choan toi 3 dong (logo / menu / dien thoai) luon dinh o
-   tren khi cuon, chi con DUY NHAT 1 dong gon. */
 @media (max-width:700px){
   .header-inner{flex-wrap:nowrap;position:relative;padding:0 16px;gap:8px;}
   nav.main-nav{
@@ -89,100 +68,30 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
   .nav-toggle-cb:checked ~ .menu-toggle{background:var(--green);color:var(--paper);}
 }
 
-.btn-pill{cursor:pointer;font-size:17px;font-weight:700;padding:19px 36px;border-radius:999px;border:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
-.btn-pill-leaf{background:var(--leaf);color:var(--green-deepest);}
-.btn-pill-leaf:hover{background:var(--leaf-hover);}
-.btn-pill-outline-light{background:rgba(251,247,238,.12);color:var(--paper);border:1.5px solid rgba(251,247,238,.6);}
-.btn-pill-outline-light:hover{background:rgba(251,247,238,.22);}
-.btn-pill-solid{background:var(--green);color:var(--paper);}
-.btn-pill-solid:hover{background:var(--green-dark);}
-.btn-pill-outline{border:1.5px solid var(--green);background:none;color:var(--green);}
-.btn-pill-outline:hover{background:var(--green);color:var(--paper);}
+.section-top{max-width:1080px;margin:0 auto;padding:64px 24px;border-bottom:1px solid var(--hairline);}
+.section-eyebrow{font-size:10.5px;letter-spacing:.1em;font-weight:700;color:var(--accent-brown);margin-bottom:16px;}
+.section-top h1{font-family:var(--heading);font-size:clamp(28px,3.6vw,40px);font-weight:700;letter-spacing:.03em;}
 
-.card{background:var(--paper-card);border:1px solid rgba(46,51,39,.09);border-radius:22px;padding:30px 28px;box-shadow:0 3px 12px rgba(46,51,39,.05);}
+.greeting-section{max-width:1080px;margin:0 auto;padding:64px 24px;}
+.greeting-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px;align-items:center;}
+.greeting-img{aspect-ratio:4/5;overflow:hidden;border-radius:20px;background:var(--paper-deep);}
+.greeting-img img{width:100%;height:100%;object-fit:cover;}
+.greeting-content h2{font-family:var(--heading);font-size:26px;font-weight:700;line-height:1.6;letter-spacing:.02em;margin-bottom:22px;}
+.greeting-content p{font-size:14px;line-height:2;color:var(--ink-soft);margin-bottom:18px;}
 
-/* ===== HERO (carousel 3 slide, kich thuoc tham khao ban v2: cao 640px, chu neo duoi) ===== */
-.hero{position:relative;height:640px;overflow:hidden;background:var(--green-dark);}
-.hero-slide{position:absolute;inset:0;display:flex;align-items:flex-end;opacity:0;transition:opacity .9s ease;pointer-events:none;}
-.hero-slide.active{opacity:1;pointer-events:auto;}
-.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.hero-scrim{position:absolute;inset:0;background:linear-gradient(100deg,rgba(20,48,26,.9) 0%,rgba(20,48,26,.74) 48%,rgba(20,48,26,.36) 100%);}
-.hero-inner{position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;padding:0 28px 88px;}
-.hero-text{max-width:660px;}
-.hero-slide.active .hero-text{animation:riseIn .8s ease both;}
-.hero-eyebrow{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--leaf-pale);margin-bottom:14px;}
-.hero-text h1{font-family:var(--heading);font-size:clamp(28px,4.6vw,54px);font-weight:700;line-height:1.36;color:var(--paper);}
-.hero-text p{margin-top:24px;font-size:17px;line-height:1.95;color:var(--paper);max-width:520px;}
-.hero-actions{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap;}
-/* slide sang mau (nen anh trang) - doi chu sang mau toi de de doc */
-.hero-slide.light .hero-eyebrow{color:var(--green-dark);}
-.hero-slide.light .hero-text h1{color:var(--ink);}
-.hero-dots{position:absolute;left:0;right:0;bottom:20px;z-index:3;display:flex;justify-content:center;gap:9px;}
-.hero-dot{width:9px;height:9px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.4);cursor:pointer;transition:all .3s ease;}
-.hero-dot.active{background:var(--paper);width:26px;}
-/* Man hinh dien thoai: doi khung hero sang ti le 16:9 (rong hon, thap hon) thay vi
-   chieu cao co dinh gan bang ban desktop - anh se hien DAY DU chieu rong (gan nhu
-   khong con cat 2 ben) giong ban web, chi cat bot tren/duoi thay vi cat 2 ben. Vi
-   khung thap han han nen phai gon lai chu/nut trong slide 3 cho vua, va bot 1 nut
-   phu (chi giu nut chinh) de khong bi tran chu len tren. */
+.overview-section{background:var(--paper-deep);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);}
+.overview-inner{max-width:1080px;margin:0 auto;padding:64px 24px;}
 @media (max-width:640px){
-  .hero{height:auto;aspect-ratio:16/9;}
-  .hero-inner{padding-bottom:14px;}
-  .hero-eyebrow{font-size:11px;margin-bottom:6px;}
-  .hero-text h1{font-size:clamp(17px,5.2vw,24px);line-height:1.25;}
-  .hero-text p{margin-top:8px;font-size:12.5px;line-height:1.5;}
-  .hero-actions{margin-top:10px;gap:8px;}
-  .hero-actions .btn-pill{padding:10px 16px;font-size:12.5px;}
-  .hero-actions .btn-pill-outline-light{display:none;}
+  .section-top{padding:40px 24px;}
+  .greeting-section{padding:40px 24px;}
+  .overview-inner{padding:40px 24px;}
 }
-
-/* ===== FEATURE CARDS ===== */
-.section{max-width:1080px;margin:0 auto;padding:72px 24px;}
-.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
-.feature-grid .card h3{font-family:var(--heading);font-size:21px;font-weight:700;line-height:1.5;margin-bottom:12px;}
-.feature-grid .card p{font-size:15px;line-height:1.95;color:var(--ink-soft);}
-
-/* ===== PRODUCT TEASER ===== */
-.teaser-panel{background:var(--paper-deep);border-radius:28px;padding:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:36px;align-items:center;}
-.teaser-img{aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:var(--paper-hover);}
-.teaser-img img{width:100%;height:100%;object-fit:cover;}
-.teaser-content h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:16px;}
-.stock-badge{display:inline-block;vertical-align:middle;margin-left:12px;font-size:13px;font-weight:700;padding:6px 15px;border-radius:999px;background:#FBEAE9;color:#B3261E;}
-.teaser-content p{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:26px;}
-.spec-row{display:flex;gap:12px;align-items:baseline;}
-.spec-row .label{font-size:14px;font-weight:700;color:var(--ink-soft);min-width:64px;}
-.spec-row .value{font-size:16px;font-weight:700;}
-.spec-list{display:grid;gap:10px;margin-bottom:28px;}
-
-/* ===== DAY BAND ===== */
-.day-band{background:var(--green-dark);color:var(--paper);}
-.day-band h2{font-family:var(--heading);font-size:28px;font-weight:700;margin-bottom:36px;}
-.day-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:24px;}
-.day-step{background:rgba(251,247,238,.1);border-radius:20px;padding:26px 24px;}
-.day-step .time{font-family:var(--heading);font-size:24px;font-weight:700;color:var(--leaf-pale);margin-bottom:10px;}
-.day-step .label{font-size:16px;font-weight:700;margin-bottom:8px;}
-.day-step p{font-size:14px;line-height:1.9;color:var(--on-dark-soft);}
-
-/* ===== FARM GALLERY ===== */
-.section h2.section-h2{font-family:var(--heading);font-size:28px;font-weight:700;margin-bottom:12px;}
-.section-lead{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:32px;max-width:620px;}
-.farm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;}
-.farm-grid figure{margin:0;}
-.farm-photo{aspect-ratio:3/4;overflow:hidden;border-radius:20px;background:var(--paper-deep);}
-.farm-photo img{width:100%;height:100%;object-fit:cover;}
-.farm-grid figcaption{margin-top:12px;font-size:14px;color:var(--ink-soft);line-height:1.8;}
-
-/* ===== CLOSING CTA ===== */
-.closing-cta{background:var(--paper-deep);border-top:1px solid rgba(46,51,39,.1);}
-.closing-cta-inner{max-width:1080px;margin:0 auto;padding:72px 24px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;}
-/* Man hinh dien thoai: khoang cach 64-72px giua cac khoi von tinh cho man hinh rong,
-   qua rong so voi chieu cao man hinh dien thoai - giam lai cho vua mat hon. */
-@media (max-width:640px){
-  .section{padding:40px 24px;}
-  .closing-cta-inner{padding:40px 24px;}
-}
-.closing-cta h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:12px;}
-.closing-cta p{font-size:16px;line-height:1.9;color:var(--ink-soft);}
+.overview-inner h2{font-family:var(--heading);font-size:24px;font-weight:700;letter-spacing:.03em;margin-bottom:30px;}
+.overview-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 48px;}
+.overview-row{display:grid;grid-template-columns:100px 1fr;gap:14px;padding:15px 0;border-top:1px solid var(--hairline);}
+.overview-row:last-child{border-bottom:1px solid var(--hairline);}
+.overview-row .k{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-soft);}
+.overview-row .v{font-size:14px;line-height:1.8;}
 
 footer{background:var(--green-dark);color:var(--paper);}
 .footer-inner{max-width:1080px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px;}
@@ -202,9 +111,6 @@ footer{background:var(--green-dark);color:var(--paper);}
 .footer-copyright{font-size:13px;color:rgba(251,247,238,.6);}
 .footer-legal-links{display:flex;gap:20px;flex-wrap:wrap;}
 </style>
-<!-- Neu trinh duyet TAT JavaScript: bo hieu ung cuon, hien thang noi dung
-     (khong co dong nay thi cac khoi .reveal se mai o opacity:0 = trang trang). -->
-<noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 </head>
 <body>
 
@@ -213,10 +119,10 @@ footer{background:var(--green-dark);color:var(--paper);}
     <a class="brand" href="index.html"><img src="logokome.png" alt="KOME"><span class="brand-name">株式会社KOME</span></a>
     <input type="checkbox" id="nav-toggle" class="nav-toggle-cb">
     <nav class="main-nav">
-      <a class="nav-btn active" href="index.html">トップ</a>
+      <a class="nav-btn" href="index.html">トップ</a>
       <a class="nav-btn" href="items.html">商品</a>
       <a class="nav-btn" href="order.html">ご注文・お問合わせ</a>
-      <a class="nav-btn" href="about.html">会社案内</a>
+      <a class="nav-btn active" href="about.html">会社案内</a>
     </nav>
     <a class="phone-pill" href="tel:0367096655"><svg class="ppill-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8z"/></svg><span class="ppill-text">お電話 03-6709-6655</span></a>
     <label for="nav-toggle" class="menu-toggle" aria-label="メニューを開く"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></label>
@@ -224,104 +130,39 @@ footer{background:var(--green-dark);color:var(--paper);}
 </header>
 
 <main>
-  <section class="hero" id="hero">
-    <div class="hero-slide light active" data-slide="0">
-      <img class="hero-bg" src="images/raumui1.jpg" alt="手で持った新鮮なパクチーの束" style="background:#fff;" fetchpriority="high" decoding="async">
-      <div class="hero-inner">
-        <div class="hero-text">
-          <div class="hero-eyebrow">株式会社KOME</div>
-          <h1 id="greeting-text">こんにちは</h1>
+  <section class="section-top">
+    <div class="section-eyebrow">私たちのこと</div>
+    <h1>会社案内</h1>
+  </section>
+
+  <section class="greeting-section">
+    <div class="greeting-grid">
+      <div class="greeting-img"><img src="images/farmer.jpg" alt="畑で作業をする生産者" loading="lazy" decoding="async"></div>
+      <div class="greeting-content">
+        <div class="section-eyebrow">ごあいさつ</div>
+        <h2>おいしいと言ってもらえる<br>パクチーを、毎日つくっています。</h2>
+        <p>パクチーは、収穫してからの時間で香りも食感も変わってしまう野菜です。だからこそ私たちは、朝に採ったものをその日のうちに送り出すことにこだわっています。</p>
+        <p>畑は少人数で見ていますので、「今週は葉を大きめに」「茎をしっかり」といったご相談にも応じられます。お店の使い方に合わせて育て方を調整できるのが、私たちの強みです。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="overview-section">
+    <div class="overview-inner">
+      <h2>会社概要</h2>
+      <div class="overview-cols">
+        <div>
+          <div class="overview-row"><div class="k">社名</div><div class="v">株式会社KOME<br>(英文名：KOME Co., Ltd.)</div></div>
+          <div class="overview-row"><div class="k">代表者</div><div class="v">代表取締役　グエン　ゴック　ハ</div></div>
+          <div class="overview-row"><div class="k">所在地</div><div class="v">【本社】<br>〒169-0075　東京都新宿区高田馬場2丁目1番2号　TOHMA高田馬場6階<br>TEL 03-6709-6655　FAX 03-6709-6656<br>URL www.komejapan.com</div></div>
+        </div>
+        <div>
+          <div class="overview-row"><div class="k">資本金</div><div class="v">1,000万円</div></div>
+          <div class="overview-row"><div class="k">会社設立</div><div class="v">令和1年8月</div></div>
+          <div class="overview-row"><div class="k">会社概要</div><div class="v">東南アジア諸国から食材等の輸入<br>食料品及び酒類の卸売</div></div>
+          <div class="overview-row"><div class="k">取引銀行</div><div class="v">三井住友銀行・きらぼし銀行・GMOあおぞらネット銀行</div></div>
         </div>
       </div>
-    </div>
-    <div class="hero-slide" data-slide="1">
-      <img class="hero-bg" src="images/rau mui2.jpg" alt="パクチー生産をスタート" fetchpriority="low" decoding="async">
-    </div>
-    <div class="hero-slide" data-slide="2">
-      <img class="hero-bg" src="images/field-tunnels.jpg" alt="パクチーのトンネル栽培の畑" fetchpriority="low" decoding="async">
-      <div class="hero-scrim"></div>
-      <div class="hero-inner">
-        <div class="hero-text">
-          <h1>朝採れのパクチー、<br>その日のうちにお届け。</h1>
-          <p>1ケース20袋入り（1袋5本）。<br>ご希望の数量と日にちに合わせて、全国にお送りします。</p>
-          <div class="hero-actions">
-            <a class="btn-pill btn-pill-leaf" href="order.html">お見積りを頼む</a>
-            <a class="btn-pill btn-pill-outline-light" href="items.html">商品を見る</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="hero-dots" id="hero-dots">
-      <button class="hero-dot active" onclick="goToHeroSlide(0)" aria-label="1"></button>
-      <button class="hero-dot" onclick="goToHeroSlide(1)" aria-label="2"></button>
-      <button class="hero-dot" onclick="goToHeroSlide(2)" aria-label="3"></button>
-    </div>
-  </section>
-
-  <section class="section" style="padding-bottom:8px;">
-    <div class="feature-grid reveal-stagger">
-      <div class="card reveal r-up" style="--r-i:0;">
-        <h3>朝採って、その日に発送</h3>
-        <p>朝のうちに刈り取って、その日のうちに発送。翌朝にはお店に届きます。</p>
-      </div>
-      <div class="card reveal r-up" style="--r-i:1;">
-        <h3>一年じゅう、切れません</h3>
-        <p>時期をずらして育てているので、季節を問わずいつもの量をお届けできます。</p>
-      </div>
-      <div class="card reveal r-up" style="--r-i:2;">
-        <h3>1ケースから注文OK</h3>
-        <p>まずは1ケースだけでも大丈夫。定期のお届けもご相談ください。</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <!-- Thong tin san pham ghi cung trong HTML (khong goi API nua) - Apps Script
-         doi khi tra ve loi 404 chap chon (da kiem chung thuc te), khong phu hop de
-         hien thi cong khai. Muon doi/them san pham thi sua truc tiep tai day. -->
-    <div class="teaser-panel">
-      <div class="teaser-img reveal r-left"><img src="images/product-pakuchi-1.jpg" alt="パクチーの商品写真" loading="lazy" decoding="async"></div>
-      <div class="teaser-content reveal r-right">
-        <h2>パクチー（1束）</h2>
-        <p>新鮮なパクチーです。</p>
-        <div class="spec-list">
-          <div class="spec-row"><span class="label">規格</span><span class="value">1束（約100g）</span></div>
-          <div class="spec-row"><span class="label">価格</span><span class="value">お見積り（無料）</span></div>
-        </div>
-        <a class="btn-pill btn-pill-outline" href="items.html">くわしく見る</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="day-band">
-    <div class="section">
-      <h2 class="reveal r-up">畑からお店まで、こんな一日です</h2>
-      <div class="day-grid reveal-stagger">
-        <div class="day-step reveal r-up" style="--r-i:0;"><div class="time">朝5時</div><div class="label">収穫</div><p>暑くなる前に刈り取ります。</p></div>
-        <div class="day-step reveal r-up" style="--r-i:1;"><div class="time">朝8時</div><div class="label">袋詰め</div><p>1袋5本、手で詰めます。</p></div>
-        <div class="day-step reveal r-up" style="--r-i:2;"><div class="time">昼12時</div><div class="label">発送</div><p>冷蔵便で送り出します。</p></div>
-        <div class="day-step reveal r-up" style="--r-i:3;"><div class="time">翌朝</div><div class="label">お届け</div><p>仕込みの時間に間に合います。</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <h2 class="section-h2 reveal r-up">畑のこと</h2>
-    <p class="section-lead reveal r-up">種まきから出荷まで、家族と少人数のスタッフで毎日見ています。畑はいつでも見に来てください。</p>
-    <div class="farm-grid reveal-stagger">
-      <figure class="reveal r-zoom" style="--r-i:0;"><div class="farm-photo"><img src="images/seeding.jpg" alt="一粒ずつ種をまく様子" loading="lazy" decoding="async"></div><figcaption>一粒ずつ、手でまいています</figcaption></figure>
-      <figure class="reveal r-zoom" style="--r-i:1;"><div class="farm-photo"><img src="images/sprout.jpg" alt="発芽したパクチーの芽" loading="lazy" decoding="async"></div><figcaption>数日でかわいい芽が出ます</figcaption></figure>
-      <figure class="reveal r-zoom" style="--r-i:2;"><div class="farm-photo"><img src="images/farmer.jpg" alt="畑を見回る生産者" loading="lazy" decoding="async"></div><figcaption>毎日ひと回りして育ち具合を確認</figcaption></figure>
-    </div>
-  </section>
-
-  <section class="closing-cta">
-    <div class="closing-cta-inner">
-      <div class="reveal r-left">
-        <h2>まずは気軽に聞いてください。</h2>
-        <p>数量と希望日をお知らせいただければ、1営業日以内にお返事します。</p>
-      </div>
-      <a class="btn-pill btn-pill-solid reveal r-right" href="order.html">お見積りを頼む</a>
     </div>
   </section>
 </main>
@@ -352,57 +193,5 @@ footer{background:var(--green-dark);color:var(--paper);}
     </div>
   </div>
 </footer>
-
-<script>
-// ===== HIEU UNG XUAT HIEN KHI CUON CHUOT (scroll reveal) =====
-// Cuon toi dau thi phan tu co class .reveal trong vung nhin se duoc them .in-view
-// (kich hoat transition khai bao trong CSS: r-up/r-left/r-right/r-zoom). Neu trinh
-// duyet khong ho tro IntersectionObserver hoac nguoi dung bat "giam chuyen dong"
-// thi hien het ngay, khong cho doi hieu ung.
-// CHAY DAU TIEN trong script: cac phan tu .reveal dang opacity:0, neu doan code nao
-// phia duoi loi truoc khi ham nay chay thi nua trang se vo hinh vinh vien.
-function initScrollReveal(){
-  const els = document.querySelectorAll('.reveal');
-  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!('IntersectionObserver' in window) || reduceMotion) {
-    els.forEach(el => el.classList.add('in-view'));
-    return;
-  }
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
-  els.forEach(el => io.observe(el));
-}
-initScrollReveal();
-
-// Loi chao theo GIO THUC CUA NGUOI XEM (khong phai gio server) - sang/chieu/toi.
-function setGreeting(){
-  const h = new Date().getHours();
-  const text = h < 11 ? 'おはようございます' : (h < 17 ? 'こんにちは' : 'こんばんは');
-  const el = document.getElementById('greeting-text');
-  if (el) el.textContent = text;
-}
-setGreeting();
-
-// ===== HERO CAROUSEL (3 slide, tu dong chuyen + cham tron) =====
-var heroSlideIndex = 0;
-var heroSlideTimer = null;
-const HERO_SLIDE_COUNT = 3;
-function goToHeroSlide(i){
-  heroSlideIndex = i;
-  document.querySelectorAll('.hero-slide').forEach((el, idx) => el.classList.toggle('active', idx === i));
-  document.querySelectorAll('.hero-dot').forEach((el, idx) => el.classList.toggle('active', idx === i));
-}
-function startHeroAutoplay(){
-  if (heroSlideTimer) clearInterval(heroSlideTimer);
-  heroSlideTimer = setInterval(() => goToHeroSlide((heroSlideIndex + 1) % HERO_SLIDE_COUNT), 5000);
-}
-startHeroAutoplay();
-</script>
 </body>
 </html>
