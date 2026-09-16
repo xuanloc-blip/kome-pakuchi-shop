@@ -144,8 +144,12 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 
 /* ===== PRODUCT TEASER ===== */
 .teaser-panel{background:var(--paper-deep);border-radius:28px;padding:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:36px;align-items:center;}
-.teaser-img{aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:var(--paper-hover);}
-.teaser-img img{width:100%;height:100%;object-fit:cover;}
+.teaser-img{position:relative;aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:var(--paper-hover);}
+.teaser-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s ease;}
+.teaser-img img.active{opacity:1;}
+.teaser-img-dots{position:absolute;left:0;right:0;bottom:14px;z-index:2;display:flex;justify-content:center;gap:8px;}
+.teaser-img-dot{width:8px;height:8px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.55);cursor:pointer;transition:all .25s ease;}
+.teaser-img-dot.active{background:#fff;width:22px;}
 .teaser-content h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:16px;}
 .stock-badge{display:inline-block;vertical-align:middle;margin-left:12px;font-size:13px;font-weight:700;padding:6px 15px;border-radius:999px;background:#FBEAE9;color:#B3261E;}
 .teaser-content p{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:26px;}
@@ -190,11 +194,6 @@ footer{background:var(--green-dark);color:var(--paper);}
 .footer-brand img{width:40px;height:40px;border-radius:10px;}
 .footer-brand-name{font-family:var(--heading);font-size:19px;font-weight:700;}
 .footer-info{font-size:15px;line-height:1.95;color:var(--on-dark-soft);}
-.footer-heading{font-family:var(--heading);font-size:14px;font-weight:700;letter-spacing:.05em;color:var(--leaf-pale);margin-bottom:18px;}
-.footer-order-list{display:grid;gap:10px;margin-bottom:24px;list-style:none;}
-.footer-order-list li{font-size:14px;line-height:1.7;color:var(--on-dark-soft);}
-.footer-btn-outline{display:inline-flex;align-items:center;justify-content:center;padding:13px 26px;border-radius:999px;border:1.5px solid rgba(251,247,238,.6);color:var(--paper);font-size:14px;font-weight:700;background:rgba(251,247,238,.08);}
-.footer-btn-outline:hover{background:rgba(251,247,238,.18);color:var(--paper);}
 .footer-bottom-wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
 .footer-bottom{border-top:1px solid rgba(251,247,238,.2);padding:20px 0 30px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 .footer-bottom a{font-size:13px;color:var(--on-dark-soft);}
@@ -278,9 +277,19 @@ footer{background:var(--green-dark);color:var(--paper);}
   <section class="section">
     <!-- Thong tin san pham ghi cung trong HTML (khong goi API nua) - Apps Script
          doi khi tra ve loi 404 chap chon (da kiem chung thuc te), khong phu hop de
-         hien thi cong khai. Muon doi/them san pham thi sua truc tiep tai day. -->
+         hien thi cong khai. Muon doi/them san pham thi sua truc tiep tai day.
+         Anh: dat file vao thu muc images/ roi tro src toi do, toi da 2 anh (se tu
+         dong doi anh giong trang items.html); chi can 1 anh neu chi co 1 (bo het
+         hang .teaser-img-dots va anh thu 2 di). -->
     <div class="teaser-panel">
-      <div class="teaser-img reveal r-left"><img src="images/product-pakuchi-1.jpg" alt="パクチーの商品写真" loading="lazy" decoding="async"></div>
+      <div class="teaser-img reveal r-left">
+        <img src="images/product-pakuchi-1.jpg" alt="パクチーの商品写真" class="active" loading="lazy" decoding="async">
+        <img src="images/product-pakuchi-2.jpg" alt="パクチーの商品写真" loading="lazy" decoding="async">
+        <div class="teaser-img-dots">
+          <button type="button" class="teaser-img-dot active" onclick="goToTeaserImage(this, 0)" aria-label="1"></button>
+          <button type="button" class="teaser-img-dot" onclick="goToTeaserImage(this, 1)" aria-label="2"></button>
+        </div>
+      </div>
       <div class="teaser-content reveal r-right">
         <h2>パクチー（1束）</h2>
         <p>新鮮なパクチーです。</p>
@@ -331,15 +340,6 @@ footer{background:var(--green-dark);color:var(--paper);}
     <div>
       <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
       <p class="footer-info">〒169-0075　東京都新宿区高田馬場2丁目1番2号　TOHMA高田馬場6階<br>TEL 03-6709-6655（朝9時〜夕方6時）<br>FAX 03-6709-6656<br>Email pakuchi@komejapan.com</p>
-    </div>
-    <div>
-      <div class="footer-heading">ご注文について</div>
-      <ul class="footer-order-list">
-        <li>1ケース20袋入り／1袋5本入り</li>
-        <li>1ケースより承ります</li>
-        <li>前日15時までのご注文で翌日出荷</li>
-      </ul>
-      <a class="footer-btn-outline" href="order.html">お見積り依頼</a>
     </div>
   </div>
   <div class="footer-bottom-wrap">
@@ -403,6 +403,33 @@ function startHeroAutoplay(){
   heroSlideTimer = setInterval(() => goToHeroSlide((heroSlideIndex + 1) % HERO_SLIDE_COUNT), 5000);
 }
 startHeroAutoplay();
+
+const teaserAutoplayTimers = new Map();
+function goToTeaserImage(dotEl, i){
+  const box = dotEl.closest('.teaser-img');
+  if (!box) return;
+  const timer = teaserAutoplayTimers.get(box);
+  if (timer) { clearInterval(timer); teaserAutoplayTimers.delete(box); }
+  box.querySelectorAll('img').forEach((img, idx) => img.classList.toggle('active', idx === i));
+  box.querySelectorAll('.teaser-img-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
+}
+function startTeaserImageCycles(){
+  document.querySelectorAll('.teaser-img').forEach(box => {
+    const imgs = box.querySelectorAll('img');
+    if (imgs.length < 2) return;
+    let idx = 0;
+    const timer = setInterval(() => {
+      imgs[idx].classList.remove('active');
+      const dots = box.querySelectorAll('.teaser-img-dot');
+      if (dots[idx]) dots[idx].classList.remove('active');
+      idx = (idx + 1) % imgs.length;
+      imgs[idx].classList.add('active');
+      if (dots[idx]) dots[idx].classList.add('active');
+    }, 4000);
+    teaserAutoplayTimers.set(box, timer);
+  });
+}
+startTeaserImageCycles();
 </script>
 </body>
 </html>
