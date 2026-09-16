@@ -57,7 +57,7 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
 .sf-btn.active{background:var(--green);border-color:var(--green);color:#fff;font-weight:700;}
 #count-chip{font-size:12px;color:var(--gray3);white-space:nowrap;}
 
-#content, #products-content, #announcements-content{padding:24px;max-width:1400px;margin:0 auto;}
+#content, #announcements-content{padding:24px;max-width:1400px;margin:0 auto;}
 #empty-msg{text-align:center;color:var(--gray3);padding:80px 20px;font-size:14px;line-height:1.8;}
 #empty-msg.hidden{display:none;}
 
@@ -112,29 +112,6 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
 .btn-add{padding:12px 22px;border:none;border-radius:999px;background:var(--green);color:#fff;font-weight:700;font-size:13px;cursor:pointer;transition:background .15s ease;}
 .btn-add:hover{background:var(--green-dark);}
 
-.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
-.prod-card{background:var(--white);border:1px solid var(--hairline);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:9px;transition:box-shadow .15s ease;}
-.prod-card:hover{box-shadow:0 8px 22px rgba(46,51,39,.1);}
-.prod-img-row{display:flex;gap:8px;}
-.prod-img-box{width:100%;aspect-ratio:1/1;border-radius:14px;background:var(--gray-light);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;position:relative;}
-.prod-img-row .prod-img-box{width:auto;flex:1;min-width:0;}
-.prod-img-box img{width:100%;height:100%;object-fit:cover;}
-.prod-img-box .ph{font-size:34px;}
-.prod-img-box .upload-hint{position:absolute;bottom:0;left:0;right:0;background:rgba(20,30,20,.6);color:#fff;font-size:10px;text-align:center;padding:5px;}
-.prod-img-box .slot-tag{position:absolute;top:5px;left:6px;background:rgba(20,30,20,.55);color:#fff;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:999px;}
-.prod-card input,.prod-card textarea,.prod-card select{width:100%;padding:8px 12px;border:1px solid var(--gray4);border-radius:12px;font-size:12.5px;font-family:inherit;background:var(--paper);}
-.prod-card input:focus,.prod-card textarea:focus,.prod-card select:focus{outline:none;border-color:var(--green);background:var(--white);}
-.prod-card textarea{min-height:44px;resize:vertical;}
-.prod-card .f-name{font-family:var(--heading);font-weight:700;font-size:13.5px;}
-.prod-field-label{font-size:10.5px;font-weight:700;color:var(--gray3);letter-spacing:.02em;}
-.prod-row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.prod-actions{display:flex;gap:8px;margin-top:6px;}
-.prod-actions button{flex:1;padding:9px;border-radius:999px;border:none;font-weight:700;font-size:12px;cursor:pointer;transition:background .15s ease;}
-.prod-actions .save{background:var(--green);color:#fff;}
-.prod-actions .save:hover{background:var(--green-dark);}
-.prod-actions .delete{background:var(--red-light);color:var(--red);}
-.prod-actions .delete:hover{background:var(--red);color:#fff;}
-
 .ann-list{display:flex;flex-direction:column;gap:14px;}
 .ann-card{background:var(--white);border:1px solid var(--hairline);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;}
 .ann-card input,.ann-card textarea{width:100%;padding:9px 13px;border:1px solid var(--gray4);border-radius:12px;font-size:13px;font-family:inherit;margin-top:5px;background:var(--paper);}
@@ -169,7 +146,6 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
 
 <div id="maintabs">
   <button class="main-tab-btn active" data-tab="orders" onclick="switchTab('orders')" data-i18n="tabOrders">📦 注文管理</button>
-  <button class="main-tab-btn" data-tab="products" onclick="switchTab('products')" data-i18n="tabProducts">🌿 商品管理</button>
   <button class="main-tab-btn" data-tab="announcements" onclick="switchTab('announcements')" data-i18n="tabAnnouncements">📢 お知らせ管理</button>
 </div>
 
@@ -191,17 +167,6 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
   <div id="content">
     <div id="empty-msg" data-i18n="emptyLoading">読み込み中...</div>
     <div class="order-grid" id="order-grid"></div>
-  </div>
-</div>
-
-<!-- ===== TAB: SẢN PHẨM ===== -->
-<div class="tab-panel" id="tab-products">
-  <div id="products-content">
-    <div class="top-action-row"><button class="btn-add" onclick="addProductCard(this)" data-i18n="btnAddProduct">+ 商品を追加</button></div>
-    <div class="prod-grid" id="prod-grid"></div>
-    <!-- Liet ke ro duoi file ben canh image/*: hop thoai chon file cua Windows loc theo
-         MIME, may nao dang ky MIME .jpg bi hong se AN luon file .jpg neu chi de image/* -->
-    <input type="file" id="prod-file-input" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.heic" style="display:none;" onchange="onProductImageChosen(event)">
   </div>
 </div>
 
@@ -248,9 +213,10 @@ body{font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic Pr
 </div>
 
 <script>
-// Cung 1 Apps Script deployment voi index.html/shop.html - dung cac action
-// getMailOrders/updateMailOrder/checkMailOrdersNow + getAdminProducts/addProduct/
-// updateProduct/deleteProduct/uploadProductImage + getAdminAnnouncements/add.../update.../delete...
+// Cung 1 Apps Script deployment voi cac trang cong khai - dung cac action
+// getMailOrders/updateMailOrder/deleteMailOrder/checkMailOrdersNow + getAdminAnnouncements/
+// addAnnouncement/updateAnnouncement/deleteAnnouncement. San pham gio ghi cung
+// trong HTML (index.html/items.html), khong con qua Apps Script nua.
 const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
 const STAFF_KEY = 'kome_warehouse_staff';
 
@@ -262,10 +228,7 @@ try { localStorage.removeItem('kome_warehouse_sheetUrl'); } catch (e) {}
 var orders = [];
 var currentFilter = 'all';
 var editingId = null;
-var products = [];
 var announcements = [];
-var uploadTargetProductId = null;
-var uploadTargetSlot = 1;
 
 document.getElementById('staff-input').value = localStorage.getItem(STAFF_KEY) || '';
 document.getElementById('staff-input').addEventListener('change', function(){
@@ -282,9 +245,7 @@ const I18N = {
   pageTitle:        {vi:'🌿 Quản lý Rau mùi (Kho)', ja:'🌿 パクチー 管理画面（倉庫）'},
   staffPh:          {vi:'Tên phụ trách', ja:'担当者名'},
   tabOrders:        {vi:'📦 Đơn hàng', ja:'📦 注文管理'},
-  tabProducts:      {vi:'🌿 Sản phẩm', ja:'🌿 商品管理'},
   tabAnnouncements: {vi:'📢 Thông báo', ja:'📢 お知らせ管理'},
-  errNotImage:      {vi:'Vui lòng chọn file ảnh (jpg, png...)', ja:'画像ファイルを選択してください'},
   savedFlash:       {vi:'✓ Đã lưu', ja:'✓ 保存済み'},
   btnCheckMail:     {vi:'📬 Kiểm tra mail ngay', ja:'📬 メールを今すぐ確認'},
   btnRefresh:       {vi:'🔄 Tải lại', ja:'🔄 更新'},
@@ -328,22 +289,6 @@ const I18N = {
   alertMailCheckedTpl: {vi:'Đã lấy {n} đơn hàng mới từ mail.', ja:'{n} 件の新規注文メールを取り込みました。'},
   alertErrTpl:      {vi:'Lỗi: {msg}', ja:'エラー: {msg}'},
   alertSaveErrTpl:  {vi:'Lỗi khi lưu: {msg}', ja:'保存エラー: {msg}'},
-  btnAddProduct:    {vi:'+ Thêm sản phẩm', ja:'+ 商品を追加'},
-  prodNewName:      {vi:'Sản phẩm mới', ja:'新しい商品'},
-  prodNameLabel:    {vi:'Tên sản phẩm', ja:'商品名'},
-  prodSpecLabel:    {vi:'Quy cách đóng gói', ja:'規格'},
-  prodDescLabel:    {vi:'Mô tả', ja:'説明'},
-  prodPriceLabel:   {vi:'Giá (¥)', ja:'価格（¥）'},
-  prodStatusLabel:  {vi:'Trạng thái', ja:'ステータス'},
-  prodSortLabel:    {vi:'Thứ tự hiển thị', ja:'表示順'},
-  prodStatusInStock:{vi:'Còn hàng', ja:'在庫あり'},
-  prodStatusOut:    {vi:'Hết hàng', ja:'在庫切れ'},
-  prodStatusOff:    {vi:'Tạm ngưng bán', ja:'販売休止'},
-  uploadHint:       {vi:'Bấm để đổi ảnh', ja:'クリックして画像変更'},
-  uploading:        {vi:'Đang tải ảnh lên...', ja:'アップロード中...'},
-  btnSaveProduct:   {vi:'Lưu', ja:'保存'},
-  btnDeleteProduct: {vi:'Xóa', ja:'削除'},
-  confirmDeleteProduct: {vi:'Xóa sản phẩm này?', ja:'この商品を削除しますか？'},
   btnAddAnnouncement: {vi:'+ Thêm thông báo', ja:'+ お知らせを追加'},
   annNewTitle:      {vi:'Thông báo mới', ja:'新しいお知らせ'},
   annTitleLabel:    {vi:'Tiêu đề', ja:'タイトル'},
@@ -353,7 +298,6 @@ const I18N = {
   btnSaveAnnouncement: {vi:'Lưu', ja:'保存'},
   btnDeleteAnnouncement: {vi:'Xóa', ja:'削除'},
   confirmDeleteAnnouncement: {vi:'Xóa thông báo này?', ja:'このお知らせを削除しますか？'},
-  emptyProducts:    {vi:'Chưa có sản phẩm nào.', ja:'商品がまだありません。'},
   emptyAnnouncements: {vi:'Chưa có thông báo nào.', ja:'お知らせがまだありません。'}
 };
 const STATUS_I18N = {
@@ -393,7 +337,6 @@ function setLang(lang){
   localStorage.setItem(LANG_KEY, lang);
   applyI18n();
   renderOrders();
-  renderProducts();
   renderAnnouncements();
 }
 
@@ -401,7 +344,6 @@ function switchTab(name){
   document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  if (name === 'products' && !products.length) loadProducts();
   if (name === 'announcements' && !announcements.length) loadAnnouncements();
 }
 
@@ -447,43 +389,6 @@ function setStatus(text, ok){
 }
 function esc(s){
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-// Kiem tra file co phai anh khong. KHONG chi dua vao file.type: mot so may Windows
-// tra ve file.type rong/sai cho file .jpg (loi lien ket dinh dang cua he dieu hanh,
-// khong phai loi web) - nen fallback kiem tra theo duoi file khi type khong ro.
-function looksLikeImageFile(file){
-  if (file.type && file.type.startsWith('image/')) return true;
-  return /\.(jpe?g|png|gif|webp|bmp|heic|heif)$/i.test(file.name || '');
-}
-
-// Thu nho + nen anh NGAY TREN TRINH DUYET truoc khi gui len server (qua canvas) - anh
-// dien thoai goc thuong 3-10MB, sau buoc nay con ~150-400KB nen upload nhanh hon RAT
-// NHIEU va khong ton quota Drive. 1600px la du net cho anh san pham (Drive con
-// tu resize xuong 1000px khi hien thi qua URL thumbnail).
-function resizeImageFile(file, maxDim, quality){
-  return new Promise(function(resolve, reject){
-    const reader = new FileReader();
-    reader.onload = function(){
-      const img = new Image();
-      img.onload = function(){
-        let w = img.width, h = img.height;
-        if (w > maxDim || h > maxDim) {
-          if (w >= h) { h = Math.round(h * maxDim / w); w = maxDim; }
-          else { w = Math.round(w * maxDim / h); h = maxDim; }
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL('image/jpeg', quality || 0.82);
-        resolve({ base64: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
-      };
-      img.onerror = function(){ reject(new Error('Image decode error')); };
-      img.src = reader.result;
-    };
-    reader.onerror = function(){ reject(new Error('File read error')); };
-    reader.readAsDataURL(file);
-  });
 }
 
 // Disable + doi chu nut khi dang cho server, tranh bam trung / khong ro co dang chay
@@ -649,132 +554,6 @@ async function deleteOrder(btn){
     setBtnLoading(btn, false);
     alert(tf('alertConnFailTpl', { msg: e.message }));
   }
-}
-
-// ===== TAB SẢN PHẨM =====
-async function loadProducts(){
-  try {
-    const j = await apiGet('action=getAdminProducts');
-    if (j.status === 'success') { products = j.data || []; renderProducts(); }
-    else alert(tf('alertFetchErrTpl', { msg: j.message || '?' }));
-  } catch (e) {
-    alert(tf('alertConnFailTpl', { msg: e.message }));
-  }
-}
-function renderProducts(){
-  const grid = document.getElementById('prod-grid');
-  if (!products.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--gray3);padding:40px 0;">' + esc(tr('emptyProducts')) + '</div>'; return; }
-  grid.innerHTML = products.map(p => productCardHtml(p)).join('');
-}
-function productCardHtml(p){
-  return '<div class="prod-card" data-id="' + esc(p.id) + '">' +
-    '<div class="prod-img-row">' +
-      '<div class="prod-img-box" onclick="triggerImageUpload(\'' + p.id + '\', 1)">' +
-        '<span class="slot-tag">1</span>' +
-        (p.imageUrl ? '<img src="' + esc(p.imageUrl) + '">' : '<span class="ph">🌿</span>') +
-        '<div class="upload-hint">' + esc(tr('uploadHint')) + '</div>' +
-      '</div>' +
-      '<div class="prod-img-box" onclick="triggerImageUpload(\'' + p.id + '\', 2)">' +
-        '<span class="slot-tag">2</span>' +
-        (p.imageUrl2 ? '<img src="' + esc(p.imageUrl2) + '">' : '<span class="ph">🌿</span>') +
-        '<div class="upload-hint">' + esc(tr('uploadHint')) + '</div>' +
-      '</div>' +
-    '</div>' +
-    '<div><span class="prod-field-label">' + esc(tr('prodNameLabel')) + '</span><input class="f-name" value="' + esc(p.name) + '"></div>' +
-    '<div><span class="prod-field-label">' + esc(tr('prodSpecLabel')) + '</span><input class="f-spec" value="' + esc(p.spec) + '"></div>' +
-    '<div><span class="prod-field-label">' + esc(tr('prodDescLabel')) + '</span><textarea class="f-desc">' + esc(p.description) + '</textarea></div>' +
-    '<div class="prod-row2">' +
-      '<div><span class="prod-field-label">' + esc(tr('prodPriceLabel')) + '</span><input class="f-price" type="number" value="' + esc(p.price) + '"></div>' +
-      '<div><span class="prod-field-label">' + esc(tr('prodSortLabel')) + '</span><input class="f-sort" type="number" value="' + esc(p.sortOrder) + '"></div>' +
-    '</div>' +
-    '<div><span class="prod-field-label">' + esc(tr('prodStatusLabel')) + '</span>' +
-    '<select class="f-status">' +
-      '<option value="在庫あり"' + (p.status === '在庫あり' ? ' selected' : '') + '>' + esc(tr('prodStatusInStock')) + '</option>' +
-      '<option value="在庫切れ"' + (p.status === '在庫切れ' ? ' selected' : '') + '>' + esc(tr('prodStatusOut')) + '</option>' +
-      '<option value="販売休止"' + (p.status === '販売休止' ? ' selected' : '') + '>' + esc(tr('prodStatusOff')) + '</option>' +
-    '</select></div>' +
-    '<div class="prod-actions">' +
-      '<button class="save" onclick="saveProduct(\'' + p.id + '\', this)">' + esc(tr('btnSaveProduct')) + '</button>' +
-      '<button class="delete" onclick="deleteProduct(\'' + p.id + '\', this)">' + esc(tr('btnDeleteProduct')) + '</button>' +
-    '</div>' +
-  '</div>';
-}
-async function addProductCard(btn){
-  setBtnLoading(btn, true);
-  try {
-    const fields = { name: tr('prodNewName'), description: '', spec: '', price: 0, imageUrl: '', imageUrl2: '', status: '在庫あり', sortOrder: products.length + 1 };
-    const j = await apiPost({ action: 'addProduct', data: { fields: fields } });
-    if (j.status === 'ok') {
-      products.push(Object.assign({ id: j.id, updatedAt: '' }, fields));
-      renderProducts();
-    } else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
-  } catch (e) { alert(tf('alertConnFailTpl', { msg: e.message })); }
-  setBtnLoading(btn, false);
-}
-async function saveProduct(id, btn){
-  const card = document.querySelector('.prod-card[data-id="' + id + '"]');
-  if (!card) return;
-  const fields = {
-    name: card.querySelector('.f-name').value.trim(),
-    spec: card.querySelector('.f-spec').value.trim(),
-    description: card.querySelector('.f-desc').value.trim(),
-    price: card.querySelector('.f-price').value,
-    sortOrder: card.querySelector('.f-sort').value,
-    status: card.querySelector('.f-status').value
-  };
-  setBtnLoading(btn, true);
-  try {
-    const j = await apiPost({ action: 'updateProduct', data: { id: id, fields: fields } });
-    setBtnLoading(btn, false);
-    if (j.status === 'ok') {
-      const p = products.find(x => x.id === id);
-      if (p) Object.assign(p, fields, { price: parseFloat(fields.price) || 0, sortOrder: parseFloat(fields.sortOrder) || 0 });
-      flashButton(btn, tr('savedFlash'));
-    } else alert(tf('alertSaveErrTpl', { msg: j.message || '?' }));
-  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
-}
-async function deleteProduct(id, btn){
-  if (!confirm(tr('confirmDeleteProduct'))) return;
-  setBtnLoading(btn, true);
-  try {
-    const j = await apiPost({ action: 'deleteProduct', data: { id: id } });
-    if (j.status === 'ok') {
-      products = products.filter(p => p.id !== id);
-      renderProducts();
-    } else { setBtnLoading(btn, false); alert(tf('alertSaveErrTpl', { msg: j.message || '?' })); }
-  } catch (e) { setBtnLoading(btn, false); alert(tf('alertConnFailTpl', { msg: e.message })); }
-}
-function triggerImageUpload(id, slot){
-  uploadTargetProductId = id;
-  uploadTargetSlot = slot || 1;
-  document.getElementById('prod-file-input').click();
-}
-async function onProductImageChosen(ev){
-  const file = ev.target.files && ev.target.files[0];
-  ev.target.value = '';
-  if (!file || !uploadTargetProductId) return;
-  if (!looksLikeImageFile(file)) { alert(tr('errNotImage')); return; }
-  const id = uploadTargetProductId;
-  const slot = uploadTargetSlot;
-  const fieldName = slot === 2 ? 'imageUrl2' : 'imageUrl';
-  const boxes = document.querySelectorAll('.prod-card[data-id="' + id + '"] .prod-img-box');
-  const box = boxes[slot - 1];
-  if (box) box.innerHTML = '<span class="slot-tag">' + slot + '</span><span class="ph">⏳</span><div class="upload-hint">' + esc(tr('uploading')) + '</div>';
-  try {
-    const resized = await resizeImageFile(file, 1600, 0.82);
-    const up = await apiPost({ action: 'uploadProductImage', data: { filename: 'product.jpg', mimeType: resized.mimeType, base64Data: resized.base64 } });
-    if (up.status === 'ok') {
-      const fields = {}; fields[fieldName] = up.url;
-      await apiPost({ action: 'updateProduct', data: { id: id, fields: fields } });
-      const p = products.find(x => x.id === id);
-      if (p) p[fieldName] = up.url;
-    } else {
-      alert(tf('alertSaveErrTpl', { msg: up.message || '?' }));
-    }
-  } catch (e) {
-    alert(tf('alertConnFailTpl', { msg: e.message }));
-  }
-  renderProducts();
 }
 
 // ===== TAB THÔNG BÁO =====
