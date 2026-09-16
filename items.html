@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>商品｜株式会社KOME</title>
 <meta name="description" content="業務用パクチー（コリアンダー）の規格・お届け・保存方法のご案内。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="株式会社KOME">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="商品｜株式会社KOME">
+<meta property="og:description" content="業務用パクチー（コリアンダー）の規格・お届け・保存方法のご案内。">
+<meta property="og:url" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/items.html">
+<meta property="og:image" content="https://xuanloc-blip.github.io/kome-pakuchi-shop/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="logokome.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,6 +66,8 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .item-img-dot{width:8px;height:8px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.55);cursor:pointer;transition:all .25s ease;}
 .item-img-dot.active{background:#fff;width:22px;}
 .item-info h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:18px;}
+.stock-badge{display:inline-block;vertical-align:middle;margin-left:12px;font-size:13px;font-weight:700;padding:6px 15px;border-radius:999px;background:#FBEAE9;color:#B3261E;}
+.btn-pill-disabled{background:var(--paper-deep);color:var(--ink-faint);width:100%;cursor:not-allowed;border:1.5px solid rgba(46,51,39,.12);}
 .item-info>p{font-size:15px;line-height:1.95;color:var(--ink-soft);margin-bottom:30px;}
 .spec-card{background:var(--paper-card);border:1px solid rgba(46,51,39,.09);border-radius:22px;padding:8px 26px;box-shadow:0 3px 12px rgba(46,51,39,.05);}
 .spec-card-row{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:14px;padding:16px 0;border-bottom:1px solid rgba(46,51,39,.1);}
@@ -96,7 +108,7 @@ footer{background:var(--green-dark);color:var(--paper);}
       <a class="nav-btn" href="order.html">ご注文・お問合わせ</a>
       <a class="nav-btn" href="about.html">会社案内</a>
     </nav>
-    <a class="phone-pill" href="tel:0280813630">お電話 0280-81-3630</a>
+    <a class="phone-pill" href="tel:0367096655">お電話 03-6709-6655</a>
   </div>
 </header>
 
@@ -106,7 +118,7 @@ footer{background:var(--green-dark);color:var(--paper);}
     <p class="section-lead">いまはパクチー（コリアンダー）をお届けしています。他の野菜のご相談も歓迎です。</p>
   </section>
 
-  <div id="empty-items" style="display:none;">読み込み中...</div>
+  <div id="empty-items">読み込み中...</div>
   <div id="item-list"></div>
 </main>
 
@@ -114,7 +126,7 @@ footer{background:var(--green-dark);color:var(--paper);}
   <div class="footer-inner">
     <div>
       <div class="footer-brand"><img src="logokome.png" alt="KOME"><div class="footer-brand-name">株式会社KOME</div></div>
-      <p class="footer-info">〒306-0404　茨城県猿島郡境町長井戸1691-1<br>TEL 0280-81-3630（朝9時〜夕方6時）<br>FAX 0280-81-3631<br>Email pakuchi@komejapan.com</p>
+      <p class="footer-info">〒169-0075　東京都新宿区高田馬場2丁目1番2号　TOHMA高田馬場6階<br>TEL 03-6709-6655（朝9時〜夕方6時）<br>FAX 03-6709-6656<br>Email pakuchi@komejapan.com</p>
     </div>
     <div>
       <div class="footer-heading">メニュー</div>
@@ -185,7 +197,9 @@ const FALLBACK_ITEM = {
 // khong de anh cu doi lien tuc lam mat anh khach dang muon nhin.
 function itemImagesHtml(p){
   const imgs = [p.imageUrl, p.imageUrl2].filter(Boolean);
-  const imgsHtml = imgs.map((src, i) => '<img src="' + esc(src) + '" alt="' + esc(p.name) + '" class="' + (i === 0 ? 'active' : '') + '">').join('');
+  // Anh thu 2 dang an (opacity:0) nen ha do uu tien tai xuong, de anh dang hien len truoc.
+  const imgsHtml = imgs.map((src, i) => '<img src="' + esc(src) + '" alt="' + esc(p.name) + '" decoding="async"' +
+    (i === 0 ? ' class="active" fetchpriority="high"' : ' class="" loading="lazy" fetchpriority="low"') + '>').join('');
   if (imgs.length < 2) return imgsHtml;
   const dotsHtml = '<div class="item-img-dots">' + imgs.map((_, i) =>
     '<button type="button" class="item-img-dot' + (i === 0 ? ' active' : '') + '" onclick="goToItemImage(this, ' + i + ')" aria-label="' + (i + 1) + '"></button>'
@@ -219,10 +233,16 @@ function startItemImageCycles(){
 }
 
 function itemBlockHtml(p){
+  // Het hang: hien nhan 在庫切れ va KHONG cho bam xin bao gia (nut thanh mo, khong bam duoc).
+  const soldOut = p.status === '在庫切れ';
+  const badge = soldOut ? '<span class="stock-badge">在庫切れ</span>' : '';
+  const cta = soldOut
+    ? '<button class="btn-pill btn-pill-disabled" style="margin-top:24px;" disabled>在庫切れ</button>'
+    : '<a class="btn-pill btn-pill-solid" href="order.html" style="margin-top:24px;">この商品のお見積りを頼む</a>';
   return '<div class="item-block"><div class="item-grid">' +
     '<div class="item-img">' + itemImagesHtml(p) + '</div>' +
     '<div class="item-info">' +
-      '<h2>' + esc(p.name) + '</h2>' +
+      '<h2>' + esc(p.name) + badge + '</h2>' +
       '<p>' + esc(p.description) + '</p>' +
       '<div class="spec-card">' +
         '<div class="spec-card-row"><div class="k">入数</div><div class="v">' + esc(p.spec || '規格はお問合わせください') + '</div></div>' +
@@ -230,22 +250,22 @@ function itemBlockHtml(p){
         '<div class="spec-card-row"><div class="k">お届け</div><div class="v">冷蔵便で全国へ。前日15時までのご注文で翌日出荷。</div></div>' +
         '<div class="spec-card-row"><div class="k">保存</div><div class="v">袋のまま冷蔵庫（5℃前後）で立てて保存。3〜4日を目安にお使いください。</div></div>' +
       '</div>' +
-      '<a class="btn-pill btn-pill-solid" href="order.html" style="margin-top:24px;">この商品のお見積りを頼む</a>' +
+      cta +
     '</div>' +
   '</div></div>';
 }
 
 async function loadItems(){
   const listEl = document.getElementById('item-list');
+  const loadingEl = document.getElementById('empty-items');
+  let html = '';
   try {
     const j = await apiGet('action=getShopProducts');
-    if (j.status === 'success' && j.data && j.data.length) {
-      listEl.innerHTML = j.data.map(itemBlockHtml).join('');
-      startItemImageCycles();
-      return;
-    }
-  } catch (e) { /* loi thi hien fallback ben duoi, khong de trang trong */ }
-  listEl.innerHTML = itemBlockHtml(FALLBACK_ITEM);
+    if (j.status === 'success' && j.data && j.data.length) html = j.data.map(itemBlockHtml).join('');
+  } catch (e) { /* loi thi dung khoi mac dinh ben duoi, khong de trang trong */ }
+  if (!html) html = itemBlockHtml(FALLBACK_ITEM);
+  loadingEl.style.display = 'none';
+  listEl.innerHTML = html;
   startItemImageCycles();
 }
 loadItems();
