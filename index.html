@@ -61,6 +61,31 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .nav-btn.active:hover{background:var(--green);}
 .phone-pill{flex-shrink:0;background:var(--green);color:var(--paper);font-size:15px;font-weight:700;padding:14px 22px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;}
 .phone-pill:hover{background:var(--green-dark);color:var(--paper);}
+.nav-toggle-cb{position:absolute;opacity:0;pointer-events:none;}
+.menu-toggle{display:none;}
+.phone-pill .ppill-icon{display:none;}
+/* Man hinh dien thoai: gop 4 muc menu vao 1 nut hamburger (checkbox an, khong can
+   JS) - thay vi de header choan toi 3 dong (logo / menu / dien thoai) luon dinh o
+   tren khi cuon, chi con DUY NHAT 1 dong gon. */
+@media (max-width:700px){
+  .header-inner{flex-wrap:nowrap;position:relative;padding:0 16px;gap:8px;}
+  nav.main-nav{
+    display:none;position:absolute;top:100%;left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:2px;margin-left:0;
+    background:var(--paper);border-bottom:1px solid var(--hairline);
+    padding:10px 20px 20px;box-shadow:0 10px 24px rgba(46,51,39,.12);
+  }
+  .nav-toggle-cb:checked ~ nav.main-nav{display:flex;}
+  .nav-btn{width:100%;text-align:left;padding:14px 14px;}
+  .brand img{width:32px;height:32px;}
+  .brand-name{font-size:15px;}
+  .phone-pill{order:2;padding:0;width:40px;height:40px;justify-content:center;flex-shrink:0;gap:0;}
+  .phone-pill .ppill-text{display:none;}
+  .phone-pill .ppill-icon{display:block;width:17px;height:17px;}
+  .menu-toggle{order:3;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:var(--paper-hover);cursor:pointer;flex-shrink:0;}
+  .menu-toggle svg{width:19px;height:19px;}
+  .nav-toggle-cb:checked ~ .menu-toggle{background:var(--green);color:var(--paper);}
+}
 
 .btn-pill{cursor:pointer;font-size:17px;font-weight:700;padding:19px 36px;border-radius:999px;border:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
 .btn-pill-leaf{background:var(--leaf);color:var(--green-deepest);}
@@ -93,7 +118,21 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .hero-dots{position:absolute;left:0;right:0;bottom:20px;z-index:3;display:flex;justify-content:center;gap:9px;}
 .hero-dot{width:9px;height:9px;padding:0;border:none;border-radius:999px;background:rgba(255,255,255,.4);cursor:pointer;transition:all .3s ease;}
 .hero-dot.active{background:var(--paper);width:26px;}
-@media (max-width:640px){ .hero{height:560px;} }
+/* Man hinh dien thoai: anh hero (nhat la field-tunnels.jpg, ti le ngang 1.5:1) bi cat
+   2 ben qua nhieu neu khung con cao nhu ban desktop, vi khung doc hep buoc object-fit:
+   cover phai cat rong de vua chieu cao. Giam chieu cao khung + gon lai chu/khoang cach
+   ben duoi de bot cat ma van du cho chu khong bi tran len tren. */
+@media (max-width:640px){
+  .hero{height:460px;}
+  .hero-inner{padding-bottom:32px;}
+  .hero-text h1{font-size:clamp(24px,7vw,36px);line-height:1.32;}
+  .hero-text p{margin-top:14px;font-size:15px;line-height:1.7;}
+  .hero-actions{margin-top:18px;gap:10px;}
+  .hero-actions .btn-pill{padding:14px 22px;font-size:15px;}
+}
+@media (max-width:400px){
+  .hero{height:420px;}
+}
 
 /* ===== FEATURE CARDS ===== */
 .section{max-width:1080px;margin:0 auto;padding:72px 24px;}
@@ -134,6 +173,12 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 /* ===== CLOSING CTA ===== */
 .closing-cta{background:var(--paper-deep);border-top:1px solid rgba(46,51,39,.1);}
 .closing-cta-inner{max-width:1080px;margin:0 auto;padding:72px 24px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;}
+/* Man hinh dien thoai: khoang cach 64-72px giua cac khoi von tinh cho man hinh rong,
+   qua rong so voi chieu cao man hinh dien thoai - giam lai cho vua mat hon. */
+@media (max-width:640px){
+  .section{padding:40px 24px;}
+  .closing-cta-inner{padding:40px 24px;}
+}
 .closing-cta h2{font-family:var(--heading);font-size:28px;font-weight:700;line-height:1.45;margin-bottom:12px;}
 .closing-cta p{font-size:16px;line-height:1.9;color:var(--ink-soft);}
 
@@ -167,13 +212,15 @@ footer{background:var(--green-dark);color:var(--paper);}
 <header>
   <div class="header-inner">
     <a class="brand" href="index.html"><img src="logokome.png" alt="KOME"><span class="brand-name">株式会社KOME</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-cb">
     <nav class="main-nav">
       <a class="nav-btn active" href="index.html">トップ</a>
       <a class="nav-btn" href="items.html">商品</a>
       <a class="nav-btn" href="order.html">ご注文・お問合わせ</a>
       <a class="nav-btn" href="about.html">会社案内</a>
     </nav>
-    <a class="phone-pill" href="tel:0367096655">お電話 03-6709-6655</a>
+    <a class="phone-pill" href="tel:0367096655"><svg class="ppill-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8z"/></svg><span class="ppill-text">お電話 03-6709-6655</span></a>
+    <label for="nav-toggle" class="menu-toggle" aria-label="メニューを開く"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></label>
   </div>
 </header>
 
