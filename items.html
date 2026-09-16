@@ -99,8 +99,6 @@ nav.main-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:
 .spec-card-row .k{font-size:14px;font-weight:700;color:var(--ink-soft);}
 .spec-card-row .v{font-size:16px;}
 .spec-card-row .v.price{font-weight:700;color:var(--green);}
-#empty-items{text-align:center;color:var(--ink-faint);padding:60px 24px;}
-
 footer{background:var(--green-dark);color:var(--paper);}
 .footer-inner{max-width:1080px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:36px;}
 .footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
@@ -143,8 +141,39 @@ footer{background:var(--green-dark);color:var(--paper);}
     <p class="section-lead">いまはパクチー（コリアンダー）をお届けしています。他の野菜のご相談も歓迎です。</p>
   </section>
 
-  <div id="empty-items">読み込み中...</div>
-  <div id="item-list"></div>
+  <!-- Thong tin san pham ghi cung trong HTML (khong con goi Apps Script nua - hay
+       bi loi 404 chap chon, khong phu hop de hien thi cong khai). Muon them/sua/xoa
+       san pham thi sua truc tiep khoi item-block ben duoi:
+         - Het hang: them span class="stock-badge" chua chu 在庫切れ ngay sau ten san
+           pham, va doi nut CTA thanh mot button class="btn-pill btn-pill-disabled"
+           co thuoc tinh disabled, chu 在庫切れ.
+         - Them san pham moi: copy nguyen 1 khoi item-block roi sua lai noi dung.
+         - Anh: dat file vao thu muc images/ roi tro src toi do (khong dung link
+           Google Drive nua). Toi da 2 anh/san pham (se tu dong doi anh); chi can
+           1 anh neu chi co 1 (bo hang cham tron di). -->
+  <div id="item-list">
+    <div class="item-block"><div class="item-grid">
+      <div class="item-img">
+        <img src="images/product-pakuchi-1.jpg" alt="パクチー（1束）" class="active" fetchpriority="high" decoding="async">
+        <img src="images/product-pakuchi-2.jpg" alt="パクチー（1束）" loading="lazy" fetchpriority="low" decoding="async">
+        <div class="item-img-dots">
+          <button type="button" class="item-img-dot active" onclick="goToItemImage(this, 0)" aria-label="1"></button>
+          <button type="button" class="item-img-dot" onclick="goToItemImage(this, 1)" aria-label="2"></button>
+        </div>
+      </div>
+      <div class="item-info">
+        <h2>パクチー（1束）</h2>
+        <p>新鮮なパクチーです。</p>
+        <div class="spec-card">
+          <div class="spec-card-row"><div class="k">入数</div><div class="v">1束（約100g）</div></div>
+          <div class="spec-card-row"><div class="k">価格</div><div class="v price">お見積り（無料）</div></div>
+          <div class="spec-card-row"><div class="k">お届け</div><div class="v">冷蔵便で全国へ。前日15時までのご注文で翌日出荷。</div></div>
+          <div class="spec-card-row"><div class="k">保存</div><div class="v">袋のまま冷蔵庫（5℃前後）で立てて保存。3〜4日を目安にお使いください。</div></div>
+        </div>
+        <a class="btn-pill btn-pill-solid" href="order.html" style="margin-top:24px;">この商品のお見積りを頼む</a>
+      </div>
+    </div></div>
+  </div>
 </main>
 
 <footer>
@@ -175,50 +204,9 @@ footer{background:var(--green-dark);color:var(--paper);}
 </footer>
 
 <script>
-const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwszMofAslML69DVGfXvGn9tjp57R9ksUBim-6i6mMaVARwQFpHXPC2ivexjJENiJJc/exec';
-var jsonpSeq = 0;
-function fetchJSONP(url){
-  return new Promise((res, rej) => {
-    const cb = 'kome_cb_' + (++jsonpSeq) + '_' + Date.now();
-    const s = document.createElement('script');
-    const t = setTimeout(() => { cl(); rej(new Error('Timeout')); }, 10000);
-    function onGlobalError(ev){
-      const msg = (ev && ev.message) || '';
-      if (msg.indexOf(cb) !== -1) { cl(); rej(new Error('Server response error')); }
-    }
-    window.addEventListener('error', onGlobalError);
-    window[cb] = d => { cl(); res(d); };
-    function cl(){ clearTimeout(t); delete window[cb]; window.removeEventListener('error', onGlobalError); s.parentNode && s.parentNode.removeChild(s); }
-    s.onerror = () => { cl(); rej(new Error('connection error')); };
-    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
-    document.head.appendChild(s);
-  });
-}
-function apiGet(actionQuery){ return fetchJSONP(DEFAULT_SHEET_URL + '?' + actionQuery); }
-function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-// TRUOC DAY co 1 "FALLBACK_ITEM" gia (ten/mo ta bia dat) de hien khi API loi - nhung
-// dung the thi dung la nguyen nhan gay loi "truoc khi tai xong hien 1 kieu, tai xong
-// hien kieu khac": moi khi API cham/loi tam thoi (Apps Script "nguoi" - cold start),
-// khach se thay san pham GIA (ten khac, khong anh) roi mot luc sau moi doi sang san
-// pham THAT. Bo hoan toan du lieu bia dat - loi that thi hien thong bao that + nut
-// thu lai, khong bao gio hien thong tin khong dung voi du lieu that.
-
-// Toi da 2 anh/san pham (imageUrl, imageUrl2) - neu co ca 2 thi tu dong
-// chuyen doi (crossfade) qua startItemImageCycles(), neu chi co 1 thi hien tinh.
-// Co cham tron de khach bam chon 1 anh xem ki - bam vao thi DUNG han tu dong chuyen,
-// khong de anh cu doi lien tuc lam mat anh khach dang muon nhin.
-function itemImagesHtml(p){
-  const imgs = [p.imageUrl, p.imageUrl2].filter(Boolean);
-  // Anh thu 2 dang an (opacity:0) nen ha do uu tien tai xuong, de anh dang hien len truoc.
-  const imgsHtml = imgs.map((src, i) => '<img src="' + esc(src) + '" alt="' + esc(p.name) + '" decoding="async"' +
-    (i === 0 ? ' class="active" fetchpriority="high"' : ' class="" loading="lazy" fetchpriority="low"') + '>').join('');
-  if (imgs.length < 2) return imgsHtml;
-  const dotsHtml = '<div class="item-img-dots">' + imgs.map((_, i) =>
-    '<button type="button" class="item-img-dot' + (i === 0 ? ' active' : '') + '" onclick="goToItemImage(this, ' + i + ')" aria-label="' + (i + 1) + '"></button>'
-  ).join('') + '</div>';
-  return imgsHtml + dotsHtml;
-}
+// Anh san pham hien tinh trong HTML - JS o day chi lo hieu ung doi anh (crossfade +
+// cham tron), khong con goi API nao ca. San pham chi co 1 anh (khong co hang
+// .item-img-dots) thi cac ham duoi day tu bo qua, khong loi gi.
 const itemAutoplayTimers = new Map();
 function goToItemImage(dotEl, i){
   const box = dotEl.closest('.item-img');
@@ -244,65 +232,7 @@ function startItemImageCycles(){
     itemAutoplayTimers.set(box, timer);
   });
 }
-
-function itemBlockHtml(p){
-  // Het hang: hien nhan 在庫切れ va KHONG cho bam xin bao gia (nut thanh mo, khong bam duoc).
-  const soldOut = p.status === '在庫切れ';
-  const badge = soldOut ? '<span class="stock-badge">在庫切れ</span>' : '';
-  const cta = soldOut
-    ? '<button class="btn-pill btn-pill-disabled" style="margin-top:24px;" disabled>在庫切れ</button>'
-    : '<a class="btn-pill btn-pill-solid" href="order.html" style="margin-top:24px;">この商品のお見積りを頼む</a>';
-  return '<div class="item-block"><div class="item-grid">' +
-    '<div class="item-img">' + itemImagesHtml(p) + '</div>' +
-    '<div class="item-info">' +
-      '<h2>' + esc(p.name) + badge + '</h2>' +
-      '<p>' + esc(p.description) + '</p>' +
-      '<div class="spec-card">' +
-        '<div class="spec-card-row"><div class="k">入数</div><div class="v">' + esc(p.spec || '規格はお問合わせください') + '</div></div>' +
-        '<div class="spec-card-row"><div class="k">価格</div><div class="v price">お見積り（無料）</div></div>' +
-        '<div class="spec-card-row"><div class="k">お届け</div><div class="v">冷蔵便で全国へ。前日15時までのご注文で翌日出荷。</div></div>' +
-        '<div class="spec-card-row"><div class="k">保存</div><div class="v">袋のまま冷蔵庫（5℃前後）で立てて保存。3〜4日を目安にお使いください。</div></div>' +
-      '</div>' +
-      cta +
-    '</div>' +
-  '</div></div>';
-}
-
-function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-// Thu lai toi da 3 lan (cach nhau 1.5s/3s) truoc khi bao loi - Apps Script doi khi
-// "nguoi" (cold start) cham vai giay dau, thu lai se qua duoc phan lon cac lan cham
-// tam thoi nay ma khach khong he biet, thay vi lap tuc bao loi/hien du lieu gia.
-async function fetchProductsWithRetry(){
-  const delays = [0, 1500, 3000];
-  for (let i = 0; i < delays.length; i++) {
-    if (delays[i]) await sleep(delays[i]);
-    try {
-      const j = await apiGet('action=getShopProducts');
-      if (j.status === 'success' && j.data && j.data.length) return j.data;
-    } catch (e) { /* thu lai lan tiep theo */ }
-  }
-  return null;
-}
-
-async function loadItems(){
-  const listEl = document.getElementById('item-list');
-  const loadingEl = document.getElementById('empty-items');
-  listEl.innerHTML = '';
-  loadingEl.textContent = '読み込み中...';
-  loadingEl.style.display = '';
-
-  const data = await fetchProductsWithRetry();
-  if (data) {
-    loadingEl.style.display = 'none';
-    listEl.innerHTML = data.map(itemBlockHtml).join('');
-    startItemImageCycles();
-  } else {
-    loadingEl.innerHTML = esc('商品情報を読み込めませんでした。電波の良い場所でもう一度お試しください。') +
-      ' <button type="button" onclick="loadItems()" style="margin-left:8px;background:none;border:1.5px solid var(--ink-faint);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink);">再読み込み</button>';
-  }
-}
-loadItems();
+startItemImageCycles();
 </script>
 </body>
 </html>
