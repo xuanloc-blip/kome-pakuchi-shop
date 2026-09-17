@@ -212,6 +212,12 @@ footer{background:var(--green-dark);color:var(--paper);}
           <span class="f-label">ご要望・ご質問</span>
           <textarea id="q-message" placeholder="お届け先やご質問など、わかる範囲でどうぞ。"></textarea>
         </label>
+        <!-- Bay bot (honeypot): nguoi that khong thay field nay nen se de trong, bot
+             quet form thuong tu dong dien het moi o -> server se lang le bo qua neu
+             field nay co gia tri. Khong duoc doi ten/xoa field nay. -->
+        <div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+          <label>会社URL<input type="text" id="q-website" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
         <div class="form-err" id="q-err">必須項目（会社名・店舗名／お名前／電話番号）をご入力ください。</div>
         <button type="button" class="btn-pill btn-submit" id="q-submit-btn" onclick="goToConfirm()">確認画面へ</button>
         <p class="form-note">いただいた内容は、ご連絡だけに使います。</p>
@@ -300,6 +306,7 @@ function toggleFaq(i){ openFaq = (openFaq === i) ? -1 : i; renderFaq(); }
 renderFaq();
 
 // ===== FORM XIN BAO GIA (co man xac nhan truoc khi gui that su) =====
+const formLoadedAt = Date.now();
 function goToConfirm(){
   const v = id => document.getElementById(id).value.trim();
   const company = v('q-company'), name = v('q-name'), phone = v('q-phone');
@@ -344,7 +351,8 @@ async function submitQuote(){
       data: {
         companyName: v('q-company'), contactName: v('q-name'), phone: v('q-phone'),
         email: v('q-email'), desiredQtyDate: v('q-qtydate'), message: v('q-message'),
-        postalCode: v('q-postal'), address: v('q-address'), addressDetail: v('q-addressDetail')
+        postalCode: v('q-postal'), address: v('q-address'), addressDetail: v('q-addressDetail'),
+        website: v('q-website'), formLoadedAt: formLoadedAt
       }
     });
     if (j.status === 'ok') {
